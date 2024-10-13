@@ -6,7 +6,7 @@
 
 | Version       | Supported                          |
 | ------------- | ---------------------------------- |
-| Beta 4 (Linea)| :white_check_mark                  |
+| Beta 4 (Linea)| :white_check_mark:                 |
 | Beta 3 (Linea)| :x:                                |
 | Beta 2        | :white_check_mark: EOL on November |
 | Beta 1        | :x:                                |
