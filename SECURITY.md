@@ -1,27 +1,31 @@
 # Security and Support
 
+/!\ Support for ProcyoLang 2.0.1 Beta 2 will end on November
+
 ## Supported Versions
 
-| Version       | Supported                         |
-| ------------- | --------------------------------- |
-| Beta 3 (Linea)| :white_check_mark:                |
-| Beta 2        | :white_check_mark:                |
-| Beta 1        | :x:                               |
-| Alpha 10      | :x:                               |
-| Alpha 9       | :x:                               |
-| Alpha 8       | :x:                               |
-| Alpha 7       | :x:                               |
-| Alpha 6       | :x:                               |
-| Alpha 5       | :x:                               |
-| Alpha 4       | :x:                               |
-| Alpha 3       | :x:                               |
-| Alpha 2       | :x:                               |
-| Alpha 1       | :x:                               |
+| Version       | Supported                          |
+| ------------- | ---------------------------------- |
+| Beta 4 (Linea)| :white_check_mark                  |
+| Beta 3 (Linea)| :x:                                |
+| Beta 2        | :white_check_mark: EOL on November |
+| Beta 1        | :x:                                |
+| Alpha 10      | :x:                                |
+| Alpha 9       | :x:                                |
+| Alpha 8       | :x:                                |
+| Alpha 7       | :x:                                |
+| Alpha 6       | :x:                                |
+| Alpha 5       | :x:                                |
+| Alpha 4       | :x:                                |
+| Alpha 3       | :x:                                |
+| Alpha 2       | :x:                                |
+| Alpha 1       | :x:                                |
 
 ## Beta Version History
 
 | Version       | Stability                         | Stable than the best of the best build in Alpha Stage |
 | ------------- | --------------------------------- | ----------------------------------------------------- |
+| Beta 4 (Linea)| :white_check_mark:                | :white_check_mark:                                    |
 | Beta 3 (Linea)| :white_check_mark:                | :white_check_mark:                                    |
 | Beta 2        | :x:                               | :x:                                                   |
 | Beta 1        | :x:                               | :white_check_mark:                                    |

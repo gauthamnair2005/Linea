@@ -15,11 +15,46 @@ except:
 lVar = {}
 lAdr = {}
 lAct = {}
-lambdaStore = {}
+workerStore = {}
 floatNotCase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "'", '"', ",", "/", "\\", "<", ">", ";", ":", "[", "]", "{", "}", "-", "_", "+", "=", "(", ")", "!", "@", "#", "$", "%", "^", "&", "*", "~", "`", "|"]
 
-ver = "0.1 Beta 3"
+ver = "0.1 Beta 4"
 dev = "Gautham Nair"
+
+def help():
+    print("The Linea Programming Language " + ver + "\n" + dev)
+    print("Linea Help")
+    print("Usage : linea <filename>")
+    print("Printing a text : display <string/variable>")
+    print("Displaying declared variables : display @var")
+    print("Displaying declared actor variables : display @act")
+    print("Displaying variable addresses : display @adr")
+    print("Clearing the screen : clrscr")
+    print("Displaying data types of declared variables : display @dataType")
+    print("Displaying data type of a variable : type <variable>")
+    print("Type casting a variable : typecast <datatype> <variable>")
+    print("Declaring a variable : var <variable> = <value>")
+    print("Updating a variable : varupd <variable> = <value>")
+    print("Declaring an array : var[] <variable> = <value1>, <value2>, <value3>, ...")
+    print("Declaring a pointer : pointer <variable> = <value>")
+    print("Declaring an array of pointers : pointer[] <variable> = <value1>, <value2>, <value3>, ...")
+    print("Updating a pointer : pointerupd <variable> <value>")
+    print("Taking input : input <variable> <query>")
+    print("Binary view : bin <value>")
+    print("Hexadecimal view : hex <value>")
+    print("Octal view : oct <value>")
+    print("Variable operations : +, -, *, /, %, **, ^")
+    print("For loop : for <iterator> from <start>~<end> <action>")
+    print("For loop (0 to specified) : for <iterator> till <times> <action>")
+    print("For loop (1 to specified) : for <iterator> noDuckTill <times> <action>")
+    print("Actors : act <variable> = <value>")
+    print("Killing actors : killAct <variable>")
+    print("Killing variables : kill <variable>")
+    print("Killing all variables : killAll")
+    print("Killing all actors : killActAll")
+    print("Plotting a graph : plot <variable>")
+    print("Worker function definition : worker <variable> = <expression>")
+    print("Worker function call : workerCall <variable>")
 
 def vers():
     print("Linea Programming Language " + ver + "\n" + dev)
@@ -99,7 +134,7 @@ def varOps(param, line):
             result **= lVar[varName[i]]
         print(result)
     else:
-        displayError("L-E2 : Invalid operator")
+        displayError("L-E2 : Invalid operator", line)
 
 def inputTake(param, line):
     varName, queryText = param.split(" ")
@@ -120,7 +155,7 @@ def clrScr():
     os.system("cls" if sys.platform == "win32" else "clear")
 
 def displayDataType():
-    for i in LVar:
+    for i in lVar:
         if lVar[i] == lAdr[i]:
             print(f"{i} -> Pointer")
             return
@@ -150,34 +185,34 @@ def typeCast(param, line):
             try:
                 lVar[varName] = int(lVar[varName])
             except:
-                displayError("L-E4 : Type conversion prohibited")
+                displayError("L-E4 : Type conversion prohibited", line)
         elif newDataType == "float":
             try:
                 lVar[varName] = float(lVar[varName])
             except:
-                displayError("L-E4 : Type conversion prohibited")
+                displayError("L-E4 : Type conversion prohibited", line)
         elif newDataType == "str":
             try:
                 lVar[varName] = str(lVar[varName])
             except:
-                displayError("L-E4 : Type conversion prohibited")
+                displayError("L-E4 : Type conversion prohibited", line)
         elif newDataType == "bool":
             try:
                 lVar[varName] = bool(lVar[varName])
             except:
-                displayError("L-E4 : Type conversion prohibited")
+                displayError("L-E4 : Type conversion prohibited", line)
         elif newDataType == "list":
             try:
                 lVar[varName] = list(lVar[varName])
             except:
-                displayError("L-E4 : Type conversion prohibited")
+                displayError("L-E4 : Type conversion prohibited", line)
         elif newDataType == "complex":
             try:
                 lVar[varName] = complex(lVar[varName])
             except:
-                displayError("L-E4 : Type conversion prohibited")
+                displayError("L-E4 : Type conversion prohibited", line)
         else:
-            displayError("L-E5 : Invalid data type")
+            displayError("L-E5 : Invalid data type", line)
 
 def binView(param, line):
     if param in lAct:
@@ -277,7 +312,7 @@ def var(param, line):
                 lAdr[varName] = id(lVar[varName])
             elif "," in varValue:
                 value = varValue.strip()
-                val0 = val.split(",")
+                val0 = value.split(",")
                 val0 = [i.strip() for i in val0]
                 for i in range(0, len(val0)):
                     if val0[i] in lAct:
@@ -337,7 +372,7 @@ def VarUpd(param, line):
                 lAdr[varName] = id(lVar[varName])
             elif "," in varValue:
                 value = varValue.strip()
-                val0 = val.split(",")
+                val0 = value.split(",")
                 val0 = [i.strip() for i in val0]
                 for i in range(0, len(val0)):
                     if val0[i] in lAct:
@@ -416,7 +451,7 @@ def varArray(param, line):
 
 def pointer(param, line):
     if param in lVar:
-        displayWarning("L-W2 : Using pointer to update existing variable is deprecated, use pointerupd next time onwards")
+        displayWarning("L-W2 : Using pointer to update existing variable is deprecated, use pointerupd next time onwards", line)
         lVar[param] = id(lVar[param])
     else:
         if param in lAct:
@@ -450,45 +485,43 @@ def pointerUpdate(param, line):
     else:
         displayError("L-E3 : Undefined object", line)
 
-def lambdaFuncDef(param, line):
+def workerFuncDef(param, line):
     try:
-        varName, arrow, lambdaExpression = param.split(" ")
+        varName, equal ,workerExpression = param.split(" ")
+        equal = None
     except:
-        displayError("L-E6 : Invalid lambda function definition", line)
+        displayError("L-E6 : Invalid worker function definition", line)
         return
     varName = varName.strip()
-    lambdaExpression = lambdaExpression.strip()
-    if lambdaExpression.startswith("display->"):
-        function, expression = lambdaExpression.split("->")
-        lambdaExpression = display(expression, line)
-        lambdaStore[varName] = lambda lambdaArg: lambdaExpression
-    elif lambdaExpression.startswith("var->"):
-        function, expression = lambdaExpression.split("->")
-        lambdaExpression = var(expression)
-        lambdaStore[varName] = lambda lambdaArg: lambdaExpression
-    elif lambdaExpression.startswith("varupd->"):
-        function, expression = lambdaExpression.split("->")
-        lambdaExpression = VarUpd(expression)
-        lambdaStore[varName] = lambda lambdaArg: lambdaExpression
-    elif lambdaExpression.startswith("var[]->"):
-        function, expression = lambdaExpression.split("->")
-        lambdaExpression = varArray(expression)
-        lambdaStore[varName] = lambda lambdaArg: lambdaExpression
-    elif lambdaExpression.startswith("pointer->"):
-        function, expression = lambdaExpression.split("->")
-        lambdaExpression = pointer(expression)
-        lambdaStore[varName] = lambda lambdaArg: lambdaExpression
+    workerExpression = workerExpression.strip()
+    if workerExpression.startswith("display->"):
+        function, expression = workerExpression.split("->")
+        workerExpression = display(expression, line)
+        workerStore[varName] = lambda : workerExpression
+    elif workerExpression.startswith("var->"):
+        function, expression = workerExpression.split("->")
+        workerExpression = var(expression)
+        workerStore[varName] = lambda : workerExpression
+    elif workerExpression.startswith("varupd->"):
+        function, expression = workerExpression.split("->")
+        workerExpression = VarUpd(expression)
+        workerStore[varName] = lambda : workerExpression
+    elif workerExpression.startswith("var[]->"):
+        function, expression = workerExpression.split("->")
+        workerExpression = varArray(expression)
+        workerStore[varName] = lambda: workerExpression
+    elif workerExpression.startswith("pointer->"):
+        function, expression = workerExpression.split("->")
+        workerExpression = pointer(expression)
+        workerStore[varName] = lambda : workerExpression
     else:
-        displayError("L-E6 : Invalid operation in lambda function definition", line)
+        displayError("L-E6 : Invalid operation in worker function definition", line)
 
-def lambdaFuncCall(param, line):
-    lambdaName, lambdaArg = param.split("(")
-    lambdaName = lambdaName.strip()
-    lambdaArg = lambdaArg.strip().replace(")", "")
-    if lambdaName in lambdaStore:
-        lambdaStore[lambdaName](lambdaArg)
+def workerFuncCall(param, line):
+    if param in workerStore:
+        workerStore[param]()
     else:
-        displayError("L-E10 : Lambda not defined", line)
+        displayError("L-E10 : worker not defined", line)
 
 def forLoop(param, line):
     iteratorVar, forCommand, times, action = param.split(" ", 3)
@@ -530,7 +563,7 @@ def forLoop(param, line):
             elif action.startswith("varops->"):
                 varOps(action[8:])
             else:
-                displayError("L-E6 : Invalid operation in for loop")
+                displayError("L-E6 : Invalid operation in for loop", line)
     elif forCommand == "till":
         times = int(times)
         for i in range(0, times + 1):
@@ -563,7 +596,7 @@ def forLoop(param, line):
             elif action.startswith("varops->"):
                 varOps(action[8:])
             else:
-                displayError("L-E6 : Invalid operation in for loop")
+                displayError("L-E6 : Invalid operation in for loop", line)
     elif forCommand == "noDuckTill":
         times = int(times)
         for i in range(1, times + 1):
@@ -596,9 +629,9 @@ def forLoop(param, line):
             elif action.startswith("varops->"):
                 varOps(action[8:])
             else:
-                displayError("L-E6 : Invalid operation in for loop")
+                displayError("L-E6 : Invalid operation in for loop", line)
     else:
-        displayError("L-E7 : Invalid for loop command")
+        displayError("L-E7 : Invalid for loop command", line)
 
 def act(param, line):
     varName, varActValue = param.split("=")
@@ -619,7 +652,7 @@ def act(param, line):
             lAct[varName] = None
         elif "," in varActValue:
             value = varActValue.strip()
-            val0 = val.split(",")
+            val0 = value.split(",")
             val0 = [i.strip() for i in val0]
             for i in range(0, len(val0)):
                 if val0[i] in lAct:
@@ -689,7 +722,7 @@ def plotGraph(param, line):
             plt.plot(lVar[param])
             plt.show()
         else:
-            displayError("L-E8 : Invalid data type")
+            displayError("L-E8 : Invalid data type", line)
     else:
         if type(param) == list:
             plt.plot(param)
@@ -742,7 +775,7 @@ def Linea(fileName):
     try:
         lineCount = 0
         if not os.path.exists(fileName):
-            displayError(": File not Found")
+            print("\033[91mFile not found\033[0m")
             sys.exit(1)
         else:
             with open(fileName, "r") as f:
@@ -801,10 +834,10 @@ def Linea(fileName):
                         killAct(line[8:], lineCount)
                     elif line.startswith("kill "):
                         kill(line[5:], lineCount)
-                    elif line.startswith("lambda "):
-                        lambdaFuncDef(line[7:], lineCount)
-                    elif line.startswith("lambdaCall "):
-                        lambdaFuncCall(line[11:], lineCount)
+                    elif line.startswith("worker "):
+                        workerFuncDef(line[7:], lineCount)
+                    elif line.startswith("workerCall "):
+                        workerFuncCall(line[11:], lineCount)
                     elif line == "killAll":
                         killAll()
                     elif line == "killActAll":
@@ -815,7 +848,7 @@ def Linea(fileName):
                         try:
                             print(eval(line))
                         except:
-                            displayError("L-E9 : Invalid keyword")
+                            displayError("L-E9 : Invalid keyword", lineCount)
     except:
         displayError("L-E11 : Undefined error", lineCount)
 
@@ -826,8 +859,11 @@ if __name__ == "__main__":
         print("linea <filename>")
         sys.exit(1)
     fileName = sys.argv[1]
-    if fileName == "-v" or fileName == "--version":
+    if fileName == "--v" or fileName == "-version":
         vers()
+        sys.exit(0)
+    elif fileName == "--h" or fileName == "-help":
+        help()
         sys.exit(0)
     else:
         Linea(fileName)

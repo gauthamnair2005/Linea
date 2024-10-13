@@ -25,5 +25,6 @@ for i till 2 display->"till"
 for i noDuckTill 2 display->"noDuckTill"
 var[] i = 1,2,3,4,5
 display i
-lambda x -> display->i
-lambdaCall x(i)
+worker x = display->i
+workerCall x
+display x
