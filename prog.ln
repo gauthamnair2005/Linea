@@ -1,0 +1,29 @@
+display "Hello"
+var x = 12
+display x
+var x = 13
+display x
+varupd x = 15
+display x
+display 15
+display 12.23
+12 + 12
+var y = 12
+display y
+var z = 0
++ x,y
+- x,y
+/ x,z
+* x,y
+% x,y
+^ x,y
+ver
+act x = z
+display x
+for i from 0~2 display->"Hello"
+for i till 2 display->"till"
+for i noDuckTill 2 display->"noDuckTill"
+var[] i = 1,2,3,4,5
+display i
+lambda x -> display->i
+lambdaCall x(i)
