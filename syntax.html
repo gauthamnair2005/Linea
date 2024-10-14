@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linea Syntax</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <img src="LineaFullLogo.png" alt="Linea Programming Language Logo" class="logo">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="download.html">Download</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="syntax">
+        <h2>Linea Syntax</h2>
+        <ul>
+            <li>Printing a text: `display <string/variable>`</li>
+            <li>Displaying declared variables: `display @var`</li>
+            <li>Displaying declared actor variables: `display @act`</li>
+            <li>Displaying variable addresses: `display @adr`</li>
+            <li>Clearing the screen: `clrscr`</li>
+            <li>Displaying data types of declared variables: `display @dataType`</li>
+            <li>Displaying data type of a variable: `type <variable>`</li>
+            <li>Type casting a variable: `typecast <datatype> <variable>`</li>
+            <li>Declaring a variable: `var <variable> = <value>`</li>
+            <li>Updating a variable: `varupd <variable> = <value>`</li>
+            <li>Declaring an array: `var[] <variable> = <value1>, <value2>, <value3>, ...`</li>
+            <li>Declaring a pointer: `pointer <variable> = <value>`</li>
+            <li>Declaring an array of pointers: `pointer[] <variable> = <value1>, <value2>, <value3>, ...`</li>
+            <li>Updating a pointer: `pointerupd <variable> <value>`</li>
+            <li>Taking input: `input <variable> <query>`</li>
+            <li>Binary view: `bin <value>`</li>
+            <li>Hexadecimal view: `hex <value>`</li>
+            <li>Octal view: `oct <value>`</li>
+            <li>Variable operations: `+, -, *, /, %, **, ^`</li>
+            <li>For loop: `for <iterator> from <start>~<end> <action>`</li>
+            <li>For loop (0 to specified): `for <iterator> till <times> <action>`</li>
+            <li>For loop (1 to specified): `for <iterator> noDuckTill <times> <action>`</li>
+            <li>Actors: `act <variable> = <value>`</li>
+            <li>Killing actors: `killAct <variable>`</li>
+            <li>Killing variables: `kill <variable>`</li>
+            <li>Killing all variables: `killAll`</li>
+            <li>Killing all actors: `killActAll`</li>
+            <li>Plotting a graph: `plot <variable>`</li>
+            <li>Worker function definition: `worker <variable> = <expression>`</li>
+            <li>Worker function call: `workerCall <variable>`</li>
+        </ul>
+    </section>
+    <footer id="footer">
+        <p>&copy; 2024 Gautham Nair</p>
+    </footer>
+</body>
+</html>
