@@ -8,8 +8,8 @@ try:
     import matplotlib.pyplot as plt
     import os
     import sys
-except:
-    print("\033[91mError L-E1: Required modules not found\033[0m")
+except ImportError as e:
+    print(f"\033[91mError L-E1: {str(e)}\033[0m")
     sys.exit(1)
 
 lVar = {}
@@ -18,7 +18,7 @@ lAct = {}
 workerStore = {}
 floatNotCase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "'", '"', ",", "/", "\\", "<", ">", ";", ":", "[", "]", "{", "}", "-", "_", "+", "=", "(", ")", "!", "@", "#", "$", "%", "^", "&", "*", "~", "`", "|"]
 
-ver = "0.1 Beta 4"
+ver = "0.2 'Bettafish' Beta 5"
 dev = "Gautham Nair"
 
 def help():
@@ -34,7 +34,7 @@ def help():
     print("Displaying data type of a variable : type <variable>")
     print("Type casting a variable : typecast <datatype> <variable>")
     print("Declaring a variable : var <variable> = <value>")
-    print("Updating a variable : varupd <variable> = <value>")
+    print("Updating a variable : varUpd <variable> = <value>")
     print("Declaring an array : var[] <variable> = <value1>, <value2>, <value3>, ...")
     print("Declaring a pointer : pointer <variable> = <value>")
     print("Declaring an array of pointers : pointer[] <variable> = <value1>, <value2>, <value3>, ...")
@@ -103,35 +103,35 @@ def varOps(param, line):
     if operator == "+":
         result = 0
         for i in range(0, len(varName)):
-            result += lVar[varName[i]]
+            result += float(lVar[varName[i]])
         print(result)
     elif operator == "-":
-        result = lVar[varName[0]]
+        result = float(lVar[varName[0]])
         for i in range(1, len(varName)):
-            result -= lVar[varName[i]]
+            result -= float(lVar[varName[i]])
         print(result)
     elif operator == "*":
         result = 1
         for i in range(0, len(varName)):
-            result *= lVar[varName[i]]
+            result *= float(lVar[varName[i]])
         print(result)
     elif operator == "/":
-        result = lVar[varName[0]]
+        result = float(lVar[varName[0]])
         for i in range(1, len(varName)):
             try:
-                result /= lVar[varName[i]]
+                result /= float(lVar[varName[i]])
             except:
                 displayError("L-E10 : Division by zero", line)
         print(result)
     elif operator == "%":
-        result = lVar[varName[0]]
+        result = float(lVar[varName[0]])
         for i in range(1, len(varName)):
-            result %= lVar[varName[i]]
+            result %= float(lVar[varName[i]])
         print(result)
     elif operator == "^":
-        result = lVar[varName[0]]
+        result = float(lVar[varName[0]])
         for i in range(1, len(varName)):
-            result **= lVar[varName[i]]
+            result **= float(lVar[varName[i]])
         print(result)
     else:
         displayError("L-E2 : Invalid operator", line)
@@ -291,7 +291,7 @@ def var(param, line):
     varName = varName.strip()
     varValue = varValue.strip()
     if varName in lVar:
-        displayWarning("L-W1 : Using var to update existing variable is deprecated, use varupd next time onwards", line)
+        displayWarning("L-W1 : Using var to update existing variable is deprecated, use varUpd next time onwards", line)
         lVar[varName] = varValue
     else:
         if varValue.isdigit():
@@ -349,7 +349,7 @@ def var(param, line):
                 else:
                     displayError("L-E3 : Undefined object", line)
 
-def VarUpd(param, line):
+def varUpd(param, line):
     varName, varValue = param.split("=")
     varName = varName.strip()
     varValue = varValue.strip()
@@ -502,9 +502,9 @@ def workerFuncDef(param, line):
         function, expression = workerExpression.split("->")
         workerExpression = var(expression)
         workerStore[varName] = lambda : workerExpression
-    elif workerExpression.startswith("varupd->"):
+    elif workerExpression.startswith("varUpd->"):
         function, expression = workerExpression.split("->")
-        workerExpression = VarUpd(expression)
+        workerExpression = varUpd(expression)
         workerStore[varName] = lambda : workerExpression
     elif workerExpression.startswith("var[]->"):
         function, expression = workerExpression.split("->")
@@ -538,8 +538,8 @@ def forLoop(param, line):
                 display(action[9:], line)
             elif action.startswith("var->"):
                 var(action[5:])
-            elif action.startswith("varupd->"):
-                VarUpd(action[8:])
+            elif action.startswith("varUpd->"):
+                varUpd(action[8:])
             elif action.startswith("var[]->"):
                 varArray(action[7:])
             elif action.startswith("pointer->"):
@@ -571,8 +571,8 @@ def forLoop(param, line):
                 display(action[9:], line)
             elif action.startswith("var->"):
                 var(action[5:])
-            elif action.startswith("varupd->"):
-                VarUpd(action[8:])
+            elif action.startswith("varUpd->"):
+                varUpd(action[8:])
             elif action.startswith("var[]->"):
                 varArray(action[7:])
             elif action.startswith("pointer->"):
@@ -604,8 +604,8 @@ def forLoop(param, line):
                 display(action[9:], line)
             elif action.startswith("var->"):
                 var(action[5:])
-            elif action.startswith("varupd->"):
-                VarUpd(action[8:])
+            elif action.startswith("varUpd->"):
+                varUpd(action[8:])
             elif action.startswith("var[]->"):
                 varArray(action[7:])
             elif action.startswith("pointer->"):
@@ -806,8 +806,8 @@ def Linea(fileName):
                         typeCast(line[9:], lineCount)
                     elif line.startswith("var "):
                         var(line[4:], lineCount)
-                    elif line.startswith("varupd "):
-                        VarUpd(line[7:], lineCount)
+                    elif line.startswith("varUpd "):
+                        varUpd(line[7:], lineCount)
                     elif line.startswith("var[] "):
                         varArray(line[6:], lineCount)
                     elif line.startswith("pointer "):
@@ -865,6 +865,25 @@ if __name__ == "__main__":
     elif fileName == "--h" or fileName == "-help":
         help()
         sys.exit(0)
-    else:
-        Linea(fileName)
+    elif fileName == "--d" or fileName == "-developer":
+        print(dev)
         sys.exit(0)
+    elif fileName == "--l" or fileName == "-license":
+        print("GNU GPL v3")
+        sys.exit(0)
+    elif fileName == "--c" or fileName == "-credits":
+        print("Linea Programming Language " + ver + "\n" + dev)
+        sys.exit(0)
+    elif fileName == "--a" or fileName == "-about":
+        print("Linea Programming Language " + ver + "\n" + dev)
+        sys.exit(0)
+    elif fileName == "--i" or fileName == "-info":
+        print("Linea Programming Language " + ver + "\n" + dev)
+        sys.exit(0)
+    else:
+        if fileName.startswith("-"):
+            print("Linea Programming Language " + ver + "\n" + dev)
+            print("\033[91mInvalid argument\033[0m")
+        else:
+            Linea(fileName)
+            sys.exit(0)
