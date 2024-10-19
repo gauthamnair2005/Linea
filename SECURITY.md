@@ -10,13 +10,23 @@
 * The support for ProcyoLang will end on November, meaning despite being deprecated, it MIGHT receive updates till November.
 * After EOL, the ProcyoLang repositories both in my profile and Procyonis Computing Organization profile will be archived.
 
+## Version Details
+
+| Version | Build Type | Latest? |
+| ------- | ---------- | ------- |
+| 0.2     | Beta 5     | Yes     |
+| 0.1     | Beta 4     | No      |
+| 2.0.1   | Beta 3     | No      |
+| 1.0.2   | Beta 1     | No      |
+
 ## Supported Versions
 
 | Version       | Supported                          |
 | ------------- | ---------------------------------- |
-| Beta 4 (Linea)| :white_check_mark:                 |
+| Beta 5 (Linea)| :white_check_mark:                 |
+| Beta 4 (Linea)| :x:                                |
 | Beta 3 (Linea)| :x:                                |
-| Beta 2        | :white_check_mark: EOL on November |
+| Beta 2        | :x:                                |
 | Beta 1        | :x:                                |
 | Alpha 10      | :x:                                |
 | Alpha 9       | :x:                                |

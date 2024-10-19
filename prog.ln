@@ -1,3 +1,4 @@
+# Compatible with 0.2B5
 display "Hello"
 var x = 12
 display x
