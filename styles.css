@@ -1,0 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white; /* White background */
+    color: #333;
+}
+
+header {
+    background-color: white; /* White background */
+    color: #800080; /* Purple color for title */
+    padding: 20px;
+    text-align: left; /* Left align the title */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #800080; /* Purple border */
+}
+
+.logo {
+    height: 90px; /* Adjust the height as needed */
+    width: auto; /* Maintain aspect ratio */
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: #800080; /* Purple color for links */
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #f4f4f4; /* Light grey for hover effect */
+}
+
+section {
+    padding: 20px;
+    margin: 20px;
+    background-color: white; /* White background */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #800080; /* Purple color for headings */
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background: #e4e4e4;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: white; /* White background */
+    color: #800080; /* Purple color for footer text */
+    width: 100%;
+    display: none; /* Initially hide the footer */
+    border-top: 2px solid #800080; /* Purple border */
+}
+/* Add styles for the Learn More button */
+.learn-more-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #800080; /* Purple background */
+    color: white; /* White text */
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.learn-more-button:hover {
+    background-color: #5a005a; /* Darker purple for hover effect */
+}
+
+/* Update the features section to display in a squared grid format */
+#features ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+#features ul li {
+    background: #e4e4e4;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
