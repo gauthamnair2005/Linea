@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linea Syntax</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="lineaLogo.ico" type="image/x-icon">
     <script src="script.js" defer></script>
 </head>
 <body>
     <header>
-        <img src="LineaFullLogo.png" alt="Linea Programming Language Logo" class="logo">
+        <img src="LineaLogo.png" alt="Linea Programming Language Logo" class="logo">
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
@@ -19,38 +20,41 @@
     </header>
     <section id="syntax">
         <h2>Linea Syntax</h2>
-        <ul>
-            <li>Printing a text: `display <string/variable>`</li>
-            <li>Displaying declared variables: `display @var`</li>
-            <li>Displaying declared actor variables: `display @act`</li>
-            <li>Displaying variable addresses: `display @adr`</li>
-            <li>Clearing the screen: `clrscr`</li>
-            <li>Displaying data types of declared variables: `display @dataType`</li>
-            <li>Displaying data type of a variable: `type <variable>`</li>
-            <li>Type casting a variable: `typecast <datatype> <variable>`</li>
-            <li>Declaring a variable: `var <variable> = <value>`</li>
-            <li>Updating a variable: `varupd <variable> = <value>`</li>
-            <li>Declaring an array: `var[] <variable> = <value1>, <value2>, <value3>, ...`</li>
-            <li>Declaring a pointer: `pointer <variable> = <value>`</li>
-            <li>Declaring an array of pointers: `pointer[] <variable> = <value1>, <value2>, <value3>, ...`</li>
-            <li>Updating a pointer: `pointerupd <variable> <value>`</li>
-            <li>Taking input: `input <variable> <query>`</li>
-            <li>Binary view: `bin <value>`</li>
-            <li>Hexadecimal view: `hex <value>`</li>
-            <li>Octal view: `oct <value>`</li>
-            <li>Variable operations: `+, -, *, /, %, **, ^`</li>
-            <li>For loop: `for <iterator> from <start>~<end> <action>`</li>
-            <li>For loop (0 to specified): `for <iterator> till <times> <action>`</li>
-            <li>For loop (1 to specified): `for <iterator> noDuckTill <times> <action>`</li>
-            <li>Actors: `act <variable> = <value>`</li>
-            <li>Killing actors: `killAct <variable>`</li>
-            <li>Killing variables: `kill <variable>`</li>
-            <li>Killing all variables: `killAll`</li>
-            <li>Killing all actors: `killActAll`</li>
-            <li>Plotting a graph: `plot <variable>`</li>
-            <li>Worker function definition: `worker <variable> = <expression>`</li>
-            <li>Worker function call: `workerCall <variable>`</li>
-        </ul>
+        <pre>
+            <ul>
+                <li><code>display &lt;string/variable&gt;</code> - Printing a text</li>
+                <li><code>display @var</code> - Displaying declared variables</li>
+                <li><code>display @act</code> - Displaying declared actor variables</li>
+                <li><code>display @adr</code> - Displaying variable addresses</li>
+                <li><code>clrscr</code> - Clearing the screen</li>
+                <li><code>display @dataType</code> - Displaying data types of declared variables</li>
+                <li><code>type &lt;variable&gt;</code> - Displaying data type of a variable</li>
+                <li><code>typecast &lt;datatype&gt; &lt;variable&gt;</code> - Type casting a variable</li>
+                <li><code>var &lt;variable&gt; = &lt;value&gt;</code> - Declaring a variable</li>
+                <li><code>varupd &lt;variable&gt; = &lt;value&gt;</code> - Updating a variable</li>
+                <li><code>var[] &lt;variable&gt; = &lt;value1&gt;, &lt;value2&gt;, &lt;value3&gt;, ...</code> - Declaring an array</li>
+                <li><code>pointer &lt;variable&gt; = &lt;value&gt;</code> - Declaring a pointer</li>
+                <li><code>pointer[] &lt;variable&gt; = &lt;value1&gt;, &lt;value2&gt;, &lt;value3&gt;, ...</code> - Declaring an array of pointers</li>
+                <li><code>pointerupd &lt;variable&gt; &lt;value&gt;</code> - Updating a pointer</li>
+                <li><code>input &lt;variable&gt; &lt;query&gt;</code> - Taking input</li>
+                <li><code>bin &lt;value&gt;</code> - Binary view</li>
+                <li><code>hex &lt;value&gt;</code> - Hexadecimal view</li>
+                <li><code>oct &lt;value&gt;</code> - Octal view</li>
+                <li><code>+, -, *, /, %, **, ^</code> - Variable operations</li>
+                <li><code>for &lt;iterator&gt; from &lt;start&gt;~&lt;end&gt; &lt;action&gt;</code> - For loop</li>
+                <li><code>for &lt;iterator&gt; till &lt;times&gt; &lt;action&gt;</code> - For loop (0 to specified)</li>
+                <li><code>for &lt;iterator&gt; noDuckTill &lt;times&gt; &lt;action&gt;</code> - For loop (1 to specified)</li>
+                <li><code>act &lt;variable&gt; = &lt;value&gt;</code> - Actors</li>
+                <li><code>killAct &lt;variable&gt;</code> - Killing actors</li>
+                <li><code>kill &lt;variable&gt;</code> - Killing variables</li>
+                <li><code>killAll</code> - Killing all variables</li>
+                <li><code>killActAll</code> - Killing all actors</li>
+                <li><code>plot &lt;variable&gt;</code> - Plotting a graph</li>
+                <li><code>worker &lt;variable&gt; = &lt;expression&gt;</code> - Worker function definition</li>
+                <li><code>workerCall &lt;variable&gt;</code> - Worker function call</li>
+                <li><code>file &lt;filename&gt; read</code> - File reading</li>
+            </ul>
+        </pre>
     </section>
     <footer id="footer">
         <p>&copy; 2024 Gautham Nair</p>

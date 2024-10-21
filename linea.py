@@ -8,6 +8,9 @@ try:
     import matplotlib.pyplot as plt
     import os
     import sys
+    import math
+    import random
+    import statistics
 except ImportError as e:
     print(f"\033[91mError L-E1: {str(e)}\033[0m")
     sys.exit(1)
@@ -18,7 +21,7 @@ lAct = {}
 workerStore = {}
 floatNotCase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "'", '"', ",", "/", "\\", "<", ">", ";", ":", "[", "]", "{", "}", "-", "_", "+", "=", "(", ")", "!", "@", "#", "$", "%", "^", "&", "*", "~", "`", "|"]
 
-ver = "0.2 'Bettafish' Beta 5"
+ver = "0.5 'Bettafish'"
 dev = "Gautham Nair"
 
 def help():
@@ -771,6 +774,27 @@ def plotGraph(param, line):
         else:
             displayError("L-E3 : Undefined object", line)
 
+def fileHandling(param, line):
+    param = param.split(" ")
+    if not os.path.exists(param[0]):
+        displayError("L-E14 : File not found", line)
+    else:
+        if param[1] == "read":
+            file = open(param[0], "r")
+            print(file.read())
+            file.close()
+        elif param[1] == "write":
+            file = open(param[0], "w")
+            file.write(param[2])
+            file.close()
+        elif param[1] == "append":
+            file = open(param[0], "a")
+            file.write(param[2])
+            file.close()
+        else:
+            displayError("L-E15 : Invalid file operation", line)
+
+
 def Linea(fileName):
     try:
         lineCount = 0
@@ -844,6 +868,38 @@ def Linea(fileName):
                         killActAll()
                     elif line.startswith("plot "):
                         plotGraph(line[5:], lineCount)
+                    elif line.startswith("sum "):
+                        print(sum([int(i) for i in line[4:].split(",")]))
+                    elif line.startswith("max "):
+                        print(max([int(i) for i in line[4:].split(",")]))
+                    elif line.startswith("min "):
+                        print(min([int(i) for i in line[4:].split(",")]))
+                    elif line.startswith("avg "):
+                        print(sum([int(i) for i in line[4:].split(",")]) / len([int(i) for i in line[4:].split(",")]))
+                    elif line.startswith("len "):
+                        print(len([int(i) for i in line[4:].split(",")]))
+                    elif line.startswith("sort "):
+                        print(sorted([int(i) for i in line[5:].split(",")]))
+                    elif line.startswith("reverse "):
+                        print(sorted([int(i) for i in line[8:].split(",")], reverse=True))
+                    elif line.startswith("shuffle "):
+                        print(random.shuffle([int(i) for i in line[8:].split(",")]))
+                    elif line.startswith("random "):
+                        print(random.choice([int(i) for i in line[7:].split(",")]))
+                    elif line.startswith("mean "):
+                        print(statistics.mean([int(i) for i in line[5:].split(",")]))
+                    elif line.startswith("median "):
+                        print(statistics.median([int(i) for i in line[7:].split(",")]))
+                    elif line.startswith("mode "):
+                        print(statistics.mode([int(i) for i in line[5:].split(",")]))
+                    elif line.startswith("sqrt "):
+                        print(math.sqrt(int(line[5:])))
+                    elif line.startswith("pow "):
+                        print(math.pow(int(line[4:].split(",")[0]), int(line[4:].split(",")[1])))
+                    elif line == "pi" or line == "π":
+                        print(math.pi)
+                    elif line.startswith("file "):
+                        fileHandling(line[5:], lineCount)
                     else:
                         try:
                             print(eval(line))

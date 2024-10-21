@@ -17,8 +17,14 @@ header {
     border-bottom: 2px solid #800080; /* Purple border */
 }
 
+code {
+    background-color: #f4f4f4; /* Light grey background for code snippets */
+    padding: 5px;
+    border-radius: 4px;
+}
+
 .logo {
-    height: 90px; /* Adjust the height as needed */
+    height: 50px; /* Adjust the height as needed */
     width: auto; /* Maintain aspect ratio */
 }
 

@@ -1,8 +1,14 @@
 # The Linea Programming Language
 
-(Formerly ProcyoLang)
+Starting from Linea 0.5 'Bettafish', we changed the release structure of this project. Now there won't be any branches in the repository and the master branch will be the main branch. The releases will be tagged with the version number and the release name. The release name will be the codename of the release. The first release of Linea 0.5 will be 'Bettafish'. The release starting with 0, is beta and all the alternative numbers will be stable, for example 0.x will be beta or developer release, 1.x will be stable, 2.x will again be beta or developer release and so on.
 
-## What's new in Linea 0.2 'Bettafish' Beta 5?
+## What's new in Linea 0.5 'Bettafish'?
+
+* Added support for mathematical operations.
+* Added support for statistical operations.
+* Added support for file handling (only read and write).
+
+## What was new in Linea 0.2 'Bettafish' Beta 5?
 
 * Fixed many known bugs.
 * Code refactoring by adding more edge cases in exception handling. (No exception handling!)

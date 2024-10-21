@@ -1,29 +1,25 @@
 # Security and Support
 
-/!\ Support for ProcyoLang will end on November!
-
 ## Structure of Update and Support in Linea
 
-* The Linea Programming Language might receive updates any time within 7:00 AM IST to 10:00 PM IST, with no fixed update cycle.
-* In the current stage (Beta), any new build released, means the previous build's support is ended, and that particular tag/release will not be fixed or updated.
-* However the bugs of previous builds (if found) and features, will be fixed or added in next release tag or build.
-* The support for ProcyoLang will end on November, meaning despite being deprecated, it MIGHT receive updates till November.
-* After EOL, the ProcyoLang repositories both in my profile and Procyonis Computing Organization profile will be archived.
+Starting from Linea 0.5 'Bettafish', we changed the release structure of this project. Now there won't be any branches in the repository and the master branch will be the main branch. The releases will be tagged with the version number and the release name. The release name will be the codename of the release. The first release of Linea 0.5 will be 'Bettafish'. The release starting with 0, is beta and all the alternative numbers will be stable, for example 0.x will be beta or developer release, 1.x will be stable, 2.x will again be beta or developer release and so on.
 
 ## Version Details
 
-| Version | Build Type | Latest? |
-| ------- | ---------- | ------- |
-| 0.2     | Beta 5     | Yes     |
-| 0.1     | Beta 4     | No      |
-| 2.0.1   | Beta 3     | No      |
-| 1.0.2   | Beta 1     | No      |
+| Version | Build Type  | Latest? |
+| ------- | ----------- | ------- |
+| 0.5     | Pre-release | Yes     |
+| 0.2     | Beta 5      | Yes     |
+| 0.1     | Beta 4      | No      |
+| 2.0.1   | Beta 3      | No      |
+| 1.0.2   | Beta 1      | No      |
 
 ## Supported Versions
 
 | Version       | Supported                          |
 | ------------- | ---------------------------------- |
-| Beta 5 (Linea)| :white_check_mark:                 |
+| 0.5           | :white_check_mark:                 |
+| Beta 5 (Linea)| :x:                                |
 | Beta 4 (Linea)| :x:                                |
 | Beta 3 (Linea)| :x:                                |
 | Beta 2        | :x:                                |
@@ -43,6 +39,8 @@
 
 | Version       | Stability                         | Stable than the best of the best build in Alpha Stage |
 | ------------- | --------------------------------- | ----------------------------------------------------- |
+| 0.5           | :white_check_mark:                | :white_check_mark:                                    |
+| Beta 5 (Linea)| :white_check_mark:                | :white_check_mark:                                    |
 | Beta 4 (Linea)| :white_check_mark:                | :white_check_mark:                                    |
 | Beta 3 (Linea)| :white_check_mark:                | :white_check_mark:                                    |
 | Beta 2        | :x:                               | :x:                                                   |
@@ -65,4 +63,4 @@
 
 ## Support
 
-If you have any questions or need help with the project, please don't hesitate to reach out to me :).
+If you have any questions or need help with the project, please don't hesitate to reach out to me :)

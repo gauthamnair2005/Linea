@@ -1,4 +1,4 @@
-# Compatible with 0.2B5
+# Compatible with 0.5
 display "Hello"
 var x = 12
 display x
@@ -29,3 +29,4 @@ display i
 worker x = display->i
 workerCall x
 display x
+file prog.ln read
