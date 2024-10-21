@@ -1,13 +1,14 @@
 # Security and Support
 
-/!\ Support for ProcyoLang has ended on 19 October.
+/!\ Support for ProcyoLang will end on November!
 
 ## Structure of Update and Support in Linea
 
 * The Linea Programming Language might receive updates any time within 7:00 AM IST to 10:00 PM IST, with no fixed update cycle.
 * In the current stage (Beta), any new build released, means the previous build's support is ended, and that particular tag/release will not be fixed or updated.
 * However the bugs of previous builds (if found) and features, will be fixed or added in next release tag or build.
-* The support for ProcyoLang ended on 19-10-2024 13:00 IST.
+* The support for ProcyoLang will end on November, meaning despite being deprecated, it MIGHT receive updates till November.
+* After EOL, the ProcyoLang repositories both in my profile and Procyonis Computing Organization profile will be archived.
 
 ## Version Details
 
