@@ -1,9 +1,3 @@
-"""
-    The Linea Programming Language
-    Gautham Nair
-    2024
-"""
-    
 try:
     import matplotlib.pyplot as plt
     import os
@@ -21,7 +15,7 @@ lAct = {}
 workerStore = {}
 floatNotCase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "'", '"', ",", "/", "\\", "<", ">", ";", ":", "[", "]", "{", "}", "-", "_", "+", "=", "(", ")", "!", "@", "#", "$", "%", "^", "&", "*", "~", "`", "|"]
 
-ver = "0.5 'Bettafish'"
+ver = "0.7 'Bettafish'"
 dev = "Gautham Nair"
 
 def help():
