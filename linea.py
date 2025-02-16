@@ -1,9 +1,3 @@
-"""
-    The Linea Programming Language
-    Gautham Nair
-    2024
-"""
-    
 try:
     import matplotlib.pyplot as plt
     import os
@@ -11,6 +5,7 @@ try:
     import math
     import random
     import statistics
+    import requests
 except ImportError as e:
     print(f"\033[91mError L-E1: {str(e)}\033[0m")
     sys.exit(1)
@@ -21,7 +16,7 @@ lAct = {}
 workerStore = {}
 floatNotCase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "'", '"', ",", "/", "\\", "<", ">", ";", ":", "[", "]", "{", "}", "-", "_", "+", "=", "(", ")", "!", "@", "#", "$", "%", "^", "&", "*", "~", "`", "|"]
 
-ver = "0.5 'Bettafish'"
+ver = "1.2 'Mishka'"
 dev = "Gautham Nair"
 
 def help():
@@ -794,6 +789,22 @@ def fileHandling(param, line):
         else:
             displayError("L-E15 : Invalid file operation", line)
 
+def memClear():
+    lVar.clear()
+    lAdr.clear()
+    lAct.clear()
+    workerStore.clear()
+
+def ping(url, line):
+    try:
+        if requests.get(url):
+            print(f"Pinging {url}..!")
+            print(f"Status : {requests.get(url).status_code}")
+        else:
+            displayError("L-E12 : Invalid URL", line)
+    except:
+        displayError("L-E12 : Invalid URL", line)
+
 
 def Linea(fileName):
     try:
@@ -900,6 +911,10 @@ def Linea(fileName):
                         print(math.pi)
                     elif line.startswith("file "):
                         fileHandling(line[5:], lineCount)
+                    elif line == "memClear()":
+                        memClear()
+                    elif line.startswith("ping "):
+                        ping(line[5:], lineCount)
                     else:
                         try:
                             print(eval(line))
