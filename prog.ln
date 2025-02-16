@@ -1,10 +1,10 @@
-# Compatible with 0.5
+# Compatible with 1.2
 display "Hello"
 var x = 12
 display x
 var x = 13
 display x
-varupd x = 15
+varUpd x = 15
 display x
 display 15
 display 12.23
@@ -30,3 +30,5 @@ worker x = display->i
 workerCall x
 display x
 file prog.ln read
+ping https://google.com
+memClear()

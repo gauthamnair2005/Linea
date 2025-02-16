@@ -8,8 +8,9 @@ Starting from Linea 0.5 'Bettafish', we changed the release structure of this pr
 
 | Version | Build Type  | Latest? |
 | ------- | ----------- | ------- |
-| 0.5     | Pre-release | Yes     |
-| 0.2     | Beta 5      | Yes     |
+| 1.2     | Stable      | Yes     |
+| 0.5     | Pre-release | No      |
+| 0.2     | Beta 5      | No      |
 | 0.1     | Beta 4      | No      |
 | 2.0.1   | Beta 3      | No      |
 | 1.0.2   | Beta 1      | No      |
@@ -18,6 +19,7 @@ Starting from Linea 0.5 'Bettafish', we changed the release structure of this pr
 
 | Version       | Supported                          |
 | ------------- | ---------------------------------- |
+| 1.2           | :white_check_mark:                 |
 | 0.5           | :white_check_mark:                 |
 | Beta 5 (Linea)| :x:                                |
 | Beta 4 (Linea)| :x:                                |
