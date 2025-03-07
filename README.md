@@ -5,8 +5,8 @@ Starting from Linea 0.5 'Bettafish', we changed the release structure of this pr
 ## What's new in Linea 1.5 'Mishka'?
 
 * Added support for `timeout` and `web` commands:
-* * `timeout` command is used to set a timeout for the code execution.
-* * `web` command is used to run the provided HTML code in default browser.
+  * `timeout` command is used to set a timeout for the code execution.
+  * `web` command is used to run the provided HTML code in default browser.
 
 ## What was new in Linea 1.2 'Mishka'?
 
