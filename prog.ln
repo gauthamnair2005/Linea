@@ -1,4 +1,4 @@
-# Compatible with 1.2
+# Compatible with 1.5
 display "Hello"
 var x = 12
 display x
@@ -32,3 +32,5 @@ display x
 file prog.ln read
 ping https://google.com
 memClear()
+web <h1>Hello</h1>
+timeout 20

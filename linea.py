@@ -6,6 +6,8 @@ try:
     import random
     import statistics
     import requests
+    import webbrowser
+    import time
 except ImportError as e:
     print(f"\033[91mError L-E1: {str(e)}\033[0m")
     sys.exit(1)
@@ -16,8 +18,18 @@ lAct = {}
 workerStore = {}
 floatNotCase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "'", '"', ",", "/", "\\", "<", ">", ";", ":", "[", "]", "{", "}", "-", "_", "+", "=", "(", ")", "!", "@", "#", "$", "%", "^", "&", "*", "~", "`", "|"]
 
-ver = "1.2 'Mishka'"
+ver = "1.5 'Mishka'"
 dev = "Gautham Nair"
+
+def web(param, line):
+    html_content = param.strip()
+    tmp_file = "temp.html"
+    with open(tmp_file, "w") as f:
+        f.write(html_content)
+    webbrowser.open(tmp_file)
+
+def sleep(param, line):
+    time.sleep(int(param))
 
 def help():
     print("The Linea Programming Language " + ver + "\n" + dev)
@@ -819,6 +831,12 @@ def Linea(fileName):
                     line = line.strip()
                     if line.startswith("#"):
                         pass
+                    elif line.startswith("timeout "):
+                        time.sleep(int(line[8:]))
+                    elif line.startswith("web "):
+                        web(line[4:], lineCount)
+                        time.sleep(5)
+                        os.remove("temp.html")
                     elif line.startswith("/*") and line.endswith("*/"):
                         pass
                     elif line == "ver":

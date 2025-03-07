@@ -2,7 +2,13 @@
 
 Starting from Linea 0.5 'Bettafish', we changed the release structure of this project. Now there won't be any branches in the repository and the master branch will be the main branch. The releases will be tagged with the version number and the release name. The release name will be the codename of the release. The first release of Linea 0.5 will be 'Bettafish'. The release starting with 0, is beta and all the alternative numbers will be stable, for example 0.x will be beta or developer release, 1.x will be stable, 2.x will again be beta or developer release and so on.
 
-## What's new in Linea 1.2 'Mishka'?
+## What's new in Linea 1.5 'Mishka'?
+
+* Added support for `timeout` and `web` commands:
+* * `timeout` command is used to set a timeout for the code execution.
+* * `web` command is used to run the provided HTML code in default browser.
+
+## What was new in Linea 1.2 'Mishka'?
 
 * Entered stable phase.
 * Added support for memClear() function, which clears the memory, same as the killAll() function.
