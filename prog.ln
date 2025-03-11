@@ -1,4 +1,4 @@
-# Compatible with 1.5
+# Compatible with 1.7
 display "Hello"
 var x = 12
 display x

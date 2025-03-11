@@ -12,24 +12,286 @@ except ImportError as e:
     print(f"\033[91mError L-E1: {str(e)}\033[0m")
     sys.exit(1)
 
+pi = math.pi
+e = math.e
+tau = math.tau
+inf = math.inf
+nan = math.nan
+rand = random.random
+randint = random.randint
+randrange = random.randrange
+choice = random.choice
+shuffle = random.shuffle
+seed = random.seed
+sqrt = math.sqrt
+pow = math.pow
+exp = math.exp
 lVar = {}
 lAdr = {}
 lAct = {}
 workerStore = {}
 floatNotCase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "'", '"', ",", "/", "\\", "<", ">", ";", ":", "[", "]", "{", "}", "-", "_", "+", "=", "(", ")", "!", "@", "#", "$", "%", "^", "&", "*", "~", "`", "|"]
 
-ver = "1.5 'Mishka'"
+ver = "1.7 'Mishka'"
 dev = "Gautham Nair"
 
-def web(param, line):
-    html_content = param.strip()
-    tmp_file = "temp.html"
-    with open(tmp_file, "w") as f:
-        f.write(html_content)
-    webbrowser.open(tmp_file)
+def prime(param, line):
+    try:
+        n = int(param)
+        if n > 1:
+            for i in range(2, n):
+                if n % i == 0:
+                    print("False")
+                    break
+            else:
+                print("True")
+        else:
+            print("False")
+    except:
+        displayError("L-E11 : Invalid input", line)
 
-def sleep(param, line):
+def fibonacci(param, line):
+    try:
+        n = int(param)
+        a, b = 0, 1
+        for i in range(n):
+            a, b = b, a + b
+        print(a)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def web(param, line):
+    try:
+        html_content = param.strip()
+        tmp_file = "temp.html"
+        with open(tmp_file, "w") as f:
+            f.write(html_content)
+        webbrowser.open(tmp_file)
+    except:
+        displayError("L-E9 : Invalid HTML content", line)
+
+def sleep(param):
     time.sleep(int(param))
+
+def permutations(param, line):
+    try:
+        n, r = param.split(",")
+        n = int(n)
+        r = int(r)
+        result = math.perm(n, r)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def combinations(param, line):
+    try:
+        n, r = param.split(",")
+        n = int(n)
+        r = int(r)
+        result = math.comb(n, r)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def factorial(param, line):
+    try:
+        result = math.factorial(int(param))
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def gcd(param, line):
+    try:
+        a, b = param.split(",")
+        a = int(a)
+        b = int(b)
+        result = math.gcd(a, b)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def lcm(param, line):
+    try:
+        a, b = param.split(",")
+        a = int(a)
+        b = int(b)
+        result = (a * b) // math.gcd(a, b)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def hcf(param, line):
+    try:
+        a, b = param.split(",")
+        a = int(a)
+        b = int(b)
+        result = math.gcd(a, b)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def mean(param, line):
+    try:
+        values = [int(i) for i in param.split(",")]
+        result = statistics.mean(values)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def median(param, line):
+    try:
+        values = [int(i) for i in param.split(",")]
+        result = statistics.median(values)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def mode(param, line):
+    try:
+        values = [int(i) for i in param.split(",")]
+        result = statistics.mode(values)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def variance(param, line):
+    try:
+        values = [int(i) for i in param.split(",")]
+        result = statistics.variance(values)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def stdev(param, line):
+    try:
+        values = [int(i) for i in param.split(",")]
+        result = statistics.stdev(values)
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def rungeKutta(param, line):
+    try:
+        x0, y0, x, h = param.split(",")
+        x0 = float(x0)
+        y0 = float(y0)
+        x = float(x)
+        h = float(h)
+        n = int((x - x0) / h)
+        y = y0
+        for i in range(1, n + 1):
+            k1 = h * (x0 + i - 1, y)
+            k2 = h * (x0 + i - 1 + 0.5 * h, y + 0.5 * k1)
+            k3 = h * (x0 + i - 1 + 0.5 * h, y + 0.5 * k2)
+            k4 = h * (x0 + i - 1 + h, y + k3)
+            y = y + (1 / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
+        print(y)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def euler(param, line):
+    try:
+        x0, y0, x, h = param.split(",")
+        x0 = float(x0)
+        y0 = float(y0)
+        x = float(x)
+        h = float(h)
+        n = int((x - x0) / h)
+        y = y0
+        for i in range(1, n + 1):
+            y = y + h * (x0 + i - 1, y)
+        print(y)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def newtonRaphson(param, line):
+    try:
+        x0, f, f1 = param.split(",")
+        x0 = float(x0)
+        f = lambda x: eval(f)
+        f1 = lambda x: eval(f1)
+        x1 = x0 - f(x0) / f1(x0)
+        while abs(x1 - x0) >= 0.0001:
+            x0 = x1
+            x1 = x0 - f(x0) / f1(x0)
+        print(x1)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def bisection(param, line):
+    try:
+        a, b, f = param.split(",")
+        a = float(a)
+        b = float(b)
+        f = lambda x: eval(f)
+        if f(a) * f(b) >= 0:
+            displayError("L-E12 : Invalid interval", line)
+            return
+        c = a
+        while (b - a) >= 0.0001:
+            c = (a + b) / 2
+            if f(c) == 0:
+                break
+            if f(c) * f(a) < 0:
+                b = c
+            else:
+                a = c
+        print(c)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def secant(param, line):
+    try:
+        x0, x1, f = param.split(",")
+        x0 = float(x0)
+        x1 = float(x1)
+        f = lambda x: eval(f)
+        x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0))
+        while abs(x2 - x1) >= 0.0001:
+            x0 = x1
+            x1 = x2
+            x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0))
+        print(x2)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def trapeziodal(param, line):
+    try:
+        a, b, f, n = param.split(",")
+        a = float(a)
+        b = float(b)
+        f = lambda x: eval(f)
+        n = int(n)
+        h = (b - a) / n
+        result = f(a) + f(b)
+        for i in range(1, n):
+            result += 2 * f(a + i * h)
+        result *= h / 2
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def simpsons(param, line):
+    try:
+        a, b, f, n = param.split(",")
+        a = float(a)
+        b = float(b)
+        f = lambda x: eval(f)
+        n = int(n)
+        h = (b - a) / n
+        result = f(a) + f(b)
+        for i in range(1, n):
+            if i % 2 == 0:
+                result += 2 * f(a + i * h)
+            else:
+                result += 4 * f(a + i * h)
+        result *= h / 3
+        print(result)
+    except:
+        displayError("L-E11 : Invalid input", line)
+
+def getMemory():
+    print("Memory : " + str(sys.getsizeof(lVar) + sys.getsizeof(lAct) + sys.getsizeof(lAdr)) + " bytes")
 
 def help():
     print("The Linea Programming Language " + ver + "\n" + dev)
@@ -65,6 +327,27 @@ def help():
     print("Plotting a graph : plot <variable>")
     print("Worker function definition : worker <variable> = <expression>")
     print("Worker function call : workerCall <variable>")
+    print("Web browser : web <html content>")
+    print("Sleep : sleep <seconds>")
+    print("Permutations : permutations <n, r>")
+    print("Combinations : combinations <n, r>")
+    print("Factorial : factorial <n>")
+    print("GCD : gcd <a, b>")
+    print("LCM : lcm <a, b>")
+    print("HCF : hcf <a, b>")
+    print("Mean : mean <value1>, <value2>, <value3>, ...")
+    print("Median : median <value1>, <value2>, <value3>, ...")
+    print("Mode : mode <value1>, <value2>, <value3>, ...")
+    print("Variance : variance <value1>, <value2>, <value3>, ...")
+    print("Standard Deviation : stdev <value1>, <value2>, <value3>, ...")
+    print("Runge-Kutta : rungeKutta <x0, y0, x, h>")
+    print("Euler : euler <x0, y0, x, h>")
+    print("Newton-Raphson : newtonRaphson <x0, f, f1>")
+    print("Bisection : bisection <a, b, f>")
+    print("Secant : secant <x0, x1, f>")
+    print("Trapezoidal : trapezoidal <a, b, f, n>")
+    print("Simpson's : simpsons <a, b, f, n>")
+    print("Getting memory usage : getMemory")
 
 def vers():
     print("Linea Programming Language " + ver + "\n" + dev)
@@ -933,6 +1216,38 @@ def Linea(fileName):
                         memClear()
                     elif line.startswith("ping "):
                         ping(line[5:], lineCount)
+                    elif line.startswith("sleep "):
+                        time.sleep(int(line[6:]))
+                    elif line.startswith("permutations "):
+                        permutations(line[13:], lineCount)
+                    elif line.startswith("combinations "):
+                        combinations(line[13:], lineCount)
+                    elif line.startswith("factorial "):
+                        factorial(line[10:], lineCount)
+                    elif line.startswith("gcd "):
+                        gcd(line[4:], lineCount)
+                    elif line.startswith("lcm "):
+                        lcm(line[4:], lineCount)
+                    elif line.startswith("hcf "):
+                        hcf(line[4:], lineCount)
+                    elif line.startswith("fibonacci "):
+                        fibonacci(line[9:], lineCount)
+                    elif line.startswith("prime "):
+                        prime(line[6:], lineCount)
+                    elif line.startswith("trapeziodal "):
+                        trapeziodal(line[12:], lineCount)
+                    elif line.startswith("simpson "):
+                        simpsons(line[8:], lineCount)
+                    elif line.startswith("newtonRaphson "):
+                        newtonRaphson(line[14:], lineCount)
+                    elif line.startswith("bisection "):
+                        bisection(line[10:], lineCount)
+                    elif line.startswith("secant "):
+                        secant(line[7:], lineCount)
+                    elif line.startswith("rungeKutta "):
+                        rungeKutta(line[11:], lineCount)
+                    elif line == "getMemory()":
+                        getMemory()
                     else:
                         try:
                             print(eval(line))
