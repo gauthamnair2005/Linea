@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linea Syntax</title>
+    <title>Linea | Syntax</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="lineaLogo.ico" type="image/x-icon">
 </head>
@@ -11,60 +11,40 @@
     <header>
         <div class="logo-container">
             <img src="lineaLogo.png" alt="Linea Programming Language Logo" class="logo">
-            <span class="logo-text">The Linea Programming Language</span>
+            <span class="logo-text">Linea Programming Language</span>
         </div>
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
+                <li><a href="lsp.html">LSP</a></li>
                 <li><a href="download.html">Download</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
     </header>
+
+    <section id="hero">
+        <h1>Linea Syntax</h1>
+        <p>Learn the basics of Linea's simple and intuitive syntax.</p>
+    </section>
+
     <section id="syntax">
-        <h2>Linea Syntax</h2>
+        <h2>Basic Syntax</h2>
         <pre>
-            <ul>
-                <li><code>display &lt;string/variable&gt;</code> - Printing a text</li>
-                <li><code>display @var</code> - Displaying declared variables</li>
-                <li><code>display @act</code> - Displaying declared actor variables</li>
-                <li><code>display @adr</code> - Displaying variable addresses</li>
-                <li><code>clrscr</code> - Clearing the screen</li>
-                <li><code>display @dataType</code> - Displaying data types of declared variables</li>
-                <li><code>type &lt;variable&gt;</code> - Displaying data type of a variable</li>
-                <li><code>typecast &lt;datatype&gt; &lt;variable&gt;</code> - Type casting a variable</li>
-                <li><code>var &lt;variable&gt; = &lt;value&gt;</code> - Declaring a variable</li>
-                <li><code>varupd &lt;variable&gt; = &lt;value&gt;</code> - Updating a variable</li>
-                <li><code>var[] &lt;variable&gt; = &lt;value1&gt;, &lt;value2&gt;, &lt;value3&gt;, ...</code> - Declaring an array</li>
-                <li><code>pointer &lt;variable&gt; = &lt;value&gt;</code> - Declaring a pointer</li>
-                <li><code>pointer[] &lt;variable&gt; = &lt;value1&gt;, &lt;value2&gt;, &lt;value3&gt;, ...</code> - Declaring an array of pointers</li>
-                <li><code>pointerupd &lt;variable&gt; &lt;value&gt;</code> - Updating a pointer</li>
-                <li><code>input &lt;variable&gt; &lt;query&gt;</code> - Taking input</li>
-                <li><code>bin &lt;value&gt;</code> - Binary view</li>
-                <li><code>hex &lt;value&gt;</code> - Hexadecimal view</li>
-                <li><code>oct &lt;value&gt;</code> - Octal view</li>
-                <li><code>+, -, *, /, %, **, ^</code> - Variable operations</li>
-                <li><code>for &lt;iterator&gt; from &lt;start&gt;~&lt;end&gt; &lt;action&gt;</code> - For loop</li>
-                <li><code>for &lt;iterator&gt; till &lt;times&gt; &lt;action&gt;</code> - For loop (0 to specified)</li>
-                <li><code>for &lt;iterator&gt; noDuckTill &lt;times&gt; &lt;action&gt;</code> - For loop (1 to specified)</li>
-                <li><code>act &lt;variable&gt; = &lt;value&gt;</code> - Actors</li>
-                <li><code>killAct &lt;variable&gt;</code> - Killing actors</li>
-                <li><code>kill &lt;variable&gt;</code> - Killing variables</li>
-                <li><code>killAll</code> - Killing all variables</li>
-                <li><code>killActAll</code> - Killing all actors</li>
-                <li><code>plot &lt;variable&gt;</code> - Plotting a graph</li>
-                <li><code>worker &lt;variable&gt; = &lt;expression&gt;</code> - Worker function definition</li>
-                <li><code>workerCall &lt;variable&gt;</code> - Worker function call</li>
-                <li><code>file &lt;filename&gt; read</code> - File reading</li>
-                <li><code>memClear()</code> - Clear memory by killing all variables, workers, etc</li>
-                <li><code>ping &lt;URL&gt;</code> - Ping the server</li>
-                <li><code>web &lt;HTML Code&gt;</code> - Load the HTML code in default browser</li>
-                <li><code>timeout &lt;seconds&gt;</code> - timeout/sleep for provided time (in seconds)</li>
-                <li><code>getMemory()</code> - Get the memory usage</li>
-            </ul>
+# Variable declaration
+var x = 10
+
+# Display output
+display "Hello, World!"
+
+# Loops
+for i from 0~2 display->"Hello"
         </pre>
     </section>
+
     <footer id="footer">
-        <p>&copy; 2025 Gautham Nair</p>
+        <p>&copy; 2025 Gautham Nair | <a href="https://github.com/gauthamnair2005">GitHub</a></p>
     </footer>
 </body>
 </html>

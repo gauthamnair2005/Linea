@@ -1,4 +1,4 @@
-# Compatible with 1.7
+# Compatible with 1.8
 display "Hello"
 var x = 12
 display x
@@ -11,7 +11,7 @@ display 12.23
 12 + 12
 var y = 12
 display y
-var z = 0
+var z = 1
 + x,y
 - x,y
 / x,z
@@ -29,8 +29,6 @@ display i
 worker x = display->i
 workerCall x
 display x
-file prog.ln read
-ping https://google.com
-memClear()
-web <h1>Hello</h1>
-timeout 20
+display ""
+web <html><script>function loadMe() {let x = prompt("Enter a number"); document.getElementById('mar').innerHTML = x;}</script><link rel="stylesheet" href="styles.css"><body><h1 style = "font-family: 'Segoe UI';">Hello from Linea Weblet</h1><marquee id = 'mar'></marquee> <input type = "button" value = "Click Me" onclick = "loadMe()"></body></html>
+timeout 5

@@ -2,18 +2,17 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #000000; /* OLED black background */
-    color: #ffffff; /* White text color */
+    background-color: #1a1a1a; /* Dark theme */
+    color: #ffffff; /* White text */
 }
 
 header {
-    background-color: #1a1a1a; /* Dark gray background */
-    color: #ffffff; /* White color for text */
+    background-color: #333333;
     padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #333333; /* Darker gray border */
+    border-bottom: 2px solid #444444;
 }
 
 .logo-container {
@@ -22,31 +21,25 @@ header {
 }
 
 .logo {
-    height: 50px; /* Adjust the height as needed */
-    width: auto; /* Maintain aspect ratio */
-    margin-right: 10px; /* Space between logo and text */
+    height: 50px;
+    margin-right: 10px;
 }
 
 .logo-text {
-    font-size: 24px; /* Adjust the font size as needed */
+    font-size: 20px;
     font-weight: bold;
-    color: #ffffff; /* White text color */
 }
 
 nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+    list-style: none;
     display: flex;
     gap: 20px;
-}
-
-nav ul li {
-    display: inline;
+    margin: 0;
+    padding: 0;
 }
 
 nav ul li a {
-    color: #ffffff; /* White color for links */
+    color: #ffffff;
     text-decoration: none;
     font-weight: bold;
     padding: 10px 15px;
@@ -55,90 +48,76 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    background-color: #333333; /* Darker gray for hover effect */
+    background-color: #555555;
 }
 
-section {
-    padding: 20px;
-    margin: 20px;
-    background-color: #1a1a1a; /* Dark gray background */
+#hero {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #222222;
+}
+
+.learn-more-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6a0dad;
+    color: #ffffff;
+    text-decoration: none;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle white shadow */
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-h2 {
-    color: #ffffff; /* White color for headings */
-    font-family: 'Roboto', sans-serif; /* Modern font for headings */
+.learn-more-button:hover {
+    background-color: #8a2be2;
+    transform: translateY(-2px);
 }
 
-ul {
-    list-style-type: none;
+#features {
+    padding: 20px;
+    text-align: center;
+}
+
+#features ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    list-style: none;
     padding: 0;
 }
 
-ul li {
-    background: #333333; /* Darker gray background */
-    margin: 5px 0;
+#features ul li {
+    background-color: #333333;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#features ul li .icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #6a0dad;
+}
+
+#how-it-works {
+    padding: 20px;
+    background-color: #222222;
+    text-align: center;
+}
+
+pre {
+    background-color: #333333;
     padding: 10px;
-    border-radius: 4px;
-    color: #ffffff; /* White text color */
+    border-radius: 8px;
+    color: #ffffff;
+    overflow-x: auto;
 }
 
 footer {
     text-align: center;
     padding: 10px;
-    background-color: #1a1a1a; /* Dark gray background */
-    color: #ffffff; /* White color for footer text */
-    width: 100%;
-    display: block; /* Show the footer */
-    border-top: 2px solid #333333; /* Darker gray border */
-}
-
-/* Add styles for the Learn More button */
-.learn-more-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #6a0dad; /* Violet/Purple background */
-    color: white; /* White text */
-    text-decoration: none;
-    border-radius: 8px; /* Rounded corners */
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    font-weight: bold;
-}
-
-.learn-more-button:hover {
-    background-color: #8a2be2; /* Lighter violet/purple for hover effect */
-    transform: translateY(-2px); /* Subtle lift effect */
-}
-
-/* Update the features section to display in a more engaging way */
-#features ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-#features ul li {
-    background: #1a1a1a; /* Dark gray background */
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle white shadow */
-    transition: transform 0.3s ease;
-    color: #ffffff; /* White text color */
-}
-
-#features ul li:hover {
-    transform: translateY(-5px); /* Subtle lift effect */
-}
-
-#features ul li .icon {
-    font-size: 40px;
-    color: #ffffff; /* White color for icons */
-    margin-bottom: 10px;
-}
-
-#features ul li .description {
-    font-size: 16px;
-    color: #cccccc; /* Light gray color for descriptions */
+    background-color: #333333;
+    color: #ffffff;
+    border-top: 2px solid #444444;
 }
