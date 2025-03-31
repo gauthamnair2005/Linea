@@ -6,7 +6,7 @@ The Linea Programming Language, fast, portable and easy to use.
 
 * Moved all core functions to the `liblinea` library. [Check LibLinea Repo](https://github.com/gauthamnair2005/LibLinea).
 * Added support for Linea Weblet, which helps create web apps in Linea using HTML/CSS/JS.
-* Introducing Linea Server Pages (LSP), a dynamic web page generation system using Linea.
+* Introducing Linea Server Pages (LSP), a dynamic web page generation system using Linea. [Check LSP Repo](https://github.com/gauthamnair2005/LSP).
 
 ## What was new in Linea 1.7 'Mishka'?
 
