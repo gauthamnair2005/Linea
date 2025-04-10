@@ -2,7 +2,16 @@
 
 The Linea Programming Language, fast, portable and easy to use.
 
-## What's new in Linea 1.8 'Mishka'?
+## What's new in Linea 2.0 'Coconut'?
+
+⚠️ Note : Old 1.x code might be incompatible with Linea 2
+
+* Revamped the entire codebase to improve performance and maintainability.
+* New style and syntax.
+* Now includes math and weblet libraries in the liblinea main package.
+* Deprecated use of `web` keyword for weblet, instead use weblet method from Core classs of weblet library in liblinea package
+
+## What was new in Linea 1.8 'Mishka'?
 
 * Moved all core functions to the `liblinea` library. [Check LibLinea Repo](https://github.com/gauthamnair2005/LibLinea).
 * Added support for Linea Weblet, which helps create web apps in Linea using HTML/CSS/JS.
@@ -64,7 +73,3 @@ The Linea Programming Language, fast, portable and easy to use.
 ## Developer
 
 * Gautham Nair
-
-## Supported Versions
-
-Check SECURITY.md
