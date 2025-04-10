@@ -34,11 +34,16 @@
         <pre>
 # Example 1: Basic Output
 display "Welcome to Linea!"
+use liblinea.math
+display "Cube of 2 is: " + liblinea.math.Basic.cube(2)
 
 # Example 2: Variables and Arithmetic
 var a = 10
 var b = 20
-a + b
++ a,b
+use liblinea.math
+var c = liblinea.math.Basic.sqrt(a)
+display c
 
 # Example 3: Loops
 for i from 0~2 display->"Hello"
