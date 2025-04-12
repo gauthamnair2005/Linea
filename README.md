@@ -2,9 +2,14 @@
 
 The Linea Programming Language, fast, portable and easy to use.
 
-## What's new in Linea 2.0 'Coconut'?
-
 ⚠️ Note : Old 1.x code might be incompatible with Linea 2
+
+## What's new in Linea 2.1.0 'Coconut'?
+
+* Fixed known bugs.
+* Added support for network module under `liblinea_network`.
+
+## What was new in Linea 2.0 'Coconut'?
 
 * Revamped the entire codebase to improve performance and maintainability.
 * New style and syntax.

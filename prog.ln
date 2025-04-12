@@ -14,9 +14,9 @@ for i from 0~2 display->"Hello"
 weblet <html><body style = "font-family : 'Segoe UI'; font-size: 50px;"><p>Hello World</p></body></html>
 display "Free memory : " + getMemory free
 adr x
-use liblinea.math
-var j = liblinea.math.Basic.cube(3)
+use liblinea_math
+var j = liblinea_math.Basic.cube(3)
 display "Cube of 3 : " + j
-display "Square Root of 5 : " + liblinea.math.Basic.sqrt(5)
-use liblinea.weblet
-liblinea.weblet.Core.weblet("<h1>Hi</h1")
+display "Square Root of 5 : " + liblinea_math.Basic.sqrt(5)
+use liblinea_weblet
+liblinea_weblet.Core.weblet("<h1>Hi</h1")

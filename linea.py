@@ -1,7 +1,7 @@
+import liblinea
 from liblinea import Linea
 from liblinea import Error
 import importlib.util
-import os
 
 def main(script):
     script = open(script, "r")
@@ -54,7 +54,7 @@ def main(script):
             Linea.forLoop(line[4:])
         elif line.startswith("weblet "):
             Linea.displayWarning("Usage of weblet with weblet keyword is deprecated")
-            Linea.displayWarning("use liblinea.weblet instead and invoke it by typing: ")
+            Linea.displayWarning("use liblinea_weblet instead and invoke it by typing: ")
             Linea.displayWarning("`liblinea.weblet.Weblet.weblet(param)`")
         elif line == "getMemory" or line == "getMem":
             print(Linea.getMemory())
@@ -81,8 +81,6 @@ def main(script):
                 module = importlib.util.module_from_spec(spec)
                 sys.modules[module_path] = module
                 spec.loader.exec_module(module)
-                
-                # Store the imported module in a global dictionary for later use
                 globals()[module_path] = module
             except Exception as e:
                 err = Error("L-E10", f"Error importing module '{module_path}': {str(e)}")
@@ -92,18 +90,16 @@ def main(script):
         else:
             try:
                 parts = line.split(".")
-                module_name = ".".join(parts[:-2])  # e.g., "math.liblinea"
-                class_name = parts[-2]  # e.g., "Basic"
-                function_call = parts[-1]  # e.g., "sqrt(5)"
+                module_name = parts[0]
+                class_name = parts[-2]
+                function_call = parts[-1]
                 func_name, args = function_call.split("(", 1)
-                args = args.rstrip(")")# Get the module, class, and function
+                args = args.rstrip(")")
                 module = globals().get(module_name)
                 if not module:
                     raise ImportError(f"Module '{module_name}' not imported.")
                 cls = getattr(module, class_name)
                 func = getattr(cls(), func_name)
-                
-                # Evaluate the arguments and call the function
                 func(*eval(f"[{args}]"))
             except:
                 err = Error("L-E9", f"Unknown command: {line}")
@@ -114,7 +110,27 @@ def main(script):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 2:
-        print("Usage: python script.py <script_file>")
+        print("Usage: linea <script_file>")
         sys.exit(1)
-    script_file = sys.argv[1]
-    main(script_file)
+    elif sys.argv[1] == "-":
+        print("Error: Unknown Option or argument partially passed")
+        sys.exit(1)
+    elif sys.argv[1] == "-v" or sys.argv[1] == "--version":
+        print(f"Linea {liblinea._lineaVer}\n{liblinea._developer}")
+        sys.exit(0)
+    elif sys.argv[1] == "-h" or sys.argv[1] == "--help":
+        print("Usage: linea <script_file>\n\nOptions:\n  -v, --version   Show version information\n  -h, --help      Show this help message")
+        sys.exit(0)
+    elif sys.argv[1] == "-l" or sys.argv[1] == "--license":
+        print("GNU General Public License v3.0\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nFree Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program. If not, see <https://www.gnu.org/licenses/>.")
+        sys.exit(0)
+    else:
+        script_file = sys.argv[1]
+        try:
+            main(script_file)
+        except FileNotFoundError:
+            print(f"Error: File '{script_file}' not found.")
+            sys.exit(1)
+        except Exception as e:
+            print(f"An unexpected error occurred: {str(e)}")
+            sys.exit(1)
