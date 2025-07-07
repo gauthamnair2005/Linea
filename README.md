@@ -2,9 +2,15 @@
 
 The Linea Programming Language, fast, portable and easy to use.
 
-⚠️ Note : Old 1.x code might be incompatible with Linea 2
+⚠️ Note : Old Linea 1.x.x code might be incompatible with Linea 2
 
-## What's new in Linea 2.1.0 'Coconut'?
+## What's new in Linea 2.2.0 'Mango'?
+
+* Introduced dataframe support.
+* Introduced data handling features with the `liblinea_data` module [UNSTABLE].
+* Introduced AI/ML features with the `liblinea_ai` module [UNSTABLE].
+
+## What was new in Linea 2.1.0 'Coconut'?
 
 * Fixed known bugs.
 * Added support for network module under `liblinea_network`.

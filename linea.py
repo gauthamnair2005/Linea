@@ -74,6 +74,10 @@ def main(script):
             Linea.typeCast(line[9:])
         elif line.startswith("adr "):
             Linea.address(line[4:])
+        elif line.startswith("dataFrame "):
+            param = line[10:]
+            result = Linea.createDataFrame(param)
+            Linea.display(result)
         elif line.startswith("use "):
             try:
                 module_path = line[4:]
