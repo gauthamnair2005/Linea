@@ -1,10 +1,14 @@
-# The Linea Programming Language
-
-The Linea Programming Language, fast, portable and easy to use.
+# The Linea Programming Language Interpreter
 
 ⚠️ Note : Old Linea 1.x.x code might be incompatible with Linea 2
 
-## What's new in Linea 2.2.0 'Mango'?
+## What's new in Linea Interpreter 25.07.08?
+
+* New versioning scheme, the Linea Interpreter (this repository) and LibLinea.
+* Any updates to LibLinea doesn't mean Linea Interpreter will get update.
+* Linea Interpreter will only be updated when there's syntax update or new built-in function enablement in Linea Language.
+
+## What was new in Linea 2.2.0 'Mango'?
 
 * Introduced dataframe support.
 * Introduced data handling features with the `liblinea_data` module [UNSTABLE].

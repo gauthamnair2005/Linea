@@ -120,7 +120,7 @@ if __name__ == "__main__":
         print("Error: Unknown Option or argument partially passed")
         sys.exit(1)
     elif sys.argv[1] == "-v" or sys.argv[1] == "--version":
-        print(f"Linea {liblinea._lineaVer}\n{liblinea._developer}")
+        print(f"Linea Interpreter 25.07.08\nLibLinea {liblinea._lineaVer}\n{liblinea._developer}")
         sys.exit(0)
     elif sys.argv[1] == "-h" or sys.argv[1] == "--help":
         print("Usage: linea <script_file>\n\nOptions:\n  -v, --version   Show version information\n  -h, --help      Show this help message")
