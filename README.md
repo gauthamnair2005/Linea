@@ -2,7 +2,12 @@
 
 ⚠️ Note : Old Linea 1.x.x code might be incompatible with Linea 2
 
-## What's new in Linea Interpreter 25.07.08?
+## What's new in Linea Interpreter 25.08.29?
+
+* Added error code support through `errorCodes()`.
+* Version bump update.
+
+## What was new in Linea Interpreter 25.07.08?
 
 * New versioning scheme, the Linea Interpreter (this repository) and LibLinea.
 * Any updates to LibLinea doesn't mean Linea Interpreter will get update.

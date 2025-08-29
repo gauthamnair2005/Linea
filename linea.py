@@ -3,6 +3,18 @@ from liblinea import Linea
 from liblinea import Error
 import importlib.util
 
+def errorCodes():
+    e1 = Error("L-E1", "Variable already declared")
+    e2 = Error("L-E2", "Variable not declared")
+    e3 = Error("L-E3", "Variable not found")
+    e4 = Error("L-E4", "Invalid operation")
+    e5 = Error("L-E5", "Invalid data type")
+    e6 = Error("L-E6", "Division by zero")
+    e7 = Error("L-E7", "Invalid for loop syntax")
+    e8 = Error("L-E8", "Invalid type casting")
+    e9 = Error("L-E9", "Unknown command")
+    e10 = Error("L-E10", "Module import error")
+
 def main(script):
     script = open(script, "r")
     scriptLines = script.readlines()
@@ -120,7 +132,7 @@ if __name__ == "__main__":
         print("Error: Unknown Option or argument partially passed")
         sys.exit(1)
     elif sys.argv[1] == "-v" or sys.argv[1] == "--version":
-        print(f"Linea Interpreter 25.07.08\nLibLinea {liblinea._lineaVer}\n{liblinea._developer}")
+        print(f"Linea Interpreter 25.08.29\nLibLinea {liblinea._lineaVer}\n{liblinea._developer}")
         sys.exit(0)
     elif sys.argv[1] == "-h" or sys.argv[1] == "--help":
         print("Usage: linea <script_file>\n\nOptions:\n  -v, --version   Show version information\n  -h, --help      Show this help message")
