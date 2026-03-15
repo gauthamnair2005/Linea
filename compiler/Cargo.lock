@@ -118,14 +118,14 @@ checksum = "a6cb138bb79a146c1bd460005623e142ef0181e3d0219cb493e02f7d08a35695"
 
 [[package]]
 name = "linea-ast"
-version = "3.0.1"
+version = "3.1.0"
 dependencies = [
  "linea-core",
 ]
 
 [[package]]
 name = "linea-codegen"
-version = "3.0.1"
+version = "3.1.0"
 dependencies = [
  "anyhow",
  "linea-ast",
@@ -134,7 +134,7 @@ dependencies = [
 
 [[package]]
 name = "linea-compiler"
-version = "3.0.1"
+version = "3.1.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -147,14 +147,14 @@ dependencies = [
 
 [[package]]
 name = "linea-core"
-version = "3.0.1"
+version = "3.1.0"
 dependencies = [
  "thiserror",
 ]
 
 [[package]]
 name = "linea-executor"
-version = "3.0.1"
+version = "3.1.0"
 dependencies = [
  "linea-ast",
  "linea-core",

@@ -1,12 +1,12 @@
 # The Linea Programming Language - Compiler Edition
 
-✅ **Version 3.0.1 'Avocado'** - Compiled Language Release
+✅ **Version 3.1.0 'Avocado'** - Compiled Language Release (Minor: Module System)
 
-> **Latest Update**: Added module system support, -V/--version flags, and importable libraries written in Linea. The compiler now supports modular development with reusable library files!
+> **Latest Update**: Added complete module system with importable libraries written in Linea! New -V/--version flags, three standard libraries (math, strings, utils), and enhanced demo showcasing all features.
 
-## 🚀 What's New in Linea 3.0.1 'Avocado Patch'
+## 🚀 What's New in Linea 3.1.0 'Avocado - Module System Release'
 
-**Patch Release - New Features & Improvements:**
+**Minor Release - New Features: Module System & Libraries:**
 
 * ✅ **Module System** - Import libraries with `import module { items }` syntax
 * ✅ **Importable Libraries** - Create reusable `.ln` library files in `libs/` directory
@@ -113,10 +113,10 @@ Check the compiler version with:
 
 ```bash
 $ linea -V
-linea 3.0.1
+linea 3.1.0
 
 $ linea --version
-linea 3.0.1
+linea 3.1.0
 
 # Get full help
 $ linea --help
