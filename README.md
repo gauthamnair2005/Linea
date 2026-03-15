@@ -154,6 +154,13 @@ linea run hello.ln
 * Added experimental `lambda` support.
 * Improved error handling. (No exception handling!)
 
-## Developer
+## Author & License
 
-* Gautham Nair
+**Author:** Gautham Nair  
+**Email:** gautham.nair.2005@gmail.com  
+**GitHub:** [@gauthamnair2005](https://github.com/gauthamnair2005)  
+**License:** GPLv3 (See LICENSE file)
+
+Linea 3.0.0 "Avocado" - A complete compilation of the Linea language from Python interpreter to Rust-based compiled language with full memory safety.
+
+Copyright © 2025 Gautham Nair. All rights reserved.
