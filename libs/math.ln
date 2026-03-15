@@ -1,0 +1,48 @@
+# Linea Math Library
+# Provides common mathematical functions
+
+# Calculate absolute value
+func abs {x}
+  if x < 0
+    return 0 - x
+  else
+    return x
+  end
+end
+
+# Calculate maximum of two numbers
+func max {a, b}
+  if a > b
+    return a
+  else
+    return b
+  end
+end
+
+# Calculate minimum of two numbers
+func min {a, b}
+  if a < b
+    return a
+  else
+    return b
+  end
+end
+
+# Calculate factorial
+func factorial {n}
+  if n <= 1
+    return 1
+  else
+    return n * factorial(n - 1)
+  end
+end
+
+# Check if number is even
+func isEven {x}
+  return x % 2 == 0
+end
+
+# Check if number is odd
+func isOdd {x}
+  return x % 2 != 0
+end

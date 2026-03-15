@@ -9,6 +9,8 @@ use linea_codegen::generate_rust_code;
 #[derive(ClapParser)]
 #[command(name = "linea")]
 #[command(about = "The Linea Programming Language Compiler", long_about = None)]
+#[command(version = "3.0.1")]
+#[command(author = "Gautham Nair <https://github.com/gauthamnair2005>")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,

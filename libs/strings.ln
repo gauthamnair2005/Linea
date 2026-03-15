@@ -1,0 +1,39 @@
+# Linea String Library
+# Provides string manipulation functions
+
+# Convert integer to string
+func intToString {num}
+  typeCast num = String
+  return num
+end
+
+# Repeat a string n times
+func repeat {str, times}
+  var result = ""
+  var i = 0
+  for i from 0~times
+    varUpd result = result + str
+  end
+  return result
+end
+
+# Get string length (number of characters)
+func length {str}
+  # This is a placeholder - actual implementation would need built-in support
+  return 1
+end
+
+# String concatenation helper
+func concat {str1, str2}
+  return str1 + str2
+end
+
+# Create a separator line
+func separator {char, length}
+  var line = ""
+  var i = 0
+  for i from 0~length
+    varUpd line = line + char
+  end
+  return line
+end

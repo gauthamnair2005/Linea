@@ -7,6 +7,7 @@ pub enum TokenType {
     For,
     From,
     Use,
+    Import,
     Function,
     Return,
     If,

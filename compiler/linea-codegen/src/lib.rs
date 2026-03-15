@@ -43,6 +43,11 @@ impl RustGenerator {
 
     fn generate_statement(&mut self, statement: &Statement) -> Result<()> {
         match statement {
+            Statement::Import { module, items } => {
+                // Generate module comments in the Rust code
+                self.emit_line(&format!("// Import module: {} (items: {})", module, items.join(", ")));
+                Ok(())
+            }
             Statement::VarDeclaration { name, expr } => {
                 let (rust_expr, type_name) = self.generate_expression(expr)?;
                 self.variable_types.insert(name.clone(), type_name.clone());

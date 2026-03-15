@@ -7,6 +7,10 @@ pub struct Program {
 
 #[derive(Debug, Clone)]
 pub enum Statement {
+    Import {
+        module: String,
+        items: Vec<String>,
+    },
     VarDeclaration {
         name: String,
         expr: Expression,

@@ -140,6 +140,7 @@ impl Lexer {
                     "for" => TokenType::For,
                     "from" => TokenType::From,
                     "use" => TokenType::Use,
+                    "import" => TokenType::Import,
                     "func" => TokenType::Function,
                     "return" => TokenType::Return,
                     "if" => TokenType::If,

@@ -24,6 +24,7 @@ impl Parser {
 
     fn parse_statement(&mut self) -> Result<Statement> {
         match &self.current_token().token_type {
+            TokenType::Import => self.parse_import(),
             TokenType::Var => self.parse_var_declaration(),
             TokenType::VarUpdate => self.parse_var_update(),
             TokenType::Display => self.parse_display(),
@@ -46,6 +47,31 @@ impl Parser {
                 Ok(Statement::Expression(expr))
             }
         }
+    }
+
+    fn parse_import(&mut self) -> Result<Statement> {
+        self.expect(&TokenType::Import)?;
+        let module = self.expect_identifier()?;
+        
+        let items = if self.current_token().token_type == TokenType::LeftBrace {
+            self.advance();
+            let mut items = vec![];
+            while self.current_token().token_type != TokenType::RightBrace && !self.is_at_end() {
+                items.push(self.expect_identifier()?);
+                if self.current_token().token_type == TokenType::Comma {
+                    self.advance();
+                } else {
+                    break;
+                }
+            }
+            self.expect(&TokenType::RightBrace)?;
+            items
+        } else {
+            vec!["*".to_string()]
+        };
+        
+        self.consume_optional(&TokenType::Semicolon);
+        Ok(Statement::Import { module, items })
     }
 
     fn parse_var_declaration(&mut self) -> Result<Statement> {

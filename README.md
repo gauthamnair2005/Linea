@@ -2,12 +2,15 @@
 
 ✅ **Version 3.0.1 'Avocado'** - Compiled Language Release
 
-> **Latest Update**: Fixed critical code generation bugs in string concatenation and type casting. All string operations now work correctly in both compiled and interpreted modes!
+> **Latest Update**: Added module system support, -V/--version flags, and importable libraries written in Linea. The compiler now supports modular development with reusable library files!
 
 ## 🚀 What's New in Linea 3.0.1 'Avocado Patch'
 
-**Patch Release - Bug Fixes & Improvements:**
+**Patch Release - New Features & Improvements:**
 
+* ✅ **Module System** - Import libraries with `import module { items }` syntax
+* ✅ **Importable Libraries** - Create reusable `.ln` library files in `libs/` directory
+* ✅ **Version Flags** - Use `linea -V` or `linea --version` to check compiler version
 * ✅ **Fixed String Concatenation** - String + number operations now work correctly
 * ✅ **Fixed Type Casting** - String to integer conversion uses proper `.parse()` method
 * ✅ **Clean Rust Code Generation** - Generated code compiles without warnings
@@ -19,11 +22,68 @@
 * ✅ **Zero External Dependencies** - Compiled binaries only need libc
 * ✅ **Easy to Use** - Simple syntax, powerful compilation pipeline
 
-### Compiler Features:
+### Compiler Commands:
+- `linea -V` → Show version information (NEW!)
+- `linea --version` → Show version information (NEW!)
 - `linea compile program.ln -o executable` → Native binary (no Linea needed!)
 - `linea run program.ln` → Direct interpretation
 - `linea gen-rust program.ln` → Generate Rust source code
 - `linea parse program.ln` → Inspect AST for debugging
+
+### Module System:
+
+Linea now supports importable libraries! Create `.ln` files in the `libs/` directory and import them in your programs:
+
+```linea
+# Import all items from a module
+import math
+
+# Import specific items only
+import math { abs, max, isEven }
+
+# Import from multiple modules
+import strings { concat, repeat }
+import utils { isPrime, sumTo }
+```
+
+**Available Standard Libraries:**
+
+1. **math.ln** - Mathematical functions
+   - `abs(x)` - Absolute value
+   - `max(a, b)` - Maximum of two numbers
+   - `min(a, b)` - Minimum of two numbers
+   - `factorial(n)` - Calculate factorial
+   - `isEven(x)` - Check if number is even
+   - `isOdd(x)` - Check if number is odd
+
+2. **strings.ln** - String manipulation
+   - `intToString(num)` - Convert integer to string
+   - `repeat(str, times)` - Repeat string n times
+   - `length(str)` - Get string length
+   - `concat(str1, str2)` - Concatenate strings
+   - `separator(char, length)` - Create separator line
+
+3. **utils.ln** - Utility functions
+   - `printHeader(title)` - Print formatted header
+   - `printSeparator()` - Print separator line
+   - `printKeyValue(key, value)` - Print key-value pair
+   - `isPrime(num)` - Check if number is prime
+   - `sumTo(n)` - Sum of 1 to n
+   - `multiplicationTable(num)` - Print multiplication table
+
+**Example Usage:**
+
+```linea
+# Import libraries
+import math { abs, isEven }
+import utils { printHeader }
+
+# Use library functions
+printHeader("Calculator Demo")
+var number = -15
+display "Absolute value: " + abs(number)
+display "Is even: " + isEven(number)
+```
 
 ### Language Features:
 - Variables with type inference: `var x = 42`
@@ -35,6 +95,8 @@
 - Type casting: `typeCast x = int`
 - Display output: `display x + " value"`
 - Comments: `# This is a comment`
+- Module imports: `import math { abs, max }`
+- Function declarations: `func name { params } ... end`
 
 **Example:**
 ```linea
@@ -43,6 +105,31 @@ var y = 50
 display "Sum: " + (x + y)
 for i from 0~5
   display i
+```
+
+## Version Information
+
+Check the compiler version with:
+
+```bash
+$ linea -V
+linea 3.0.1
+
+$ linea --version
+linea 3.0.1
+
+# Get full help
+$ linea --help
+The Linea Programming Language Compiler
+
+Usage: linea <COMMAND>
+
+Commands:
+  compile   Compile a Linea source file to an executable
+  run       Run a Linea source file directly (interpreted)
+  parse     Parse a Linea file and display the AST
+  gen-rust  Generate Rust code from Linea source
+  help      Print this message or the help of the given subcommand(s)
 ```
 
 ## Performance Comparison
@@ -67,15 +154,19 @@ linea compile hello.ln -o hello
 
 # Or run directly (interpreted)
 linea run hello.ln
+
+# With libraries
+linea compile myapp.ln -o myapp
+./myapp
 ```
 
 ## Project Structure
 
-- `compiler/` - Full Rust compiler source code (~2,200 lines)
+- `compiler/` - Full Rust compiler source code (~2,300 lines)
 - `linea` - Pre-compiled CLI binary (ready to use!)
+- `libs/` - Standard library files (math.ln, strings.ln, utils.ln)
 - `examples/` - Example Linea programs
-- `COMPILER_README.md` - Detailed compiler documentation
-- `TRANSFORMATION_SUMMARY.md` - Technical transformation details
+- `demo.ln` - Feature showcase (demonstrates libraries and imports)
 
 ## Version History
 

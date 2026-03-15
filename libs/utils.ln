@@ -1,0 +1,52 @@
+# Linea Utility Library
+# Provides utility and helper functions
+
+# Create a header with title
+func printHeader {title}
+  display "=== " + title + " ==="
+  display ""
+end
+
+# Print a separator
+func printSeparator {}
+  display "---"
+end
+
+# Print formatted key-value pair
+func printKeyValue {key, value}
+  display key + ": " + (value)
+end
+
+# Check if number is prime (simple implementation)
+func isPrime {num}
+  if num < 2
+    return False
+  end
+  
+  var i = 2
+  for i from 2~num
+    if num % i == 0
+      return False
+    end
+  end
+  
+  return True
+end
+
+# Calculate sum of numbers 1 to n
+func sumTo {n}
+  var sum = 0
+  var i = 0
+  for i from 1~n
+    varUpd sum = sum + i
+  end
+  return sum
+end
+
+# Generate multiplication table
+func multiplicationTable {num}
+  var i = 1
+  for i from 1~10
+    display (num) + " x " + (i) + " = " + (num * i)
+  end
+end

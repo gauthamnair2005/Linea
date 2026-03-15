@@ -24,6 +24,12 @@ impl Executor {
 
     fn execute_statement(&mut self, statement: &Statement) -> Result<()> {
         match statement {
+            Statement::Import { module, items } => {
+                // For now, just record the import (library loading would be here)
+                // In a full implementation, this would load the .ln module file
+                eprintln!("Note: Importing module '{}' with items: {}", module, items.join(", "));
+                Ok(())
+            }
             Statement::VarDeclaration { name, expr } => {
                 let value = self.eval_expression(expr)?;
                 let ty = value.to_type();
