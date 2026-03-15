@@ -1,0 +1,14 @@
+# Array Operations
+# Demonstrates array usage
+
+var numbers = [10, 20, 30, 40, 50]
+var sum = 0
+var count = 5
+
+display "Array: " + numbers
+display "Processing array elements..."
+
+for i from 0~count
+  sum = sum + numbers[i]
+
+display "Sum of array: " + sum

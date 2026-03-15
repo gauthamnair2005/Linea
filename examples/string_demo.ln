@@ -1,0 +1,13 @@
+# String Concatenation Demo
+# Shows string operations
+
+var name = "Linea"
+var version = "3.0.0"
+var release = "Avocado"
+
+display "Welcome to " + name
+display "Version: " + version
+display "Release: " + release
+
+var full_title = name + " " + version + " (" + release + ")"
+display "Full title: " + full_title

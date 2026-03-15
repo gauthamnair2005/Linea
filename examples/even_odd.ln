@@ -1,0 +1,11 @@
+# Even and Odd Checker
+# Demonstrates conditionals
+
+var number = 42
+
+display "Number: " + number
+
+if (number % 2) == 0
+  display number + " is even"
+else
+  display number + " is odd"

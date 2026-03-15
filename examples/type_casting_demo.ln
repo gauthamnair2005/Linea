@@ -1,0 +1,14 @@
+# Type Casting Demo
+# Demonstrates type casting
+
+var str_num = "123"
+var number = 0
+
+display "String: " + str_num
+display "Converting string to integer..."
+
+typeCast str_num = int
+
+number = str_num
+display "Result: " + number
+display "Can now use in arithmetic: " + (number + 7)

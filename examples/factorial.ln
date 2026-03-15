@@ -1,0 +1,12 @@
+# Factorial Calculator
+# Demonstrates loops and arithmetic
+
+var n = 5
+var result = 1
+
+display "Calculating factorial of " + n
+
+for i from 1~n
+  result = result * i
+
+display "Factorial of " + n + " is " + result

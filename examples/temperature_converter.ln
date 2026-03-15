@@ -1,0 +1,9 @@
+# Temperature Converter
+# Celsius to Fahrenheit conversion
+
+var celsius = 25
+var fahrenheit = (celsius * 9) / 5 + 32
+
+display "Temperature Conversion"
+display "Celsius: " + celsius
+display "Fahrenheit: " + fahrenheit
