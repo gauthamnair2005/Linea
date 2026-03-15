@@ -1,0 +1,11 @@
+Linea Programming Language
+Version: 3.0.0
+Codename: Avocado
+Release Type: Compiled Language Edition
+Release Date: March 15, 2026
+
+Previous Versions:
+- 2.2.0 'Mango' (Python Interpreter)
+- 2.1.0 'Coconut' (Python Interpreter)
+- 2.0 'Coconut' (Python Interpreter)
+- 1.8 'Mishka'
