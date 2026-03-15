@@ -161,11 +161,17 @@ impl RustGenerator {
                         } else if left_ty == "String" || right_ty == "String" {
                             let left_str = if left_ty == "String" {
                                 format!("{}", left_expr)
+                            } else if left_ty.starts_with("Vec") {
+                                // For arrays, use debug format
+                                format!("(format!(\"{{:?}}\", {}))", left_expr)
                             } else {
                                 format!("(({}).to_string())", left_expr)
                             };
                             let right_str = if right_ty == "String" {
                                 format!("{}", right_expr)
+                            } else if right_ty.starts_with("Vec") {
+                                // For arrays, use debug format
+                                format!("(format!(\"{{:?}}\", {}))", right_expr)
                             } else {
                                 format!("(({}).to_string())", right_expr)
                             };
@@ -387,7 +393,7 @@ impl RustGenerator {
                             }
                             let (expr_code, expr_ty) = self.generate_expression(&args[0])?;
                             if expr_ty.starts_with("Vec") {
-                                Ok((format!("({}.iter().map(|x| *x as i64).collect())", expr_code), "Vec<i64>".to_string()))
+                                Ok((format!("({}.iter().map(|x| *x as i64).collect::<Vec<i64>>())", expr_code), "Vec<i64>".to_string()))
                             } else {
                                 Ok((format!("({} as i64)", expr_code), "i64".to_string()))
                             }

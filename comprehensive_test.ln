@@ -1,0 +1,75 @@
+# Comprehensive Linea 3.2.0-alpha-1 Test
+
+# Section 1: Basic Variables & Arithmetic
+display "=== SECTION 1: Variables & Arithmetic ==="
+var x = 42
+var y = 7.5
+var name = "Linea"
+display "Hello from " + name
+display "Value: " + x
+
+# Section 2: Arrays (1D)
+display "=== SECTION 2: Arrays (1D) ==="
+var arr = [10, 20, 30, 40, 50]
+display "Array: " + arr
+display "Length: " + len(arr)
+display "Sum: " + sum(arr)
+display "Mean: " + mean(arr)
+display "Max: " + max(arr)
+display "Min: " + min(arr)
+display "First element [0]: " + arr[0]
+display "Last element [4]: " + arr[4]
+display "Slice [1:4]: " + arr[1:4]
+
+# Section 3: Matrices (2D)
+display "=== SECTION 3: Matrices (2D) ==="
+var matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+display "Matrix: " + matrix
+display "Matrix shape: " + shape(matrix)
+display "First row [0]: " + matrix[0]
+display "Element [1][1]: " + matrix[1][1]
+
+# Section 4: Tensors (3D)
+display "=== SECTION 4: Tensors (3D) ==="
+var tensor = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+display "Tensor: " + tensor
+display "Tensor shape: " + shape(tensor)
+display "First plane [0]: " + tensor[0]
+display "Element [0][1][0]: " + tensor[0][1][0]
+
+# Section 5: Element-wise Operations
+display "=== SECTION 5: Element-wise Operations ==="
+var a = [1, 2, 3]
+var b = [2, 3, 4]
+display "a: " + a
+display "b: " + b
+display "a + b: " + (a + b)
+display "a * 2: " + (a * 2)
+var c = [10, 15, 20]
+display "c: " + c
+display "c - [1, 2, 3]: " + (c - [1, 2, 3])
+
+# Section 6: Type Conversions
+display "=== SECTION 6: Type Conversions ==="
+var ints = [1, 2, 3]
+var floats = asFloat(ints)
+display "Ints: " + ints
+display "As Floats: " + floats
+display "Back to Int: " + asInt(floats)
+
+# Section 7: Nested Array Access
+display "=== SECTION 7: Nested Array Access ==="
+display "[0][0] = " + matrix[0][0]
+display "[1][1] = " + matrix[1][1]
+display "[2][2] = " + matrix[2][2]
+
+# Section 8: Complex Slicing
+display "=== SECTION 8: Slicing ==="
+var nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+display "Range [2:5]: " + nums[2:5]
+display "Range [0:8]: " + nums[0:8]
+display "Range [5:10]: " + nums[5:10]
+
+# Final message
+display "=== ALL TESTS COMPLETE ==="
+display "✅ Linea 3.2.0-alpha-1 with arrays/matrices/tensors!"
