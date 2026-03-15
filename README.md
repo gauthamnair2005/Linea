@@ -1,38 +1,89 @@
 # The Linea Programming Language - Compiler Edition
 
-✅ **Version 3.1.0 'Avocado'** - Compiled Language Release (Minor: Module System)
+✅ **Version 3.2.0-alpha-1 'Avocado - Data Science Edition'** - Native Array Support (Minor: Core Datatypes)
 
-> **Latest Update**: Added complete module system with importable libraries written in Linea! New -V/--version flags, three standard libraries (math, strings, utils), and enhanced demo showcasing all features.
+> **Latest Update**: Added native array, matrix, and tensor types as core language features! Zero-copy indexing, element-wise operations, slicing, and built-in functions. Seamless interpreter ↔ compiler parity.
 
-## 🚀 What's New in Linea 3.1.0 'Avocado - Module System Release'
+## 🚀 What's New in Linea 3.2.0-alpha-1 'Avocado - Data Science Edition'
 
-**Minor Release - New Features: Module System & Libraries:**
+**Alpha Release - New Features: Native Arrays, Matrices & Tensors:**
 
-* ✅ **Module System** - Import libraries with `import module { items }` syntax
-* ✅ **Importable Libraries** - Create reusable `.ln` library files in `libs/` directory
-* ✅ **Version Flags** - Use `linea -V` or `linea --version` to check compiler version
-* ✅ **Fixed String Concatenation** - String + number operations now work correctly
-* ✅ **Fixed Type Casting** - String to integer conversion uses proper `.parse()` method
-* ✅ **Clean Rust Code Generation** - Generated code compiles without warnings
-* ✅ **Interpreter Parity** - Interpreter and compiled output produce identical results
-* ✅ **Full Rust-based Compiler** - Complete rewrite from Python to Rust
-* ✅ **Native Performance** - Standalone executables, 100-1000x faster than Python
-* ✅ **Memory Safety** - Automatic memory management with zero-cost abstractions
-* ✅ **Static Type Checking** - Catch errors at compile time, not runtime
-* ✅ **Zero External Dependencies** - Compiled binaries only need libc
-* ✅ **Easy to Use** - Simple syntax, powerful compilation pipeline
+* ✅ **Native Arrays (1D)** - `var arr = [1, 2, 3, 4, 5]` - no imports needed!
+* ✅ **Native Matrices (2D)** - `var matrix = [[1, 2], [3, 4]]` - direct support
+* ✅ **Native Tensors (3D)** - `var tensor = [[[1, 2]], [[3, 4]]]` - multi-dimensional
+* ✅ **Array Indexing** - `arr[0]`, `matrix[1][2]`, `tensor[0][1][1]`
+* ✅ **Array Slicing** - `arr[1:4]` gets elements 1-3, `arr[::2]` gets every 2nd element
+* ✅ **Element-wise Arithmetic** - `[1, 2] + [3, 4] = [4, 6]`, `arr * 2 = [2, 4, 6]`
+* ✅ **Built-in Array Functions** - `len()`, `sum()`, `mean()`, `max()`, `min()`, `shape()`
+* ✅ **Type Conversions** - `asFloat()`, `asInt()`, `asString()` work on arrays
+* ✅ **Array Iteration** - `for x in arr` iterates over elements
+* ✅ **Optimized Rust Code** - Uses Vec<T> with zero-copy operations
+* ✅ **Interpreter ↔ Compiler Parity** - Identical output in both modes
+
+### Array Examples:
+
+**1D Arrays (Vectors):**
+```linea
+var numbers = [1, 2, 3, 4, 5]
+display len(numbers)           # 5
+display sum(numbers)           # 15
+display numbers[0]             # 1
+display numbers[1:4]           # [2, 3, 4] (slice from index 1 to 4)
+```
+
+**2D Arrays (Matrices):**
+```linea
+var matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+display matrix[0]              # [1, 2, 3] (first row)
+display matrix[1][2]           # 6 (row 1, column 2)
+display shape(matrix)          # [3, 3] (3 rows, 3 columns)
+```
+
+**3D Arrays (Tensors):**
+```linea
+var tensor = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+display tensor[0]              # [[1, 2], [3, 4]] (first plane)
+display tensor[0][1][0]        # 3 (plane 0, row 1, column 0)
+display shape(tensor)          # [2, 2, 2] (2×2×2 tensor)
+```
+
+**Element-wise Operations:**
+```linea
+var a = [1, 2, 3]
+var b = [2, 3, 4]
+display a + b                  # [3, 5, 7] (element-wise addition)
+display a * 2                  # [2, 4, 6] (scalar multiplication)
+```
+
+**Built-in Functions:**
+```linea
+var arr = [1, 5, 3, 2, 4]
+display len(arr)               # 5
+display sum(arr)               # 15
+display mean(arr)              # 3.0
+display max(arr)               # 5
+display min(arr)               # 1
+display shape(arr)             # [5]
+```
+
+**Type Conversions:**
+```linea
+var ints = [1, 2, 3]
+var floats = asFloat(ints)     # [1.0, 2.0, 3.0]
+var back = asInt(floats)       # [1, 2, 3]
+```
 
 ### Compiler Commands:
-- `linea -V` → Show version information (NEW!)
-- `linea --version` → Show version information (NEW!)
+- `linea -V` → Show version information
+- `linea --version` → Show version information
 - `linea compile program.ln -o executable` → Native binary (no Linea needed!)
 - `linea run program.ln` → Direct interpretation
 - `linea gen-rust program.ln` → Generate Rust source code
 - `linea parse program.ln` → Inspect AST for debugging
 
-### Module System:
+### Module System (v3.1.0+):
 
-Linea now supports importable libraries! Create `.ln` files in the `libs/` directory and import them in your programs:
+Linea supports importable libraries! Create `.ln` files in the `libs/` directory and import them in your programs:
 
 ```linea
 # Import all items from a module
@@ -226,6 +277,63 @@ linea compile myapp.ln -o myapp
 * Code refactoring by adding more edge cases in exception handling. (No exception handling!)
 * Added handling of undefined arguments.
 
+## Version History
+
+### Linea 3.2.0-alpha-1 (Current)
+- **Type**: Alpha (features: native arrays, matrices, tensors)
+- **Release Date**: March 2025
+- **Key Additions**: 
+  - Native array, matrix, tensor types (no imports needed)
+  - Array indexing and slicing
+  - Element-wise arithmetic operations
+  - 6 built-in array functions: len, sum, mean, max, min, shape
+  - Type conversion for arrays: asFloat, asInt, asString
+  - Full interpreter ↔ compiler parity
+
+### Linea 3.1.0 (Previous Minor Release)
+- **Type**: Minor (feature: module system)
+- **Release Date**: March 2025
+- **Key Additions**:
+  - Complete module system with import statements
+  - Three standard libraries: math.ln, strings.ln, utils.ln
+  - Version flags: -V, --version
+  - 24 library functions
+
+### Linea 3.0.1 (Previous Patch Release)
+- **Type**: Patch (bug fixes)
+- **Release Date**: March 2025
+- **Key Fixes**:
+  - Fixed string concatenation (String + int now works)
+  - Fixed type casting (proper .parse() for String→Int)
+  - Removed compiler warnings from generated code
+
+### Linea 3.0.0 'Avocado' (Initial Major Release)
+- **Type**: Major (complete rewrite)
+- **Release Date**: March 2025
+- **Key Features**:
+  - Complete Rust compiler from scratch
+  - Standalone binary generation
+  - Full memory safety
+  - 100-1000x performance improvement
+  - Modern website design
+  - Professional branding
+
+## Roadmap
+
+### v3.2.0 (Next Minor - Data Science)
+- [ ] Optimize array operation codegen
+- [ ] Add array slicing with step support
+- [ ] Add negative indexing support
+- [ ] Create 8 standard data science libraries
+  - arrays.ln, dataframe.ln, io.ln, stats.ln
+  - linalg.ln, preprocessing.ln, datasets.ln, transforms.ln
+
+### v4.0.0 (Future Major - GPU & AI)
+- [ ] GPU detection (NVIDIA, AMD, Intel dGPU/iGPU)
+- [ ] LLM inference with GGML (GGUF format)
+- [ ] Model training with LoRA support
+- [ ] AI/ML standard libraries
+
 ### What should we expect in future versions?
 
 /!\ All of these mentioned features might or might not be implemented in next version!
@@ -256,6 +364,6 @@ linea compile myapp.ln -o myapp
 **GitHub:** [@gauthamnair2005](https://github.com/gauthamnair2005)  
 **License:** GPLv3 (See LICENSE file)
 
-Linea 3.0.0 "Avocado" - A complete compilation of the Linea language from Python interpreter to Rust-based compiled language with full memory safety.
+Linea 3.2.0-alpha-1 "Avocado" - Data Science Edition with native array, matrix, and tensor types added to the core language. Still a complete compilation from Python interpreter to Rust-based compiled language with full memory safety and native data science support.
 
 Copyright © 2025 Gautham Nair. All rights reserved.
