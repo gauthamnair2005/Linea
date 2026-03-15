@@ -1,0 +1,12 @@
+# Fibonacci sequence generator
+var n = 10
+var a = 0
+var b = 1
+
+display "Fibonacci sequence:"
+for i from 0~n {
+  display a
+  var temp = a + b
+  varUpd a = b
+  varUpd b = temp
+}

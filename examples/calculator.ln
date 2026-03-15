@@ -1,0 +1,9 @@
+# Simple calculator
+var num1 = 100
+var num2 = 50
+
+display "Addition: " + (num1 + num2)
+display "Subtraction: " + (num1 - num2)
+display "Multiplication: " + (num1 * num2)
+display "Division: " + (num1 / num2)
+display "Power: " + (num1 ^ 2)

@@ -1,0 +1,30 @@
+# Linea Compiled Language Demo
+var title = "=== Linea Programming Language ==="
+display title
+display ""
+
+# Variables and arithmetic
+var a = 100
+var b = 25
+display "Arithmetic Demo:"
+display "a = " + a
+display "b = " + b
+display "a + b = " + (a + b)
+display "a * b = " + (a * b)
+display "a / b = " + (a / b)
+display ""
+
+# Loops
+display "Loop Demo (0 to 5):"
+for i from 0~5
+  display "  i = " + i
+display ""
+
+# Type casting
+var str_num = "42"
+typeCast str_num = int
+display "Type Casting Demo:"
+display "String '42' + 8 = " + (str_num + 8)
+display ""
+
+display "✅ Demo complete!"
