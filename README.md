@@ -1,13 +1,17 @@
 # The Linea Programming Language - Compiler Edition
 
-✅ **Version 3.0.0 'Avocado'** - Compiled Language Release
+✅ **Version 3.0.1 'Avocado'** - Compiled Language Release
 
-> **Major Release**: Linea is now a fully compiled, statically-typed programming language with native performance and memory safety guarantees!
+> **Latest Update**: Fixed critical code generation bugs in string concatenation and type casting. All string operations now work correctly in both compiled and interpreted modes!
 
-## 🚀 What's New in Linea 3.0.0 'Avocado'
+## 🚀 What's New in Linea 3.0.1 'Avocado Patch'
 
-**Complete Transformation from Interpreted to Compiled:**
+**Patch Release - Bug Fixes & Improvements:**
 
+* ✅ **Fixed String Concatenation** - String + number operations now work correctly
+* ✅ **Fixed Type Casting** - String to integer conversion uses proper `.parse()` method
+* ✅ **Clean Rust Code Generation** - Generated code compiles without warnings
+* ✅ **Interpreter Parity** - Interpreter and compiled output produce identical results
 * ✅ **Full Rust-based Compiler** - Complete rewrite from Python to Rust
 * ✅ **Native Performance** - Standalone executables, 100-1000x faster than Python
 * ✅ **Memory Safety** - Automatic memory management with zero-cost abstractions
