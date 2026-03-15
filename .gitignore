@@ -1,0 +1,40 @@
+# Build artifacts
+/compiler/target/
+*.bin
+*.rs (generated)
+
+# Build outputs
+*.o
+*.a
+*.so
+*.dylib
+
+# Development files
+/LibLinea/
+/compiler/
+
+# Test outputs
+test_demo.rs
+simple.ln
+test_*.ln
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Temporary files
+*.tmp
+*.bak
