@@ -1,0 +1,7 @@
+[package]
+name = "linea-ast"
+version = "3.0.0"
+edition = "2021"
+
+[dependencies]
+linea-core = { path = "../linea-core" }

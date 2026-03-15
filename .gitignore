@@ -1,5 +1,7 @@
 # Build artifacts
 /compiler/target/
+/compiler/*.ln
+/compiler/hello_compiled
 *.bin
 *.rs (generated)
 
@@ -11,7 +13,6 @@
 
 # Development files
 /LibLinea/
-/compiler/
 
 # Test outputs
 test_demo.rs

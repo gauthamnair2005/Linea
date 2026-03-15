@@ -1,0 +1,8 @@
+[package]
+name = "linea-executor"
+version = "3.0.0"
+edition = "2021"
+
+[dependencies]
+linea-ast = { path = "../linea-ast" }
+linea-core = { path = "../linea-core" }

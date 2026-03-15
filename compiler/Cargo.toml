@@ -1,0 +1,17 @@
+[workspace]
+members = [".", "linea-core", "linea-ast", "linea-codegen", "linea-executor"]
+resolver = "2"
+
+[package]
+name = "linea-compiler"
+version = "3.0.0"
+edition = "2021"
+
+[dependencies]
+linea-core = { path = "./linea-core" }
+linea-ast = { path = "./linea-ast" }
+linea-codegen = { path = "./linea-codegen" }
+linea-executor = { path = "./linea-executor" }
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+thiserror = "1"
