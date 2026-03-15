@@ -6,7 +6,9 @@ pub enum Value {
     Float(f64),
     String(String),
     Bool(bool),
-    Array(Vec<Value>),
+    Array(Vec<Value>),              // 1D: [1, 2, 3]
+    Matrix(Vec<Vec<Value>>),        // 2D: [[1, 2], [3, 4]]
+    Tensor(Vec<Vec<Vec<Value>>>),   // 3D: [[[1, 2]], [[3, 4]]]
     Null,
 }
 
@@ -24,6 +26,20 @@ impl Value {
                     Type::Array(Box::new(elements[0].to_type()))
                 }
             }
+            Value::Matrix(rows) => {
+                if rows.is_empty() || rows[0].is_empty() {
+                    Type::Matrix(Box::new(Type::Unknown))
+                } else {
+                    Type::Matrix(Box::new(rows[0][0].to_type()))
+                }
+            }
+            Value::Tensor(tensors) => {
+                if tensors.is_empty() || tensors[0].is_empty() || tensors[0][0].is_empty() {
+                    Type::Tensor(Box::new(Type::Unknown))
+                } else {
+                    Type::Tensor(Box::new(tensors[0][0][0].to_type()))
+                }
+            }
             Value::Null => Type::Unknown,
         }
     }
@@ -37,6 +53,23 @@ impl Value {
             Value::Array(elements) => {
                 let strs: Vec<String> = elements.iter().map(|v| v.to_string()).collect();
                 format!("[{}]", strs.join(", "))
+            }
+            Value::Matrix(rows) => {
+                let row_strs: Vec<String> = rows.iter().map(|row| {
+                    let elem_strs: Vec<String> = row.iter().map(|v| v.to_string()).collect();
+                    format!("[{}]", elem_strs.join(", "))
+                }).collect();
+                format!("[{}]", row_strs.join(", "))
+            }
+            Value::Tensor(tensors) => {
+                let tensor_strs: Vec<String> = tensors.iter().map(|tensor| {
+                    let row_strs: Vec<String> = tensor.iter().map(|row| {
+                        let elem_strs: Vec<String> = row.iter().map(|v| v.to_string()).collect();
+                        format!("[{}]", elem_strs.join(", "))
+                    }).collect();
+                    format!("[{}]", row_strs.join(", "))
+                }).collect();
+                format!("[{}]", tensor_strs.join(", "))
             }
             Value::Null => "null".to_string(),
         }
@@ -71,6 +104,8 @@ impl Value {
             Value::String(s) => !s.is_empty(),
             Value::Bool(b) => *b,
             Value::Array(a) => !a.is_empty(),
+            Value::Matrix(m) => !m.is_empty(),
+            Value::Tensor(t) => !t.is_empty(),
             Value::Null => false,
         }
     }
@@ -82,6 +117,8 @@ impl Value {
             Value::String(_) => "string",
             Value::Bool(_) => "bool",
             Value::Array(_) => "array",
+            Value::Matrix(_) => "matrix",
+            Value::Tensor(_) => "tensor",
             Value::Null => "null",
         }
     }

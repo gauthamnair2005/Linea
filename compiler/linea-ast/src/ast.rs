@@ -75,6 +75,12 @@ pub enum Expression {
         expr: Box<Expression>,
         index: Box<Expression>,
     },
+    Slice {
+        expr: Box<Expression>,
+        start: Option<Box<Expression>>,
+        end: Option<Box<Expression>>,
+        step: Option<Box<Expression>>,
+    },
     Array(Vec<Expression>),
     TypeCast {
         expr: Box<Expression>,

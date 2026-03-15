@@ -394,12 +394,58 @@ impl Parser {
                 }
                 TokenType::LeftBracket => {
                     self.advance();
-                    let index = self.parse_expression()?;
+                    
+                    // Check for slice vs simple index
+                    let mut start: Option<Box<Expression>> = None;
+                    let mut end: Option<Box<Expression>> = None;
+                    let mut step: Option<Box<Expression>> = None;
+                    let mut is_slice = false;
+                    
+                    // Parse start or detect slice
+                    if !matches!(self.current_token().token_type, TokenType::Colon | TokenType::RightBracket) {
+                        start = Some(Box::new(self.parse_expression()?));
+                    }
+                    
+                    // Check if slice notation (`:`)
+                    if matches!(self.current_token().token_type, TokenType::Colon) {
+                        is_slice = true;
+                        self.advance();
+                        
+                        // Parse end
+                        if !matches!(self.current_token().token_type, TokenType::Colon | TokenType::RightBracket) {
+                            end = Some(Box::new(self.parse_expression()?));
+                        }
+                        
+                        // Parse step if exists
+                        if matches!(self.current_token().token_type, TokenType::Colon) {
+                            self.advance();
+                            if !matches!(self.current_token().token_type, TokenType::RightBracket) {
+                                step = Some(Box::new(self.parse_expression()?));
+                            }
+                        }
+                    }
+                    
                     self.expect(&TokenType::RightBracket)?;
-                    expr = Expression::Index {
-                        expr: Box::new(expr),
-                        index: Box::new(index),
-                    };
+                    
+                    if is_slice {
+                        expr = Expression::Slice {
+                            expr: Box::new(expr),
+                            start,
+                            end,
+                            step,
+                        };
+                    } else if let Some(index) = start {
+                        expr = Expression::Index {
+                            expr: Box::new(expr),
+                            index,
+                        };
+                    } else {
+                        return Err(Error::Syntax {
+                            line: self.current_token().line,
+                            column: self.current_token().column,
+                            message: "Invalid array indexing".to_string(),
+                        });
+                    }
                 }
                 _ => break,
             }

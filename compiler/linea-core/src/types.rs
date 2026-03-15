@@ -6,7 +6,9 @@ pub enum Type {
     Float,
     String,
     Bool,
-    Array(Box<Type>),
+    Array(Box<Type>),       // 1D: [1, 2, 3]
+    Matrix(Box<Type>),      // 2D: [[1, 2], [3, 4]]
+    Tensor(Box<Type>),      // 3D+: [[[1, 2]], [[3, 4]]]
     Function { params: Vec<Type>, return_type: Box<Type> },
     Unknown,
 }
@@ -17,6 +19,9 @@ impl Type {
             (Type::Int, Type::Float) => true,
             (Type::Int, Type::String) => true,
             (Type::Float, Type::String) => true,
+            (Type::Array(a), Type::Array(b)) => a.can_coerce_to(b),
+            (Type::Matrix(a), Type::Matrix(b)) => a.can_coerce_to(b),
+            (Type::Tensor(a), Type::Tensor(b)) => a.can_coerce_to(b),
             (a, b) if a == b => true,
             _ => false,
         }
@@ -29,6 +34,8 @@ impl Type {
             Type::String => "string".to_string(),
             Type::Bool => "bool".to_string(),
             Type::Array(inner) => format!("{}[]", inner.display_name()),
+            Type::Matrix(inner) => format!("{}[][]", inner.display_name()),
+            Type::Tensor(inner) => format!("{}[][][]", inner.display_name()),
             Type::Function { params, return_type } => {
                 let param_names = params.iter().map(|t| t.display_name()).collect::<Vec<_>>();
                 format!("({}) -> {}", param_names.join(", "), return_type.display_name())
