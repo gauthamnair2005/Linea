@@ -139,16 +139,16 @@ impl RustGenerator {
                     BinaryOp::Add => {
                         if left_ty == "String" || right_ty == "String" {
                             let left_str = if left_ty == "String" {
-                                format!("({})", left_expr)
+                                format!("{}", left_expr)
                             } else {
                                 format!("(({}).to_string())", left_expr)
                             };
                             let right_str = if right_ty == "String" {
-                                format!("({})", right_expr)
+                                format!("{}", right_expr)
                             } else {
                                 format!("(({}).to_string())", right_expr)
                             };
-                            Ok((format!("format!(\"{{}}{{}} \", {}, {})", left_str, right_str), "String".to_string()))
+                            Ok((format!("format!(\"{{}}{{}}\", {}, {})", left_str, right_str), "String".to_string()))
                         } else {
                             Ok((format!("({} + {})", left_expr, right_expr), left_ty.clone()))
                         }
