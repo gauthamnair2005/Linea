@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linea Programming Language 3.0.0 - Compiled Edition</title>
+    <meta name="description" content="Linea 3.0.0 - A modern, compiled programming language built with Rust. Memory safe, blazing fast, zero dependencies.">
+    <title>Linea 3.0.0 - Compiled Programming Language</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="lineaLogo.ico">
 </head>
 <body>
-    <!-- Header with Navigation -->
+    <!-- Header -->
     <header>
         <div class="header-content">
             <a href="#" class="logo-section">
@@ -23,7 +24,7 @@
                     <li><a href="#features">Features</a></li>
                     <li><a href="#quickstart">Quick Start</a></li>
                     <li><a href="#comparison">Comparison</a></li>
-                    <li><a href="https://github.com/gauthamnair2005/Linea">GitHub</a></li>
+                    <li><a href="https://github.com/gauthamnair2005/Linea" target="_blank">GitHub</a></li>
                 </ul>
             </nav>
         </div>
@@ -34,14 +35,14 @@
         <section class="hero">
             <h2>Write Once, Compile Anywhere</h2>
             <p>A modern, memory-safe compiled programming language built with Rust</p>
-            <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 1rem 0;">
-                100-1000x faster than interpreted languages • Zero external dependencies • True memory safety
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                100-1000x faster • Zero dependencies • True memory safety
             </p>
             <div class="cta-buttons">
                 <button class="btn btn-primary" onclick="document.getElementById('quickstart').scrollIntoView()">Get Started</button>
-                <a href="RELEASE_3_0_0.md" class="btn btn-secondary">View Release Notes</a>
+                <a href="RELEASE_3_0_0.md" class="btn btn-secondary">Release Notes</a>
             </div>
-            <div class="foss-badge">100% Open Source • GPLv3 License</div>
+            <div class="foss-badge">100% Open Source • GPLv3</div>
         </section>
 
         <!-- Features Section -->
@@ -78,17 +79,18 @@
         <!-- Quick Start Section -->
         <section class="quickstart" id="quickstart">
             <h2>Quick Start</h2>
-            <h3 style="color: var(--text-secondary); margin-top: 0;">Install the Compiler</h3>
+
+            <h3>1. Install the Compiler</h3>
             <pre><code>$ curl -fsSL https://github.com/gauthamnair2005/Linea/releases/download/v3.0.0/install.sh | sh
 $ linea --help</code></pre>
 
-            <h3 style="color: var(--text-secondary); margin-top: 2rem;">Create a Program</h3>
+            <h3>2. Create a Program</h3>
             <pre><code>$ cat > hello.ln << 'EOF'
 var greeting = "Hello, Linea!"
 display greeting
 EOF</code></pre>
 
-            <h3 style="color: var(--text-secondary); margin-top: 2rem;">Compile and Run</h3>
+            <h3>3. Compile and Run</h3>
             <pre><code>$ linea compile hello.ln -o hello
 $ ./hello
 Hello, Linea!</code></pre>
@@ -97,26 +99,26 @@ Hello, Linea!</code></pre>
         </section>
 
         <!-- Code Examples Section -->
-        <section style="padding: 4rem 2rem; background: var(--bg-secondary);">
-            <h2 style="text-align: center; margin-bottom: 3rem;">Language Features</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto;">
-                <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <h4 style="color: var(--primary); margin-top: 0;">Variables & Types</h4>
+        <section class="examples-section">
+            <h2>Language Features</h2>
+            <div class="examples-grid">
+                <div class="code-example">
+                    <h4>Variables & Types</h4>
                     <pre><code>var x = 42
 var pi = 3.14159
 var name = "Linea"
 var active = true</code></pre>
                 </div>
-                <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <h4 style="color: var(--primary); margin-top: 0;">Control Flow</h4>
+                <div class="code-example">
+                    <h4>Control Flow</h4>
                     <pre><code>if x > 0 {
     display "positive"
 } else {
     display "non-positive"
 }</code></pre>
                 </div>
-                <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <h4 style="color: var(--primary); margin-top: 0;">Loops</h4>
+                <div class="code-example">
+                    <h4>Loops</h4>
                     <pre><code>for i from 1~10 {
     display i
 }
@@ -125,21 +127,21 @@ while x > 0 {
     x = x - 1
 }</code></pre>
                 </div>
-                <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <h4 style="color: var(--primary); margin-top: 0;">Arrays</h4>
+                <div class="code-example">
+                    <h4>Arrays</h4>
                     <pre><code>var arr = [1, 2, 3, 4]
 var mixed = [1, "two", 3.0]
 display arr</code></pre>
                 </div>
-                <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <h4 style="color: var(--primary); margin-top: 0;">Operators</h4>
+                <div class="code-example">
+                    <h4>Operators</h4>
                     <pre><code>var sum = a + b
 var power = x ^ 2
 var isEqual = x == y
 var result = a && b || c</code></pre>
                 </div>
-                <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <h4 style="color: var(--primary); margin-top: 0;">Type Casting</h4>
+                <div class="code-example">
+                    <h4>Type Casting</h4>
                     <pre><code>var count = "42"
 typeCast num = int from count
 display num + 8  // 50</code></pre>
@@ -147,7 +149,7 @@ display num + 8  // 50</code></pre>
             </div>
         </section>
 
-        <!-- Comparison Section -->
+        <!-- Comparison Table -->
         <section class="comparison" id="comparison">
             <h2>Linea 2.x vs 3.0</h2>
             <table>
@@ -214,24 +216,18 @@ display num + 8  // 50</code></pre>
                 <li>Standalone interpreter for direct execution</li>
                 <li>Zero external dependencies for compiled binaries</li>
                 <li>Comprehensive error messages with line/column info</li>
-                <li>Support for variables, arrays, loops, conditionals, and functions</li>
+                <li>Support for variables, arrays, loops, conditionals, and more</li>
             </ul>
         </section>
 
         <!-- FOSS Section -->
-        <section style="padding: 4rem 2rem; background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); border-top: 1px solid var(--border);">
-            <h2 style="text-align: center; margin-bottom: 2rem;">Open Source & Community</h2>
-            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                <p style="color: var(--text-secondary); font-size: 1.1rem;">
-                    Linea is 100% open source and developed by the community. The full compiler source code is available on GitHub under the GPLv3 license.
-                </p>
-                <p style="margin: 2rem 0;">
-                    <a href="https://github.com/gauthamnair2005/Linea" class="btn btn-primary">View on GitHub</a>
-                </p>
-                <p style="color: var(--text-secondary);">
-                    Contributions welcome! Report bugs, suggest features, or submit pull requests.
-                </p>
-            </div>
+        <section class="foss-section">
+            <h2>Open Source & Community</h2>
+            <p>Linea is 100% open source and developed by the community. The full compiler source code is available on GitHub under the GPLv3 license.</p>
+            <p>
+                <a href="https://github.com/gauthamnair2005/Linea" class="btn btn-primary" target="_blank">View on GitHub</a>
+            </p>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">Contributions welcome! Report bugs, suggest features, or submit pull requests.</p>
         </section>
     </div>
 
@@ -243,9 +239,9 @@ display num + 8  // 50</code></pre>
             <a href="LICENSE">License (GPLv3)</a> • 
             <a href="README.md">Documentation</a> • 
             <a href="RELEASE_3_0_0.md">Release Notes</a> • 
-            <a href="https://github.com/gauthamnair2005/Linea">GitHub</a>
+            <a href="https://github.com/gauthamnair2005/Linea" target="_blank">GitHub</a>
         </p>
-        <p style="margin-top: 1.5rem; font-size: 0.85rem;">
+        <p style="margin-top: 1rem; font-size: 0.85rem;">
             Made with ❤️ by the Linea community • Powered by Rust 🦀
         </p>
     </footer>
