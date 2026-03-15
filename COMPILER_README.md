@@ -202,6 +202,12 @@ cargo test
 
 The compiler source code is organized as a Cargo workspace with clear separation of concerns.
 
+## Author
+
+**Gautham Nair** - Creator and maintainer of Linea 3.0.0 "Avocado"  
+Email: gautham.nair.2005@gmail.com  
+GitHub: [@gauthamnair2005](https://github.com/gauthamnair2005)
+
 ## License
 
 See LICENSE in the root directory.

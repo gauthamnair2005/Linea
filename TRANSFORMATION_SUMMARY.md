@@ -205,3 +205,10 @@ Linea has been successfully transformed into a modern compiled programming langu
 - **Portability**: Standalone executables
 
 The new compiler can be used just like Rust or Go to create fast, reliable programs without external dependencies.
+
+---
+
+**Author**: Gautham Nair  
+**Email**: gautham.nair.2005@gmail.com  
+**GitHub**: [@gauthamnair2005](https://github.com/gauthamnair2005)  
+**License**: GPLv3

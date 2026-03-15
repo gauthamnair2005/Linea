@@ -155,13 +155,15 @@ The transformation from Python to Rust represents more than a technical upgrade:
 - Rust community for exceptional tooling and documentation
 - All Linea users and contributors who made this journey possible
 
-## 📄 License
+## 📄 License & Author
 
-See LICENSE file in repository.
+**Author**: Gautham Nair (gautham.nair.2005@gmail.com)  
+**License**: GPLv3 (See LICENSE file in repository)
 
 ---
 
 **Version**: 3.0.0  
 **Codename**: Avocado  
 **Built with**: Rust 1.94.0+, Cargo  
-**Status**: Production Ready ✅
+**Status**: Production Ready ✅  
+**Copyright**: © 2025 Gautham Nair
