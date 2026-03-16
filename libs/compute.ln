@@ -1,0 +1,45 @@
+# Compute Library for Hardware Acceleration
+# Exposes GPU/CPU device information and compute primitives
+
+# Returns the name of the current compute device
+pub fn device() {
+    # Native implementation
+}
+
+# Returns the type of the current compute device
+# "DiscreteGpu", "IntegratedGpu", or "Cpu"
+pub fn device_type() {
+    # Native implementation
+}
+
+# Performs matrix multiplication on the active compute device
+# a: Matrix (MxK)
+# b: Matrix (KxN)
+# Returns: Matrix (MxN)
+pub fn matmul(a, b) {
+    # Native implementation
+}
+
+# Performs element-wise addition on the active compute device
+# a: Matrix
+# b: Matrix
+# Returns: Matrix
+pub fn add(a, b) {
+    # Native implementation
+}
+
+# Performs element-wise subtraction on the active compute device
+# a: Matrix
+# b: Matrix
+# Returns: Matrix
+pub fn sub(a, b) {
+    # Native implementation
+}
+
+# Performs element-wise multiplication (Hadamard product)
+# a: Matrix
+# b: Matrix
+# Returns: Matrix
+pub fn mul(a, b) {
+    # Native implementation
+}

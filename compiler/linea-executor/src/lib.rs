@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 use linea_core::{Type, TypeContext, Value, Result, Error};
 use linea_ast::{Program, Statement, Expression, BinaryOp, UnaryOp};
+use linea_ast::lexer::Lexer;
+use linea_ast::parser::Parser;
+
+mod compute;
 
 // Graphics State Structures
 #[derive(Clone, Debug)]
@@ -29,9 +33,17 @@ impl ChartConfig {
     }
 }
 
+#[derive(Clone, Debug)]
+pub struct FunctionDef {
+    pub params: Vec<(String, Type)>,
+    pub return_type: Type,
+    pub body: Vec<Statement>,
+}
+
 pub struct Executor {
     type_context: TypeContext,
-    variables: HashMap<String, Value>,
+    scopes: Vec<HashMap<String, Value>>,
+    functions: HashMap<String, FunctionDef>,
     chart_config: ChartConfig,
 }
 
@@ -39,10 +51,47 @@ impl Executor {
     pub fn new() -> Self {
         Executor {
             type_context: TypeContext::new(),
-            variables: HashMap::new(),
+            scopes: vec![HashMap::new()],
+            functions: HashMap::new(),
             chart_config: ChartConfig::new(),
         }
     }
+
+    fn push_scope(&mut self) {
+        self.scopes.push(HashMap::new());
+        self.type_context.push_scope();
+    }
+
+    fn pop_scope(&mut self) {
+        self.scopes.pop();
+        self.type_context.pop_scope();
+    }
+
+    fn declare_variable(&mut self, name: String, value: Value) {
+        if let Some(scope) = self.scopes.last_mut() {
+            scope.insert(name, value);
+        }
+    }
+
+    fn update_variable(&mut self, name: String, value: Value) -> Result<()> {
+        for scope in self.scopes.iter_mut().rev() {
+            if scope.contains_key(&name) {
+                scope.insert(name, value);
+                return Ok(());
+            }
+        }
+        Err(Error::VariableNotFound(name))
+    }
+
+    fn get_variable(&self, name: &str) -> Option<Value> {
+        for scope in self.scopes.iter().rev() {
+            if let Some(val) = scope.get(name) {
+                return Some(val.clone());
+            }
+        }
+        None
+    }
+
 
     pub fn execute(&mut self, program: &Program) -> Result<()> {
         for statement in &program.statements {
@@ -54,20 +103,47 @@ impl Executor {
     fn execute_statement(&mut self, statement: &Statement) -> Result<()> {
         match statement {
             Statement::Import { module, items } => {
-                // For now, just record the import (library loading would be here)
-                // In a full implementation, this would load the .ln module file
-                eprintln!("Note: Importing module '{}' with items: {}", module, items.join(", "));
+                let paths = vec![
+                    format!("{}.ln", module),
+                    format!("libs/{}.ln", module),
+                    format!("../libs/{}.ln", module),
+                ];
+                
+                let mut source = None;
+                for path in &paths {
+                    if let Ok(content) = std::fs::read_to_string(path) {
+                        source = Some(content);
+                        break;
+                    }
+                }
+                
+                if let Some(content) = source {
+                    let lexer = Lexer::new(&content);
+                    let tokens = lexer.tokenize()?;
+                    let mut parser = Parser::new(tokens);
+                    let program = parser.parse()?;
+                    
+                    for stmt in program.statements {
+                        self.execute_statement(&stmt)?;
+                    }
+                } else {
+                    // Ignore missing built-in modules for now as they are simulated
+                    match module.as_str() {
+                         "math" | "strings" | "csv" | "excel" | "graphics" => {},
+                         _ => return Err(Error::RuntimeError(format!("Module '{}' not found in paths: {:?}", module, paths))),
+                    }
+                }
                 Ok(())
             }
             Statement::VarDeclaration { name, expr } => {
                 let value = self.eval_expression(expr)?;
                 let ty = value.to_type();
                 self.type_context.declare(name.clone(), ty)?;
-                self.variables.insert(name.clone(), value);
+                self.declare_variable(name.clone(), value);
                 Ok(())
             }
             Statement::VarUpdate { name, expr } => {
-                if !self.variables.contains_key(name) {
+                if self.get_variable(name).is_none() {
                     return Err(Error::VariableNotFound(name.clone()));
                 }
                 let value = self.eval_expression(expr)?;
@@ -83,7 +159,7 @@ impl Executor {
                     }
                 }
                 
-                self.variables.insert(name.clone(), value);
+                self.update_variable(name.clone(), value)?;
                 Ok(())
             }
             Statement::Display(expr) => {
@@ -96,7 +172,7 @@ impl Executor {
                 let end_val = self.eval_expression(end)?.to_int()?;
                 
                 for i in start_val..=end_val {
-                    self.variables.insert(var.clone(), Value::Int(i));
+                    self.declare_variable(var.clone(), Value::Int(i));
                     for stmt in body {
                         self.execute_statement(stmt)?;
                     }
@@ -132,6 +208,23 @@ impl Executor {
                 self.eval_expression(expr)?;
                 Ok(())
             }
+            Statement::FunctionDecl { name, params, return_type, body } => {
+                let func_def = FunctionDef {
+                    params: params.clone(),
+                    return_type: return_type.clone(),
+                    body: body.clone(),
+                };
+                self.functions.insert(name.clone(), func_def);
+                Ok(())
+            }
+            Statement::Return(expr_opt) => {
+                let val = if let Some(expr) = expr_opt {
+                    self.eval_expression(expr)?
+                } else {
+                    Value::Bool(false)
+                };
+                Err(Error::Return(val))
+            }
             _ => Ok(()),
         }
     }
@@ -149,8 +242,7 @@ impl Executor {
                     "transpose" | "flatten" | "asFloat" | "asInt" | "asString" => {
                         Ok(Value::String(name.clone())) // Return function name as placeholder
                     }
-                    _ => self.variables.get(name)
-                        .cloned()
+                    _ => self.get_variable(name)
                         .ok_or_else(|| Error::VariableNotFound(name.clone()))
                 }
             }
@@ -284,6 +376,7 @@ impl Executor {
                 } else {
                     match &arr_val {
                         Value::Array(a) => a.len(),
+                        Value::Matrix(m) => m.len(),
                         _ => 0,
                     }
                 };
@@ -300,6 +393,13 @@ impl Executor {
                             .map(|(_, v)| v.clone())
                             .collect();
                         Ok(Value::Array(sliced))
+                    }
+                    Value::Matrix(ref rows) => {
+                        let sliced: Vec<Vec<Value>> = rows.iter().enumerate()
+                            .filter(|(i, _)| *i >= start_idx && *i < end_idx && (*i - start_idx) % step_val == 0)
+                            .map(|(_, v)| v.clone())
+                            .collect();
+                        Ok(Value::Matrix(sliced))
                     }
                     _ => Err(Error::TypeError(format!("Cannot slice {}", arr_val.type_name()))),
                 }
@@ -321,6 +421,299 @@ impl Executor {
     fn eval_function_call(&mut self, func: &Expression, args: &[Expression]) -> Result<Value> {
         if let Expression::Identifier(name) = func {
             match name.as_str() {
+                "compute::device" => {
+                    Ok(Value::String(compute::device()))
+                }
+                "compute::type" => {
+                    Ok(Value::String(compute::device_type()))
+                }
+                "compute::matmul" => {
+                    if args.len() != 2 { return Err(Error::InvalidOperation("matmul requires 2 arguments".to_string())); }
+                    let a = self.eval_expression(&args[0])?;
+                    let b = self.eval_expression(&args[1])?;
+
+                    let a_mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &a {
+                         m.iter().map(|row| row.iter().map(|v| match v {
+                            Value::Int(i) => *i as f64,
+                            Value::Float(f) => *f,
+                            _ => 0.0
+                        }).collect()).collect()
+                    } else {
+                        return Err(Error::TypeError(format!("Expected Matrix for argument 1, got {:?}", a.type_name())));
+                    };
+
+                    let b_mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &b {
+                        m.iter().map(|row| row.iter().map(|v| match v {
+                            Value::Int(i) => *i as f64,
+                            Value::Float(f) => *f,
+                            _ => 0.0
+                        }).collect()).collect()
+                    } else {
+                        return Err(Error::TypeError(format!("Expected Matrix for argument 2, got {:?}", b.type_name())));
+                    };
+
+                    let result = compute::matmul(&a_mat, &b_mat);
+                    
+                    let result_val = result.into_iter().map(|row| {
+                        row.into_iter().map(|v| Value::Float(v)).collect()
+                    }).collect();
+
+                    Ok(Value::Matrix(result_val))
+                }
+                "compute::add" | "compute::sub" | "compute::mul" | "compute::div" => {
+                    let op = if name.contains("add") { "add" }
+                             else if name.contains("sub") { "sub" }
+                             else if name.contains("mul") { "mul" }
+                             else { "div" };
+
+                    if args.len() != 2 { return Err(Error::InvalidOperation("element-wise op requires 2 arguments".to_string())); }
+                    let a_val = self.eval_expression(&args[0])?;
+                    let b_val = self.eval_expression(&args[1])?;
+
+                    match (a_val, b_val) {
+                        (Value::Array(a), Value::Array(b)) => {
+                            let a_f64: Vec<f64> = a.iter().map(|v| match v {
+                                Value::Int(i) => *i as f64,
+                                Value::Float(f) => *f,
+                                _ => 0.0,
+                            }).collect();
+                            let b_f64: Vec<f64> = b.iter().map(|v| match v {
+                                Value::Int(i) => *i as f64,
+                                Value::Float(f) => *f,
+                                _ => 0.0,
+                            }).collect();
+                            
+                            let res = compute::element_wise(&a_f64, &b_f64, op);
+                            let res_val = res.into_iter().map(Value::Float).collect();
+                            Ok(Value::Array(res_val))
+                        }
+                        (Value::Matrix(a), Value::Matrix(b)) => {
+                            let rows_a = a.len();
+                            let cols_a = if rows_a > 0 { a[0].len() } else { 0 };
+                            let rows_b = b.len();
+                            let cols_b = if rows_b > 0 { b[0].len() } else { 0 };
+                            
+                            // Check for broadcasting opportunity (B is 1xN, A is MxN)
+                            if rows_b == 1 && rows_a > 1 && cols_a == cols_b {
+                                let a_flat: Vec<f64> = a.iter().flat_map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0))).collect();
+                                let b_flat: Vec<f64> = b[0].iter().map(|v| v.to_float().unwrap_or(0.0)).collect();
+                                
+                                let res = compute::broadcast_op_flat(&a_flat, &b_flat, rows_a, cols_a, op);
+                                
+                                let mut res_matrix = Vec::new();
+                                for i in 0..rows_a {
+                                    let start = i * cols_a;
+                                    let end = start + cols_a;
+                                    if end <= res.len() {
+                                        let row_slice = &res[start..end];
+                                        res_matrix.push(row_slice.iter().map(|&v| Value::Float(v)).collect());
+                                    }
+                                }
+                                return Ok(Value::Matrix(res_matrix));
+                            }
+                            
+                            // Simple broadcasting: if b has 1 row, repeat it rows_a times
+                            let b_expanded = if rows_b == 1 && rows_a > 1 && cols_a == cols_b {
+                                (0..rows_a).map(|_| b[0].clone()).collect()
+                            } else {
+                                b.clone()
+                            };
+                            
+                            // Check dimensions
+                            if rows_a != b_expanded.len() || (rows_a > 0 && cols_a != b_expanded[0].len()) {
+                                 return Err(Error::InvalidOperation(format!("Matrix shape mismatch: {:?} vs {:?}", (rows_a, cols_a), (b_expanded.len(), if b_expanded.is_empty() {0} else {b_expanded[0].len()}))));
+                            }
+                            
+                            let a_flat: Vec<f64> = a.iter().flat_map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0))).collect();
+                            let b_flat: Vec<f64> = b_expanded.iter().flat_map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0))).collect();
+                            
+                            let res = compute::element_wise(&a_flat, &b_flat, op);
+                            
+                            let mut res_matrix = Vec::new();
+                            for i in 0..rows_a {
+                                let start = i * cols_a;
+                                let end = start + cols_a;
+                                if end <= res.len() {
+                                    let row_slice = &res[start..end];
+                                    res_matrix.push(row_slice.iter().map(|&v| Value::Float(v)).collect());
+                                }
+                            }
+                            Ok(Value::Matrix(res_matrix))
+                        }
+                        (Value::Matrix(a), Value::Int(i)) => {
+                            let scalar = i as f64;
+                            let rows_a = a.len();
+                            let cols_a = if rows_a > 0 { a[0].len() } else { 0 };
+                            
+                            let a_flat: Vec<f64> = a.iter().flat_map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0))).collect();
+                            let b_flat = vec![scalar; a_flat.len()];
+                            
+                            let res = compute::element_wise(&a_flat, &b_flat, op);
+                            
+                            let mut res_matrix = Vec::new();
+                            for idx in 0..rows_a {
+                                let start = idx * cols_a;
+                                let end = start + cols_a;
+                                if end <= res.len() {
+                                    let row_slice = &res[start..end];
+                                    res_matrix.push(row_slice.iter().map(|&v| Value::Float(v)).collect());
+                                }
+                            }
+                            Ok(Value::Matrix(res_matrix))
+                        }
+                        (Value::Matrix(a), Value::Float(f)) => {
+                            let scalar = f;
+                            let rows_a = a.len();
+                            let cols_a = if rows_a > 0 { a[0].len() } else { 0 };
+                            
+                            let a_flat: Vec<f64> = a.iter().flat_map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0))).collect();
+                            let b_flat = vec![scalar; a_flat.len()];
+                            
+                            let res = compute::element_wise(&a_flat, &b_flat, op);
+                            
+                            let mut res_matrix = Vec::new();
+                            for idx in 0..rows_a {
+                                let start = idx * cols_a;
+                                let end = start + cols_a;
+                                if end <= res.len() {
+                                    let row_slice = &res[start..end];
+                                    res_matrix.push(row_slice.iter().map(|&v| Value::Float(v)).collect());
+                                }
+                            }
+                            Ok(Value::Matrix(res_matrix))
+                        }
+                        (Value::Int(i), Value::Matrix(b)) => {
+                            let scalar = i as f64;
+                            let rows_b = b.len();
+                            let cols_b = if rows_b > 0 { b[0].len() } else { 0 };
+                            
+                            let b_flat: Vec<f64> = b.iter().flat_map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0))).collect();
+                            let a_flat = vec![scalar; b_flat.len()];
+                            
+                            let res = compute::element_wise(&a_flat, &b_flat, op);
+                            
+                            let mut res_matrix = Vec::new();
+                            for idx in 0..rows_b {
+                                let start = idx * cols_b;
+                                let end = start + cols_b;
+                                if end <= res.len() {
+                                    let row_slice = &res[start..end];
+                                    res_matrix.push(row_slice.iter().map(|&v| Value::Float(v)).collect());
+                                }
+                            }
+                            Ok(Value::Matrix(res_matrix))
+                        }
+                        (Value::Float(f), Value::Matrix(b)) => {
+                            let scalar = f;
+                            let rows_b = b.len();
+                            let cols_b = if rows_b > 0 { b[0].len() } else { 0 };
+                            
+                            let b_flat: Vec<f64> = b.iter().flat_map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0))).collect();
+                            let a_flat = vec![scalar; b_flat.len()];
+                            
+                            let res = compute::element_wise(&a_flat, &b_flat, op);
+                            
+                            let mut res_matrix = Vec::new();
+                            for idx in 0..rows_b {
+                                let start = idx * cols_b;
+                                let end = start + cols_b;
+                                if end <= res.len() {
+                                    let row_slice = &res[start..end];
+                                    res_matrix.push(row_slice.iter().map(|&v| Value::Float(v)).collect());
+                                }
+                            }
+                            Ok(Value::Matrix(res_matrix))
+                        }
+                        _ => Err(Error::TypeError("Element-wise operations require arrays or matrices (or scalar broadcast)".to_string())),
+                    }
+                }
+                "compute::random" => {
+                    if args.len() != 2 { return Err(Error::InvalidOperation("compute::random(rows, cols) requires 2 arguments".to_string())); }
+                    let rows = self.eval_expression(&args[0])?.to_int()? as usize;
+                    let cols = self.eval_expression(&args[1])?.to_int()? as usize;
+                    let mat = compute::random(rows, cols);
+                    let result_val = mat.into_iter().map(|row| row.into_iter().map(Value::Float).collect()).collect();
+                    Ok(Value::Matrix(result_val))
+                }
+                "compute::one_hot" => {
+                    if args.len() != 2 { return Err(Error::InvalidOperation("compute::one_hot(labels, classes) requires 2 arguments".to_string())); }
+                    let labels_val = self.eval_expression(&args[0])?;
+                    let classes = self.eval_expression(&args[1])?.to_int()? as usize;
+                    
+                    let labels: Vec<f64> = match labels_val {
+                        Value::Array(arr) => {
+                            arr.iter().map(|v| v.to_float().unwrap_or(0.0)).collect()
+                        }
+                        _ => return Err(Error::TypeError("Labels must be an array".to_string())),
+                    };
+                    
+                    let mat = compute::one_hot(&labels, classes);
+                    let result_val = mat.into_iter().map(|row| row.into_iter().map(Value::Float).collect()).collect();
+                    Ok(Value::Matrix(result_val))
+                }
+                "compute::transpose" | "compute::exp" | "compute::log" | "compute::relu" | "compute::sigmoid" | "compute::tanh" | "compute::sum_columns" | "compute::softmax" => {
+                     if args.len() != 1 { return Err(Error::InvalidOperation("Unary compute op requires 1 argument".to_string())); }
+                     let arg = self.eval_expression(&args[0])?;
+                     
+                     let mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &arg {
+                         m.iter().map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0)).collect()).collect()
+                     } else {
+                         return Err(Error::TypeError("Argument must be a matrix".to_string()));
+                     };
+
+                     let res = match name.as_str() {
+                         "compute::transpose" => compute::transpose(&mat),
+                         "compute::sum_columns" => compute::sum_columns(&mat),
+                         "compute::softmax" => compute::softmax(&mat),
+                         "compute::exp" => compute::exp(&mat),
+                         "compute::log" => compute::log(&mat),
+                         "compute::relu" => compute::relu(&mat),
+                         "compute::sigmoid" => compute::sigmoid(&mat),
+                         "compute::tanh" => compute::tanh(&mat),
+                         _ => unreachable!(),
+                     };
+                     
+                     let result_val = res.into_iter().map(|row| row.into_iter().map(Value::Float).collect()).collect();
+                     Ok(Value::Matrix(result_val))
+                }
+                "compute::cross_entropy" => {
+                    if args.len() != 2 { return Err(Error::InvalidOperation("cross_entropy requires 2 arguments".to_string())); }
+                    let a = self.eval_expression(&args[0])?;
+                    let b = self.eval_expression(&args[1])?;
+
+                    let a_mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &a {
+                        m.iter().map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0)).collect()).collect()
+                    } else {
+                         return Err(Error::TypeError("Argument 1 must be a matrix".to_string()));
+                    };
+                    let b_mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &b {
+                        m.iter().map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0)).collect()).collect()
+                    } else {
+                         return Err(Error::TypeError("Argument 2 must be a matrix".to_string()));
+                    };
+                    
+                    let loss = compute::cross_entropy(&a_mat, &b_mat);
+                    Ok(Value::Float(loss))
+                }
+                "compute::sum" | "compute::max" | "compute::argmax" => {
+                     if args.len() != 1 { return Err(Error::InvalidOperation("Reduction op requires 1 argument".to_string())); }
+                     let arg = self.eval_expression(&args[0])?;
+                     
+                     let mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &arg {
+                         m.iter().map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0)).collect()).collect()
+                     } else {
+                         return Err(Error::TypeError("Argument must be a matrix".to_string()));
+                     };
+
+                     let val = match name.as_str() {
+                         "compute::sum" => compute::sum(&mat),
+                         "compute::max" => compute::max(&mat),
+                         "compute::argmax" => compute::argmax(&mat),
+                         _ => unreachable!(),
+                     };
+                     
+                     Ok(Value::Float(val))
+                }
                 "len" => {
                     if args.len() != 1 {
                         return Err(Error::RuntimeError("len() expects 1 argument".to_string()));
@@ -467,12 +860,19 @@ impl Executor {
                     let val = self.eval_expression(&args[1])?;
                     
                     match arr_val {
-                        Value::Array(a) => {
-                             let mut new_arr = a.clone();
-                             new_arr.push(val);
-                             Ok(Value::Array(new_arr))
+                        Value::Array(mut a) => {
+                             a.push(val);
+                             Ok(Value::Array(a))
                         }
-                        _ => Err(Error::TypeError("append() expects array".to_string())),
+                        Value::Matrix(mut m) => {
+                             if let Value::Array(row) = val {
+                                 m.push(row);
+                                 Ok(Value::Matrix(m))
+                             } else {
+                                 Err(Error::TypeError("append() to Matrix expects array row".to_string()))
+                             }
+                        }
+                        _ => Err(Error::TypeError(format!("append() expects array or matrix, got {}", arr_val.type_name()))),
                     }
                 }
                 "asInt" => {
@@ -629,6 +1029,27 @@ impl Executor {
                          }
                          Err(_) => Ok(Value::Bool(false)),
                     }
+                }
+                "csv::read" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("csv::read() expects 1 argument".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("Path must be string".to_string())),
+                    };
+                    
+                    let content = std::fs::read_to_string(&path)
+                        .map_err(|e| Error::RuntimeError(format!("Failed to read file: {}", e)))?;
+                    
+                    let rows: Vec<Vec<Value>> = content.lines()
+                        .map(|line| {
+                            line.split(',')
+                                .map(|cell| Value::String(cell.trim().to_string()))
+                                .collect()
+                        })
+                        .collect();
+                    Ok(Value::Matrix(rows))
                 }
                 "csv::parse" => {
                     if args.len() != 1 {
@@ -1445,11 +1866,52 @@ impl Executor {
                     
                     Ok(Value::Bool(true))
                 }
-                _ => Err(Error::RuntimeError(format!("Unknown function: {}", name))),
+                _ => {
+                    if let Some(func_def) = self.functions.get(name).cloned() {
+                        self.execute_user_function(func_def, args)
+                    } else {
+                        Err(Error::RuntimeError(format!("Unknown function: {}", name)))
+                    }
+                }
             }
         } else {
             Err(Error::RuntimeError("Invalid function call".to_string()))
         }
+    }
+
+    fn execute_user_function(&mut self, func_def: FunctionDef, args: &[Expression]) -> Result<Value> {
+        let mut arg_values = Vec::new();
+        for arg in args {
+            arg_values.push(self.eval_expression(arg)?);
+        }
+        
+        if arg_values.len() != func_def.params.len() {
+             return Err(Error::RuntimeError(format!("Function expects {} arguments, got {}", func_def.params.len(), arg_values.len())));
+        }
+        
+        self.push_scope();
+        
+        for ((name, _ty), val) in func_def.params.iter().zip(arg_values.into_iter()) {
+            self.declare_variable(name.clone(), val);
+        }
+        
+        let mut result = Value::Bool(false);
+        for stmt in &func_def.body {
+            match self.execute_statement(stmt) {
+                Ok(_) => {},
+                Err(Error::Return(val)) => {
+                    result = val;
+                    break;
+                },
+                Err(e) => {
+                    self.pop_scope();
+                    return Err(e);
+                }
+            }
+        }
+        
+        self.pop_scope();
+        Ok(result)
     }
 
     fn eval_binary_op(&self, left: &Value, op: BinaryOp, right: &Value) -> Result<Value> {

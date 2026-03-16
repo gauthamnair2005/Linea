@@ -1,0 +1,58 @@
+import ml
+import datasets
+
+display "=== Linea ML Demo: OR Classification ==="
+
+# 1. Data Preparation
+var X = [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]]
+var y = [[0.0], [1.0], [1.0], [1.0]]
+
+display "Input Shape: " + ml::shape(X)
+display "Target Shape: " + ml::shape(y)
+
+# 2. Model Initialization
+# Simple Perceptron: 2 inputs -> 1 output
+var layer = ml::Linear(2, 1)
+
+display "Initial Weights:"
+display layer[0]
+
+# 3. Training Loop (Forward Pass & Loss)
+display "Starting Training Loop..."
+var z = [[0.0]]
+var pred = [[0.0]]
+var loss = 0.0
+var grad_loss = [[0.0]]
+var grad_sigmoid = [[0.0]]
+
+for i from 0 ~ 2000 {
+    # Forward Pass
+    varUpd z = ml::forward(layer, X)
+    varUpd pred = ml::sigmoid(z)
+    
+    # Compute Loss
+    varUpd loss = ml::mse_loss(pred, y)
+    
+    if i % 200 == 0 {
+        display "Epoch " + i + " | Loss: " + loss
+    }
+    
+    # Backward Pass
+    # 1. dLoss / dPred
+    varUpd grad_loss = ml::backward_mse(pred, y)
+    
+    # 2. dPred / dZ (Backprop through Sigmoid)
+    # grad_sigmoid = sigmoid'(z) * grad_loss
+    varUpd grad_sigmoid = ml::backward_sigmoid(z, grad_loss)
+    
+    # 3. Update Parameters (Backprop through Linear)
+    # Returns updated layer
+    varUpd layer = ml::step(layer, grad_sigmoid, X, 0.1)
+}
+
+display "Inference after training:"
+var final_z = ml::forward(layer, X)
+var final_pred = ml::sigmoid(final_z)
+display final_pred
+display "Target:"
+display y

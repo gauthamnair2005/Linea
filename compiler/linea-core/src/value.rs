@@ -131,6 +131,27 @@ impl PartialEq for Value {
             (Value::Float(a), Value::Float(b)) => (a - b).abs() < 1e-10,
             (Value::String(a), Value::String(b)) => a == b,
             (Value::Bool(a), Value::Bool(b)) => a == b,
+            (Value::Array(a), Value::Array(b)) => {
+                if a.len() != b.len() { return false; }
+                a.iter().zip(b.iter()).all(|(x, y)| x == y)
+            }
+            (Value::Matrix(a), Value::Matrix(b)) => {
+                if a.len() != b.len() { return false; }
+                a.iter().zip(b.iter()).all(|(row_a, row_b)| {
+                    if row_a.len() != row_b.len() { return false; }
+                    row_a.iter().zip(row_b.iter()).all(|(x, y)| x == y)
+                })
+            }
+            (Value::Tensor(a), Value::Tensor(b)) => {
+                if a.len() != b.len() { return false; }
+                a.iter().zip(b.iter()).all(|(mat_a, mat_b)| {
+                    if mat_a.len() != mat_b.len() { return false; }
+                    mat_a.iter().zip(mat_b.iter()).all(|(row_a, row_b)| {
+                        if row_a.len() != row_b.len() { return false; }
+                        row_a.iter().zip(row_b.iter()).all(|(x, y)| x == y)
+                    })
+                })
+            }
             (Value::Null, Value::Null) => true,
             _ => false,
         }

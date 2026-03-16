@@ -1,4 +1,4 @@
-use clap::{Parser as ClapParser, Subcommand};
+use clap::{Parser, Subcommand};
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -6,10 +6,10 @@ use linea_ast::parse;
 use linea_executor::Executor;
 use linea_codegen::generate_rust_code;
 
-#[derive(ClapParser)]
+#[derive(Parser)]
 #[command(name = "linea")]
-#[command(about = "The Linea Programming Language Compiler", long_about = None)]
-#[command(version = "3.2.0-alpha-1")]
+#[command(about = "Linea Compiler | High-Performance AI & Data Language", long_about = None)]
+#[command(version = "3.4.0 (Professional Edition)")]
 #[command(author = "Gautham Nair <https://github.com/gauthamnair2005>")]
 struct Cli {
     #[command(subcommand)]
@@ -18,9 +18,9 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Compile a Linea source file to an executable
+    /// Compile Linea source to optimized native executable
     Compile {
-        /// Input Linea source file
+        /// Input source file (.ln)
         #[arg(value_name = "FILE")]
         input: PathBuf,
 
@@ -29,27 +29,27 @@ enum Commands {
         output: Option<PathBuf>,
     },
 
-    /// Run a Linea source file directly (interpreted)
+    /// Run Linea source directly (Interpreter Mode)
     Run {
-        /// Input Linea source file
+        /// Input source file (.ln)
         #[arg(value_name = "FILE")]
         input: PathBuf,
     },
 
-    /// Parse a Linea file and display the AST
+    /// Debug: Inspect Abstract Syntax Tree (AST)
     Parse {
-        /// Input Linea source file
+        /// Input source file (.ln)
         #[arg(value_name = "FILE")]
         input: PathBuf,
     },
 
-    /// Generate Rust code from Linea source
+    /// Debug: Generate intermediate Rust code
     GenRust {
-        /// Input Linea source file
+        /// Input source file (.ln)
         #[arg(value_name = "FILE")]
         input: PathBuf,
 
-        /// Output Rust file
+        /// Output Rust file (.rs)
         #[arg(short, long, value_name = "FILE")]
         output: Option<PathBuf>,
     },
@@ -74,7 +74,15 @@ fn main() {
     }
 }
 
+fn print_header(action: &str, file: &std::path::Path) {
+    println!("Linea Compiler v3.4.0 | Professional Edition");
+    println!("Action: {} | Target: {}", action, file.display());
+    println!("--------------------------------------------------");
+}
+
 fn compile_file(input: &PathBuf, output: Option<PathBuf>) {
+    print_header("Compiling", input);
+    
     let source = match fs::read_to_string(input) {
         Ok(content) => content,
         Err(e) => {
@@ -83,19 +91,22 @@ fn compile_file(input: &PathBuf, output: Option<PathBuf>) {
         }
     };
 
+    println!(">> Parsing source code...");
     match parse(&source) {
         Ok(program) => {
+            println!(">> Generating native backend code...");
             match generate_rust_code(&program) {
                 Ok(rust_code) => {
-                    let output_path = output.unwrap_or_else(|| {
+                    let output_path = output.clone().unwrap_or_else(|| {
                         let mut p = input.clone();
                         p.set_extension("");
                         p
                     });
+                    
+                    // Normalize project name (remove extension, ensure valid crate name)
+                    let file_stem = input.file_stem().unwrap().to_str().unwrap();
+                    let project_name = file_stem.replace(|c: char| !c.is_alphanumeric() && c != '_', "_");
 
-                    let rs_file = format!("{}.rs", output_path.display());
-                    // Create a temporary Cargo project
-                    let project_name = output_path.file_stem().unwrap().to_str().unwrap();
                     let build_dir = std::env::temp_dir().join(format!("linea_build_{}", project_name));
                     
                     if build_dir.exists() {
@@ -103,7 +114,7 @@ fn compile_file(input: &PathBuf, output: Option<PathBuf>) {
                     }
                     fs::create_dir_all(build_dir.join("src")).expect("Failed to create build dir");
                     
-                    // Write Cargo.toml
+                    // Write Cargo.toml with dependencies
                     let cargo_toml = format!(r#"[package]
 name = "{}"
 version = "0.1.0"
@@ -118,41 +129,51 @@ comrak = "0.18"
 calamine = "0.24"
 rust_xlsxwriter = "0.68"
 plotters = {{ version = "0.3.7", default-features = false, features = ["bitmap_backend", "bitmap_encoder", "line_series", "point_series", "histogram", "ab_glyph"] }}
+wgpu = "0.20"
+pollster = "0.3"
+bytemuck = {{ version = "1.14", features = ["derive"] }}
+futures = "0.3"
 "#, project_name);
 
                     fs::write(build_dir.join("Cargo.toml"), cargo_toml).expect("Failed to write Cargo.toml");
                     fs::write(build_dir.join("src/main.rs"), rust_code).expect("Failed to write main.rs");
 
-                    println!("Building with Cargo in {}...", build_dir.display());
+                    println!(">> Building optimized binary (release mode)...");
 
                     match Command::new("cargo")
                         .arg("build")
                         .arg("--release")
                         .current_dir(&build_dir)
                         .output() {
-                        Ok(output) => {
-                            if output.status.success() {
-                                println!("✓ Compilation successful!");
+                        Ok(cargo_output) => {
+                            if cargo_output.status.success() {
+                                println!(">> Finalizing build...");
                                 
                                 // Move binary to output location
                                 let binary_name = if cfg!(windows) { format!("{}.exe", project_name) } else { project_name.to_string() };
                                 let built_binary = build_dir.join("target/release").join(&binary_name);
-                                let final_output = if output_path.extension().is_none() && cfg!(windows) {
-                                    output_path.with_extension("exe")
-                                } else {
-                                    output_path.clone()
-                                };
                                 
-                                match fs::copy(&built_binary, &final_output) {
-                                    Ok(_) => println!("Output: {}", final_output.display()),
+                                let final_output_path = if output.is_some() {
+                                    output.clone().unwrap()
+                                } else {
+                                    // Default output is current_dir/filename (no extension on linux, .exe on windows)
+                                    let mut p = PathBuf::from(".");
+                                    p.push(if cfg!(windows) { format!("{}.exe", project_name) } else { project_name.to_string() });
+                                    p
+                                };
+
+                                match fs::copy(&built_binary, &final_output_path) {
+                                    Ok(_) => {
+                                        println!("--------------------------------------------------");
+                                        println!("✓ SUCCESS: Build complete.");
+                                        println!("  Artifact: {}", final_output_path.display());
+                                    },
                                     Err(e) => eprintln!("✗ Error copying binary: {}", e),
                                 }
-                                
-                                // Cleanup
-                                // let _ = fs::remove_dir_all(&build_dir);
                             } else {
-                                eprintln!("✗ Cargo compilation failed");
-                                eprintln!("{}", String::from_utf8_lossy(&output.stderr));
+                                eprintln!("--------------------------------------------------");
+                                eprintln!("✗ FAILURE: Compilation failed.");
+                                eprintln!("Details:\n{}", String::from_utf8_lossy(&cargo_output.stderr));
                                 std::process::exit(1);
                             }
                         }
@@ -169,13 +190,15 @@ plotters = {{ version = "0.3.7", default-features = false, features = ["bitmap_b
             }
         }
         Err(e) => {
-            eprintln!("✗ Compilation failed: {}", e);
+            eprintln!("✗ Parse error: {}", e);
             std::process::exit(1);
         }
     }
 }
 
 fn run_file(input: &PathBuf) {
+    print_header("Executing (Interpreter)", input);
+
     let source = match fs::read_to_string(input) {
         Ok(content) => content,
         Err(e) => {
@@ -189,22 +212,27 @@ fn run_file(input: &PathBuf) {
             let mut executor = Executor::new();
             match executor.execute(&program) {
                 Ok(_) => {
-                    // Program executed successfully, output already printed
+                    println!("--------------------------------------------------");
+                    println!("✓ Execution finished successfully.");
                 }
                 Err(e) => {
-                    eprintln!("✗ Runtime error: {}", e);
+                    eprintln!("--------------------------------------------------");
+                    eprintln!("✗ Runtime Exception: {}", e);
                     std::process::exit(1);
                 }
             }
         }
         Err(e) => {
-            eprintln!("✗ Parse error: {}", e);
+            eprintln!("--------------------------------------------------");
+            eprintln!("✗ Syntax Error: {}", e);
             std::process::exit(1);
         }
     }
 }
 
 fn parse_file(input: &PathBuf) {
+    print_header("Debugging AST", input);
+
     let source = match fs::read_to_string(input) {
         Ok(content) => content,
         Err(e) => {
@@ -225,6 +253,8 @@ fn parse_file(input: &PathBuf) {
 }
 
 fn gen_rust_file(input: &PathBuf, output: Option<PathBuf>) {
+    print_header("Generating Intermediate Rust", input);
+
     let source = match fs::read_to_string(input) {
         Ok(content) => content,
         Err(e) => {
@@ -244,7 +274,9 @@ fn gen_rust_file(input: &PathBuf, output: Option<PathBuf>) {
                     });
 
                     match fs::write(&output_path, rust_code) {
-                        Ok(_) => println!("✓ Generated Rust code: {}", output_path.display()),
+                        Ok(_) => {
+                            println!("✓ Generated Rust source: {}", output_path.display());
+                        },
                         Err(e) => {
                             eprintln!("✗ Error writing file: {}", e);
                             std::process::exit(1);

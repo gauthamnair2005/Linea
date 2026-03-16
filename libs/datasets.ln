@@ -1,0 +1,51 @@
+import ml
+
+func datasets::load_csv(path: string) -> any {
+  return csv::read(path)
+}
+
+func datasets::get_column(data: any, col_name: string) -> any {
+  var col = csv::getColumn(data, col_name)
+  var res = [0.0]
+  var cnt = len(col)
+  
+  if (cnt > 0) {
+      for i from 0 ~ cnt - 1 {
+          varUpd res = append(res, asFloat(col[i]))
+      }
+      if (len(res) > 1) {
+          varUpd res = res[1 : len(res)]
+      } else {
+          varUpd res = []
+      }
+  } else {
+      varUpd res = []
+  }
+  return res
+}
+
+func datasets::one_hot(labels: any, classes: int) -> float[][] {
+  return compute::one_hot(labels, classes)
+}
+
+func datasets::train_test_split(data: any, test_ratio: float) -> any {
+    var rows_count = len(data)
+    var test_ratio_f = test_ratio
+    
+    if rows_count == 0 {
+        return [[], []]
+    }
+    
+    var train = []
+    var test = []
+    
+    for i from 0 ~ rows_count - 1 {
+        if i < (rows_count * (1.0 - test_ratio_f)) {
+            varUpd train = append(train, data[i])
+        } else {
+            varUpd test = append(test, data[i])
+        }
+    }
+    
+    return [train, test]
+}

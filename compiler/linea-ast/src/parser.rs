@@ -547,12 +547,27 @@ impl Parser {
 
     fn parse_type(&mut self) -> Result<Type> {
         let type_name = self.expect_identifier()?;
-        match type_name.as_str() {
-            "int" => Ok(Type::Int),
-            "float" => Ok(Type::Float),
-            "string" => Ok(Type::String),
-            "bool" => Ok(Type::Bool),
-            _ => Err(Error::TypeError(format!("Unknown type: {}", type_name))),
+        let base_type = match type_name.as_str() {
+            "int" => Type::Int,
+            "float" => Type::Float,
+            "string" => Type::String,
+            "bool" => Type::Bool,
+            "any" => Type::Unknown,
+            _ => return Err(Error::TypeError(format!("Unknown type: {}", type_name))),
+        };
+        
+        let mut dims = 0;
+        while self.consume_optional(&TokenType::LeftBracket) {
+            self.expect(&TokenType::RightBracket)?;
+            dims += 1;
+        }
+        
+        match dims {
+            0 => Ok(base_type),
+            1 => Ok(Type::Array(Box::new(base_type))),
+            2 => Ok(Type::Matrix(Box::new(base_type))),
+            3 => Ok(Type::Tensor(Box::new(base_type))),
+            _ => Ok(Type::Tensor(Box::new(base_type))),
         }
     }
 
@@ -588,8 +603,25 @@ impl Parser {
     fn expect_identifier(&mut self) -> Result<String> {
         match &self.current_token().token_type.clone() {
             TokenType::Identifier(name) => {
-                let name = name.clone();
+                let mut name = name.clone();
                 self.advance();
+                
+                // Allow scoped identifiers (e.g. module::func)
+                while self.current_token().token_type == TokenType::DoubleColon {
+                    self.advance();
+                    if let TokenType::Identifier(next_name) = &self.current_token().token_type {
+                        name.push_str("::");
+                        name.push_str(next_name);
+                        self.advance();
+                    } else {
+                        return Err(Error::Syntax {
+                            line: self.current_token().line,
+                            column: self.current_token().column,
+                            message: "Expected identifier after '::'".to_string(),
+                        });
+                    }
+                }
+                
                 Ok(name)
             }
             _ => Err(Error::Syntax {

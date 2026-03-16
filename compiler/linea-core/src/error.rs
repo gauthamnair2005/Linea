@@ -27,6 +27,9 @@ pub enum Error {
     #[error("Runtime error: {0}")]
     RuntimeError(String),
 
+    #[error("Return called")]
+    Return(crate::value::Value),
+
     #[error("IO error: {0}")]
     IoError(String),
 }

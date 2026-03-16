@@ -3,251 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Linea 3.1.0 - A modern, compiled programming language built with Rust. Memory safe, blazing fast, zero dependencies.">
-    <title>Linea 3.1.0 - Compiled Programming Language</title>
+    <meta name="description" content="Linea 3.4.0 - The Professional System Programming Language for AI & ML. Compiled, Memory Safe, GPU Accelerated.">
+    <title>Linea 3.4.0 - Professional AI/ML Language</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="linea-logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--primary);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3 { font-weight: 700; letter-spacing: -0.025em; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 0;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: #fff; }
+        
+        .hero {
+            padding: 8rem 0 6rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--accent-glow); }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: #fff;
+            border: 1px solid var(--border);
+            margin-left: 1rem;
+        }
+        
+        .btn-secondary:hover { background: var(--border); }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .feature-card {
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .feature-card h3 { margin-bottom: 0.5rem; font-size: 1.25rem; }
+        .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
+        
+        .code-block {
+            background: #000;
+            padding: 2rem;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            text-align: left;
+            margin: 4rem auto;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        code { color: #e2e8f0; }
+        .keyword { color: #c678dd; }
+        .string { color: #98c379; }
+        .func { color: #61afef; }
+        .comment { color: #5c6370; }
+        
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 4rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
-        <div class="header-content">
-            <a href="#" class="logo-section">
-                <img src="linea-logo.svg" alt="Linea Logo" class="logo">
-                <div class="header-text">
-                    <h1>Linea</h1>
-                    <p class="tagline">Compiled Language • Open Source • Memory Safe</p>
-                </div>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Linea
             </a>
-            <nav>
-                <ul>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#quickstart">Quick Start</a></li>
-                    <li><a href="#comparison">Comparison</a></li>
-                    <li><a href="https://github.com/gauthamnair2005/Linea" target="_blank">GitHub</a></li>
-                </ul>
-            </nav>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#ai">AI & GPU</a></li>
+                <li><a href="#docs">Docs</a></li>
+                <li><a href="https://github.com/gauthamnair2005/Linea" target="_blank">GitHub</a></li>
+            </ul>
         </div>
     </header>
 
     <div class="container">
-        <!-- Hero Section -->
         <section class="hero">
-            <h2>Write Once, Compile Anywhere</h2>
-            <p>A modern, memory-safe compiled programming language built with Rust</p>
-            <p style="color: var(--text-secondary); font-size: 0.95rem;">
-                100-1000x faster • Zero dependencies • True memory safety
-            </p>
-            <p style="color: var(--accent-blue); font-size: 0.9rem; margin-top: 0.5rem;">
-                Created by <strong>Gautham Nair</strong>
-            </p>
-            <div class="cta-buttons">
-                <button class="btn btn-primary" onclick="document.getElementById('quickstart').scrollIntoView()">Get Started</button>
-                <a href="RELEASE_3_0_0.md" class="btn btn-secondary">Release Notes</a>
-            </div>
-            <div class="foss-badge">100% Open Source • GPLv3</div>
-        </section>
-
-        <!-- Features Section -->
-        <section class="features" id="features">
-            <h2>Why Choose Linea?</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>⚡ Blazing Fast</h3>
-                    <p>Compiled to native machine code with Rust-level performance. 100-1000x faster than Python interpreters.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🔒 Memory Safe</h3>
-                    <p>Automatic memory management with compile-time borrow checking. Zero use-after-free or buffer overflow bugs.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📦 Zero Deps</h3>
-                    <p>Standalone executable binaries. Only libc required at runtime. No dependency hell or version conflicts.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>✨ Clean Syntax</h3>
-                    <p>Simple, readable syntax with type inference. No boilerplate, no surprises. Easy to learn and teach.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🎯 Type Safe</h3>
-                    <p>Static type checking catches errors at compile time. Instant feedback with helpful error messages.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🌍 Portable</h3>
-                    <p>Works on Linux, macOS, and Windows x86-64. Same binary runs everywhere without recompilation.</p>
-                </div>
+            <span class="tag">v3.4.0 Professional Edition Available Now</span>
+            <h1>The Systems Language<br>for the AI Era</h1>
+            <p>Compile to native code. Train models on GPU. Zero dependencies. <br>Memory safety without garbage collection.</p>
+            <div>
+                <a href="#install" class="btn btn-primary">Install Linea</a>
+                <a href="https://github.com/gauthamnair2005/Linea" class="btn btn-secondary">View Source</a>
             </div>
         </section>
 
-        <!-- Quick Start Section -->
-        <section class="quickstart" id="quickstart">
-            <h2>Quick Start</h2>
+        <div class="code-block">
+            <pre><code><span class="comment"># Train a Neural Network in 10 lines</span>
+<span class="keyword">import</span> ml
 
-            <h3>1. Install the Compiler</h3>
-            <pre><code>$ curl -fsSL https://github.com/gauthamnair2005/Linea/releases/download/v3.1.0/install.sh | sh
-$ linea --help</code></pre>
+<span class="keyword">var</span> model = <span class="func">ml::Linear</span>(784, 10)
+<span class="keyword">var</span> data = <span class="func">datasets::load_csv</span>(<span class="string">"mnist.csv"</span>)
 
-            <h3>2. Create a Program</h3>
-            <pre><code>$ cat > hello.ln << 'EOF'
-var greeting = "Hello, Linea!"
-display greeting
-EOF</code></pre>
-
-            <h3>3. Compile and Run</h3>
-            <pre><code>$ linea compile hello.ln -o hello
-$ ./hello
-Hello, Linea!</code></pre>
-
-            <p>That's it! Your executable runs anywhere. No Linea needed.</p>
-        </section>
-
-        <!-- Code Examples Section -->
-        <section class="examples-section">
-            <h2>Language Features</h2>
-            <div class="examples-grid">
-                <div class="code-example">
-                    <h4>Variables & Types</h4>
-                    <pre><code>var x = 42
-var pi = 3.14159
-var name = "Linea"
-var active = true</code></pre>
-                </div>
-                <div class="code-example">
-                    <h4>Control Flow</h4>
-                    <pre><code>if x > 0 {
-    display "positive"
-} else {
-    display "non-positive"
+<span class="keyword">for</span> epoch <span class="keyword">from</span> 0~10 {
+    <span class="keyword">var</span> pred = <span class="func">ml::forward</span>(model, data.x)
+    <span class="keyword">var</span> loss = <span class="func">ml::cross_entropy</span>(pred, data.y)
+    <span class="keyword">var</span> grad = <span class="func">ml::backward</span>(pred, data.y)
+    
+    <span class="func">ml::step</span>(model, grad, 0.01)
+    <span class="func">display</span> <span class="string">"Loss: "</span> + loss
 }</code></pre>
-                </div>
-                <div class="code-example">
-                    <h4>Loops</h4>
-                    <pre><code>for i from 1~10 {
-    display i
-}
+        </div>
 
-while x > 0 {
-    x = x - 1
-}</code></pre>
+        <section class="features-grid" id="features">
+            <div class="feature-card">
+                <h3>🚀 Native Performance</h3>
+                <p>Compiles directly to machine code using LLVM/Rust backend. No VM overhead. 100x faster than interpreted languages.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🧠 First-Class AI Support</h3>
+                <p>Built-in tensor operations and autograd. GPU acceleration for Intel, AMD, and Nvidia out of the box.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🛡️ Memory Safe</h3>
+                <p>Ownership-based memory management ensures zero use-after-free bugs without a garbage collector.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📦 Zero Dependencies</h3>
+                <p>Produces single, standalone binaries. Distribute your applications without "dependency hell".</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔧 Professional Tooling</h3>
+                <p>Includes package manager, build system, formatter, and language server protocol support.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🌐 Interoperable</h3>
+                <p>Easily call C/Rust libraries. Export Linea functions to other languages. JSON/CSV/HTTP built-in.</p>
+            </div>
+        </section>
+
+        <section id="ai" style="padding: 4rem 0; text-align: center;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Hardware Accelerated AI</h2>
+            <p style="max-width: 700px; margin: 0 auto 3rem; color: var(--text-muted);">
+                Linea 3.4.0 introduces the revolutionary WGPU compute backend. Your code automatically runs on the best available hardware.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+                <div style="background: var(--secondary); padding: 1rem 2rem; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 1.5rem;">🟢</span> NVIDIA CUDA
                 </div>
-                <div class="code-example">
-                    <h4>Arrays</h4>
-                    <pre><code>var arr = [1, 2, 3, 4]
-var mixed = [1, "two", 3.0]
-display arr</code></pre>
+                <div style="background: var(--secondary); padding: 1rem 2rem; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 1.5rem;">🔴</span> AMD ROCm
                 </div>
-                <div class="code-example">
-                    <h4>Operators</h4>
-                    <pre><code>var sum = a + b
-var power = x ^ 2
-var isEqual = x == y
-var result = a && b || c</code></pre>
-                </div>
-                <div class="code-example">
-                    <h4>Type Casting</h4>
-                    <pre><code>var count = "42"
-typeCast num = int from count
-display num + 8  // 50</code></pre>
+                <div style="background: var(--secondary); padding: 1rem 2rem; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 1.5rem;">🔵</span> Intel OneAPI
                 </div>
             </div>
         </section>
 
-        <!-- Comparison Table -->
-        <section class="comparison" id="comparison">
-            <h2>Linea 2.x vs 3.0</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Aspect</th>
-                        <th>Linea 2.x (Python)</th>
-                        <th>Linea 3.0 (Compiled)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Execution Model</td>
-                        <td>Interpreted</td>
-                        <td><strong>Compiled to native code</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Performance</td>
-                        <td>1x (baseline)</td>
-                        <td><strong>100-1000x faster</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Memory Management</td>
-                        <td>Garbage collection</td>
-                        <td><strong>Automatic with borrow checker</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Dependencies</td>
-                        <td>Python 3.x + libraries</td>
-                        <td><strong>Only libc</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Binary Size</td>
-                        <td>N/A</td>
-                        <td><strong>~1.3MB</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Startup Time</td>
-                        <td>100-500ms</td>
-                        <td><strong>Instant (&lt;1ms)</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Type System</td>
-                        <td>Dynamic</td>
-                        <td><strong>Static with inference</strong></td>
-                    </tr>
-                    <tr>
-                        <td>License</td>
-                        <td>GPLv3</td>
-                        <td><strong>GPLv3 (FOSS)</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <!-- Changelog Section -->
-        <section class="changelog">
-            <h2>What's New in 3.0.0 'Avocado'</h2>
-            <ul>
-                <li>Complete rewrite in Rust with modern compiler infrastructure</li>
-                <li>Native binary compilation with rustc backend</li>
-                <li>Full lexer, parser, type checker, and code generator</li>
-                <li>Static type inference with optional type annotations</li>
-                <li>Standalone interpreter for direct execution</li>
-                <li>Zero external dependencies for compiled binaries</li>
-                <li>Comprehensive error messages with line/column info</li>
-                <li>Support for variables, arrays, loops, conditionals, and more</li>
-            </ul>
-        </section>
-
-        <!-- FOSS Section -->
-        <section class="foss-section">
-            <h2>Open Source & Community</h2>
-            <p>Linea is 100% open source and developed by the community. The full compiler source code is available on GitHub under the GPLv3 license.</p>
-            <p>
-                <a href="https://github.com/gauthamnair2005/Linea" class="btn btn-primary" target="_blank">View on GitHub</a>
-            </p>
-            <p style="color: var(--text-secondary); font-size: 0.95rem;">Contributions welcome! Report bugs, suggest features, or submit pull requests.</p>
-        </section>
+        <footer>
+            <p>© 2025 Linea Language. Released under GPLv3.</p>
+            <p style="margin-top: 1rem;">Designed for the next generation of systems programming.</p>
+        </footer>
     </div>
-
-    <!-- Footer -->
-    <footer>
-        <p><strong>Linea Programming Language v3.1.0 'Avocado'</strong></p>
-        <p>A modern, memory-safe compiled language built with Rust</p>
-        <p><strong>Created by Gautham Nair</strong> • <a href="mailto:gautham.nair.2005@gmail.com">Contact</a></p>
-        <p>
-            <a href="LICENSE">License (GPLv3)</a> • 
-            <a href="README.md">Documentation</a> • 
-            <a href="RELEASE_3_0_0.md">Release Notes</a> • 
-            <a href="https://github.com/gauthamnair2005/Linea" target="_blank">GitHub</a>
-        </p>
-        <p style="margin-top: 1rem; font-size: 0.85rem;">
-            Made with ❤️ by Gautham Nair • Powered by Rust 🦀
-        </p>
-    </footer>
 </body>
 </html>

@@ -4,6 +4,8 @@ version = "3.1.0"
 edition = "2021"
 
 [dependencies]
+bytemuck = { version = "1.14", features = ["derive"] }
+futures = "0.3"
 linea-ast = { path = "../linea-ast" }
 linea-core = { path = "../linea-core" }
 reqwest = { version = "0.12", features = ["blocking", "json", "rustls-tls"], default-features = false }
@@ -13,3 +15,6 @@ comrak = "0.18"
 calamine = "0.24"
 rust_xlsxwriter = "0.68"
 plotters = { version = "0.3.7", default-features = false, features = ["bitmap_backend", "bitmap_encoder", "line_series", "point_series", "histogram", "ab_glyph"] }
+wgpu = "0.20"
+pollster = "0.3"
+rand = "0.8"

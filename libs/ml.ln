@@ -1,0 +1,192 @@
+# Linea Machine Learning Library (v3.4.0)
+# Native implementation using hardware-accelerated compute backend
+
+# --- Tensor Operations ---
+
+func ml::rand(rows: int, cols: int) -> float[][] {
+  return compute::random(rows, cols)
+}
+
+func ml::zeros(rows: int, cols: int) -> float[][] {
+  # Create a matrix of zeros
+  return compute::mul(compute::random(rows, cols), 0.0)
+}
+
+func ml::ones(rows: int, cols: int) -> float[][] {
+  # Create a matrix of ones
+  var z = ml::zeros(rows, cols)
+  return compute::add(z, 1.0) # Broadcast scalar add
+}
+
+func ml::matmul(a: float[][], b: float[][]) -> float[][] {
+  return compute::matmul(a, b)
+}
+
+func ml::transpose(a: float[][]) -> float[][] {
+  return compute::transpose(a)
+}
+
+# --- Activations ---
+
+func ml::sigmoid(x: float[][]) -> float[][] {
+  return compute::sigmoid(x)
+}
+
+func ml::relu(x: float[][]) -> float[][] {
+  return compute::relu(x)
+}
+
+func ml::tanh(x: float[][]) -> float[][] {
+  return compute::tanh(x)
+}
+
+func ml::softmax(x: float[][]) -> float[][] {
+  return compute::softmax(x)
+}
+
+func ml::shape(x: any) -> int[] {
+  return shape(x)
+}
+
+func ml::sum_columns(x: float[][]) -> float[][] {
+  return compute::sum_columns(x)
+}
+
+# --- Layers ---
+
+func ml::Linear(input_size: int, output_size: int) -> any {
+  # [weights, biases, type]
+  var W = compute::mul(compute::random(input_size, output_size), 0.1)
+  var b = ml::zeros(1, output_size) # 1xOutput
+  return [W, b, "linear"]
+}
+
+func ml::forward(layer: any, input: float[][]) -> float[][] {
+  var type = layer[2]
+  if type == "linear" {
+    var W = layer[0]
+    var b = layer[1]
+    var z = compute::matmul(input, W)
+    # Broadcast add bias (z: [Batch, Out], b: [1, Out])
+    return compute::add(z, b) 
+  }
+  return input
+}
+
+# --- Loss Functions ---
+
+func ml::mse_loss(pred: float[][], target: float[][]) -> float {
+  var diff = compute::sub(pred, target)
+  var sq = compute::mul(diff, diff)
+  var s = compute::sum(sq)
+  # len(pred) returns rows. 
+  # Total elements = rows * cols
+  var rows = len(pred)
+  var cols = 0
+  if rows > 0 {
+    varUpd cols = len(pred[0])
+  }
+  return s / (rows * cols)
+}
+
+func ml::cross_entropy_loss(pred: float[][], target: float[][]) -> float {
+  return compute::cross_entropy(pred, target)
+}
+
+# --- Optimizers ---
+
+func ml::backward_mse(pred: float[][], target: float[][]) -> float[][] {
+  # dLoss/dPred = 2 * (pred - target) / N
+  # We'll just return (pred - target) for simplicity as scale is absorbed in lr
+  return compute::sub(pred, target)
+}
+
+func ml::backward_cross_entropy(pred: float[][], target: float[][]) -> float[][] {
+  # Gradient of CrossEntropy with Softmax (if pred is softmax output)
+  # But here pred is just input to loss.
+  # If we assume pred = Softmax(z), then dL/dZ = pred - target (standard result)
+  # But if we strictly differentiate CE(pred, target) w.r.t pred:
+  # L = -sum(target * log(pred))
+  # dL/dPred = -target / pred
+  
+  # NOTE: To use "pred - target" shortcut, we must bypass d_softmax.
+  # For now, let's implement exact dL/dPred
+  
+  # For numerical stability, we add epsilon in division if we could, 
+  # but here we rely on user to not have exactly 0.0 in pred (Softmax handles that usually)
+  
+  # -target / pred
+  # compute::div is element-wise
+  
+  var neg_target = compute::mul(target, -1.0)
+  return compute::div(neg_target, compute::add(pred, 0.000000000000001))
+}
+
+func ml::backward_sigmoid(x: float[][], grad_output: float[][]) -> float[][] {
+  # sigmoid(x) * (1 - sigmoid(x)) * grad_output
+  var s = ml::sigmoid(x)
+  var shape_x = ml::shape(x)
+  var rows = shape_x[0]
+  var cols = shape_x[1]
+  
+  var ones = ml::ones(rows, cols)
+  var one_minus_s = compute::sub(ones, s)
+  var d_sigmoid = compute::mul(s, one_minus_s)
+  
+  return compute::mul(d_sigmoid, grad_output)
+}
+
+func ml::backward_softmax(x: float[][], grad_output: float[][]) -> float[][] {
+  # If we have Z -> Softmax -> Loss
+  # And grad_output is dL/dSoftmax
+  # We want dL/dZ
+  
+  # Standard Softmax gradient is Jacobian matrix per sample.
+  # This is expensive.
+  # However, if Loss is CrossEntropy, then dL/dZ = Softmax(Z) - Target.
+  # This is much simpler.
+  
+  # So we provide a specialized backward for SoftmaxCrossEntropy
+  return [[0.0]]
+}
+
+func ml::backward_softmax_cross_entropy(pred: float[][], target: float[][]) -> float[][] {
+  # Returns dL/dZ where Z is logits (input to softmax)
+  # gradient = pred - target
+  # Divided by batch size usually? 
+  # Pytorch CrossEntropyLoss averages by default.
+  # Our forward CE divides by rows. So we should divide by rows here too.
+  
+  var diff = compute::sub(pred, target)
+  var rows = len(pred)
+  if rows > 0 {
+    return compute::div(diff, rows * 1.0)
+  }
+  return diff
+}
+
+func ml::step(layer: any, grad_output: float[][], input: float[][], lr: float) -> any {
+  if layer[2] == "linear" {
+     var W = layer[0]
+     var b = layer[1]
+     
+     # dL/dW = input.T @ grad_output
+     var dW = compute::matmul(compute::transpose(input), grad_output)
+     
+     # dL/db = sum(grad_output, axis=0)
+     var db = ml::sum_columns(grad_output)
+     
+     # Update parameters
+     # W = W - lr * dW
+     var W_new = compute::sub(W, compute::mul(dW, lr))
+     var b_new = compute::sub(b, compute::mul(db, lr))
+     
+     return [W_new, b_new, "linear"]
+  }
+  return layer
+}
+
+func ml::sgd_step(param: float[][], grad: float[][], lr: float) -> float[][] {
+  var step = compute::mul(grad, lr)
+  return compute::sub(param, step)
+}

@@ -722,6 +722,46 @@ impl RustGenerator {
                             let (arg, _) = self.generate_expression(&args[0])?;
                             Ok((format!("linea_runtime::graphics::save({}.to_string())", arg), "bool".to_string()))
                         }
+                        "compute::device" => {
+                            Ok(("linea_runtime::compute::device()".to_string(), "String".to_string()))
+                        }
+                        "compute::device_type" => {
+                            Ok(("linea_runtime::compute::device_type()".to_string(), "String".to_string()))
+                        }
+                        "compute::matmul" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<Vec<f64>>".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::compute::matmul(&{}, &{})", a_expr, b_expr), "Vec<Vec<f64>>".to_string()))
+                        }
+                        "compute::random" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<Vec<f64>>".to_string())); }
+                            let (rows, _) = self.generate_expression(&args[0])?;
+                            let (cols, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::compute::random({} as usize, {} as usize)", rows, cols), "Vec<Vec<f64>>".to_string()))
+                        }
+                        "compute::transpose" | "compute::exp" | "compute::log" | "compute::relu" | "compute::sigmoid" | "compute::tanh" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<Vec<f64>>".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            let func = name.as_str().split("::").nth(1).unwrap();
+                            Ok((format!("linea_runtime::compute::{}(&{})", func, arg), "Vec<Vec<f64>>".to_string()))
+                        }
+                        "compute::sum" | "compute::max" | "compute::argmax" => {
+                            if args.len() != 1 { return Ok(("0.0".to_string(), "f64".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            let func = name.as_str().split("::").nth(1).unwrap();
+                            Ok((format!("linea_runtime::compute::{}(&{})", func, arg), "f64".to_string()))
+                        }
+                        "compute::add" | "compute::sub" | "compute::mul" | "compute::div" => {
+                             let op = if name.contains("add") { "add" } 
+                                 else if name.contains("sub") { "sub" }
+                                 else if name.contains("mul") { "mul" }
+                                 else { "div" };
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<f64>".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::compute::element_wise(&{}, &{}, \"{}\")", a_expr, b_expr, op), "Vec<f64>".to_string()))
+                        }
                         _ => Ok(("0".to_string(), "i64".to_string())),
                     }
                 } else {
