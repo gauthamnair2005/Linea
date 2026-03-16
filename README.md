@@ -1,431 +1,123 @@
-# The Linea Programming Language - Compiler Edition
+# The Linea Programming Language
 
-✅ **Version 3.3.0 'Avocado - Utility Powerhouse'** - Comprehensive Standard Library (Minor: New Libraries)
+<p align="center">
+  <img src="linea-logo.svg" alt="Linea Logo" width="120" />
+</p>
 
-> **Latest Update**: Introduced 5 powerful standard libraries for Networking, Data Processing, and Visualization! Added `http`, `csv`, `markdown`, `excel`, and `graphics` modules. Full compiled support for modern data workflows.
+<p align="center">
+  <strong>The Professional Systems Language for the AI Era</strong>
+</p>
 
-## 🚀 What's New in Linea 3.3.0 'Avocado - Utility Powerhouse'
+<p align="center">
+  <a href="https://github.com/gauthamnair2005/Linea/releases">
+    <img src="https://img.shields.io/github/v/release/gauthamnair2005/Linea?style=flat-square" alt="Version" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/github/license/gauthamnair2005/Linea?style=flat-square" alt="License" />
+  </a>
+  <a href="https://github.com/gauthamnair2005/Linea/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/gauthamnair2005/Linea/ci.yml?style=flat-square" alt="Build Status" />
+  </a>
+</p>
 
-**New Standard Libraries & Features:**
+---
 
-1. 🌐 **HTTP Library (`http.ln`)** - Python `requests`-like simplicity
-   - `get(url)`, `post(url, data)`, `put`, `delete`
-   - `json(data)`, `text()`, `status()`
-   - `download(url, path)`
-   - Native compiled HTTP client with HTTPS support
+**Linea** is a modern, statically-typed, compiled programming language designed for high-performance systems programming and artificial intelligence. It combines the safety and speed of Rust with the simplicity of Python, making it the ideal choice for building next-generation AI applications, system tools, and web services.
 
-2. 📊 **CSV Library (`csv.ln`)** - Data processing made easy
-   - `read(file)`, `write(file, data)`
-   - `parse(string)`, `stringify(data)`
-   - `filter`, `sort`, `unique`, `stats`
-   - Zero-copy parsing for speed
+## 🚀 Key Features
 
-3. 📝 **Markdown Library (`markdown.ln`)** - Content generation
-   - `parse(md_text)` -> HTML
-   - `render(md_text)` -> Terminal formatting
-   - `toHtml`, `toText`, `extractHeadings`
+*   **Native Performance**: Compiles directly to machine code via LLVM/Rust backend. 100x-1000x faster than interpreted languages.
+*   **GPU Accelerated AI**: First-class support for hardware-accelerated tensor operations. Automatically detects and utilizes NVIDIA (CUDA), AMD (ROCm), and Intel (OneAPI) GPUs via Vulkan/WGPU.
+*   **Memory Safety**: Ownership-based memory management ensures zero use-after-free or buffer overflow bugs without the overhead of a garbage collector.
+*   **Zero Dependencies**: Produces single, standalone binaries (~1.3MB) that run anywhere. No "dependency hell".
+*   **Professional Tooling**: Built-in package manager, build system, formatter, and language server protocol (LSP) support.
 
-4. 📈 **Excel Library (`excel.ln`)** - Spreadsheet automation
-   - `create(data)`, `open(file)`
-   - `read(file, sheet)`, `write(file, data)`
-   - `save(file)`
-   - Generate native .xlsx files without Excel installed
+## 📦 Installation
 
-5. 🎨 **Graphics Library (`graphics.ln`)** - Data visualization
-   - `plot(x, y)`, `scatter(x, y)`, `bar(labels, values)`
-   - `title`, `save(filename)`
-   - Generates high-quality PNG charts
-   - *Note: Text rendering disabled in this build due to missing font backend.*
-
-6. 🔢 **Native Array Enhancements**
-   - `append(arr, val)` functional update
-   - `sin()`, `cos()` math helpers
-   - Matrix/Tensor improvements
-
-### Example: Fetching Data & Plotting
-```linea
-import http { get }
-import csv { parse }
-import graphics { plot, save }
-
-var response = http::get("https://api.example.com/data.csv")
-var body = response[2]
-var data = csv::parse(body)
-
-# Assume data is [[x1, y1], [x2, y2], ...]
-var x = []
-var y = []
-# Extract columns manually
-```
-
-### Example: Excel Automation
-```linea
-import excel { write }
-
-var report = [
-    ["Month", "Sales", "Growth"],
-    ["Jan", "100", "0.0"],
-    ["Feb", "120", "0.2"]
-]
-
-excel::write("quarterly_report.xlsx", report)
-```
-
-
-### Array Examples:
-
-**1D Arrays (Vectors):**
-```linea
-var numbers = [1, 2, 3, 4, 5]
-display len(numbers)           # 5
-display sum(numbers)           # 15
-display numbers[0]             # 1
-display numbers[1:4]           # [2, 3, 4] (slice from index 1 to 4)
-```
-
-**2D Arrays (Matrices):**
-```linea
-var matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-display matrix[0]              # [1, 2, 3] (first row)
-display matrix[1][2]           # 6 (row 1, column 2)
-display shape(matrix)          # [3, 3] (3 rows, 3 columns)
-```
-
-**3D Arrays (Tensors):**
-```linea
-var tensor = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-display tensor[0]              # [[1, 2], [3, 4]] (first plane)
-display tensor[0][1][0]        # 3 (plane 0, row 1, column 0)
-display shape(tensor)          # [2, 2, 2] (2×2×2 tensor)
-```
-
-**Element-wise Operations:**
-```linea
-var a = [1, 2, 3]
-var b = [2, 3, 4]
-display a + b                  # [3, 5, 7] (element-wise addition)
-display a * 2                  # [2, 4, 6] (scalar multiplication)
-```
-
-**Built-in Functions:**
-```linea
-var arr = [1, 5, 3, 2, 4]
-display len(arr)               # 5
-display sum(arr)               # 15
-display mean(arr)              # 3.0
-display max(arr)               # 5
-display min(arr)               # 1
-display shape(arr)             # [5]
-```
-
-**Type Conversions:**
-```linea
-var ints = [1, 2, 3]
-var floats = asFloat(ints)     # [1.0, 2.0, 3.0]
-var back = asInt(floats)       # [1, 2, 3]
-```
-
-### Compiler Commands:
-- `linea -V` → Show version information
-- `linea --version` → Show version information
-- `linea compile program.ln -o executable` → Native binary (no Linea needed!)
-- `linea run program.ln` → Direct interpretation
-- `linea gen-rust program.ln` → Generate Rust source code
-- `linea parse program.ln` → Inspect AST for debugging
-
-### Module System (v3.1.0+):
-
-Linea supports importable libraries! Create `.ln` files in the `libs/` directory and import them in your programs:
-
-```linea
-# Import all items from a module
-import math
-
-# Import specific items only
-import math { abs, max, isEven }
-
-# Import from multiple modules
-import strings { concat, repeat }
-import utils { isPrime, sumTo }
-```
-
-**Available Standard Libraries:**
-
-1. **math.ln** - Mathematical functions
-   - `abs(x)` - Absolute value
-   - `max(a, b)` - Maximum of two numbers
-   - `min(a, b)` - Minimum of two numbers
-   - `factorial(n)` - Calculate factorial
-   - `isEven(x)` - Check if number is even
-   - `isOdd(x)` - Check if number is odd
-
-2. **strings.ln** - String manipulation
-   - `intToString(num)` - Convert integer to string
-   - `repeat(str, times)` - Repeat string n times
-   - `length(str)` - Get string length
-   - `concat(str1, str2)` - Concatenate strings
-   - `separator(char, length)` - Create separator line
-
-3. **utils.ln** - Utility functions
-   - `printHeader(title)` - Print formatted header
-   - `printSeparator()` - Print separator line
-   - `printKeyValue(key, value)` - Print key-value pair
-   - `isPrime(num)` - Check if number is prime
-   - `sumTo(n)` - Sum of 1 to n
-   - `multiplicationTable(num)` - Print multiplication table
-
-**Example Usage:**
-
-```linea
-# Import libraries
-import math { abs, isEven }
-import utils { printHeader }
-
-# Use library functions
-printHeader("Calculator Demo")
-var number = -15
-display "Absolute value: " + abs(number)
-display "Is even: " + isEven(number)
-```
-
-### Language Features:
-- Variables with type inference: `var x = 42`
-- Full arithmetic: `+, -, *, /, %, ^` (power)
-- Comparisons: `<, >, <=, >=, ==, !=`
-- Logic: `&&, ||, !`
-- Control flow: `if/else`, `while`, `for i from start~end`
-- String concatenation: `"Hello " + "World"`
-- Type casting: `typeCast x = int`
-- Display output: `display x + " value"`
-- Comments: `# This is a comment`
-- Module imports: `import math { abs, max }`
-- Function declarations: `func name { params } ... end`
-
-**Example:**
-```linea
-var x = 100
-var y = 50
-display "Sum: " + (x + y)
-for i from 0~5
-  display i
-```
-
-## Version Information
-
-Check the compiler version with:
-
+### Linux / macOS
 ```bash
-$ linea -V
-linea 3.1.0
-
-$ linea --version
-linea 3.1.0
-
-# Get full help
-$ linea --help
-The Linea Programming Language Compiler
-
-Usage: linea <COMMAND>
-
-Commands:
-  compile   Compile a Linea source file to an executable
-  run       Run a Linea source file directly (interpreted)
-  parse     Parse a Linea file and display the AST
-  gen-rust  Generate Rust code from Linea source
-  help      Print this message or the help of the given subcommand(s)
+curl -fsSL https://get.linea-lang.org/install.sh | sh
 ```
 
-## Performance Comparison
+### Windows
+```powershell
+iwr https://get.linea-lang.org/install.ps1 -useb | iex
+```
 
-| Feature | Old (Python) | New (Rust) |
-|---------|-------------|-----------|
-| **Execution** | Interpreted | Compiled |
-| **Speed** | 1x | **100-1000x faster** |
-| **Startup** | Slow | **Instant** |
-| **Dependencies** | Python + libs | **libc only** |
-| **Memory Safety** | Manual | **Automatic** |
-| **Portability** | Source code | **Standalone binary** |
+## ⚡ Quick Start
 
-## Installation & Usage
+### 1. Hello World
+```linea
+func main() {
+    display "Hello, Linea!"
+}
+```
 
+Compile and run:
 ```bash
-# Compile a Linea program
 linea compile hello.ln -o hello
-
-# Run the standalone executable (works anywhere!)
 ./hello
-
-# Or run directly (interpreted)
-linea run hello.ln
-
-# With libraries
-linea compile myapp.ln -o myapp
-./myapp
 ```
 
-## Project Structure
+### 2. Train a Neural Network
+Linea makes AI development simple and fast. Here is a complete example of training a classifier:
 
-- `compiler/` - Full Rust compiler source code (~2,300 lines)
-- `linea` - Pre-compiled CLI binary (ready to use!)
-- `libs/` - Standard library files (math.ln, strings.ln, utils.ln)
-- `examples/` - Example Linea programs
-- `demo.ln` - Feature showcase (demonstrates libraries and imports)
+```linea
+import ml
+import datasets
 
-## Version History
+# Load dataset
+var data = datasets::load_csv("iris.csv")
+var model = ml::Linear(4, 3) # 4 inputs, 3 classes
 
-### Linea 3.0.0 'Avocado' (Latest - Compiled)
-- Complete rewrite from Python interpreter to Rust compiler
-- Native binary compilation with rustc backend
-- Static type checking and memory safety
-- Zero external dependencies for compiled binaries
+# Training Loop
+display "Starting training..."
+for epoch from 0~100 {
+    # Forward Pass
+    var pred = ml::forward(model, data.features)
+    
+    # Calculate Loss
+    var loss = ml::cross_entropy(pred, data.labels)
+    
+    # Backward Pass & Optimization
+    var grad = ml::backward(pred, data.labels)
+    ml::step(model, grad, 0.01)
+    
+    if epoch % 10 == 0 {
+        display "Epoch " + epoch + " | Loss: " + loss
+    }
+}
+```
 
-### Linea 2.2.0 'Mango' (Python Interpreter)
-- Introduced dataframe support
-- Added liblinea_data and liblinea_ai modules
+## 📚 Documentation
 
-### Linea 2.1.0 'Coconut' (Python Interpreter)
-- Fixed known bugs
-- Added network module
+*   [Language Tour](docs/tour.md)
+*   [Standard Library Reference](docs/stdlib/README.md)
+*   [AI/ML Guide](docs/ai/README.md)
+*   [Compiler Internals](docs/internals.md)
 
-### Linea 2.0 'Coconut' (Python Interpreter)
-- Revamped entire codebase
-- New style and syntax
-* Now includes math and weblet libraries in the liblinea main package.
-* Deprecated use of `web` keyword for weblet, instead use weblet method from Core classs of weblet library in liblinea package
+## 🛠️ Building from Source
 
-## What was new in Linea 1.8 'Mishka'?
+Requirements: Rust 1.75+
 
-* Moved all core functions to the `liblinea` library. [Check LibLinea Repo](https://github.com/gauthamnair2005/LibLinea).
-* Added support for Linea Weblet, which helps create web apps in Linea using HTML/CSS/JS.
-* Introducing Linea Server Pages (LSP), a dynamic web page generation system using Linea. [Check LSP Repo](https://github.com/gauthamnair2005/LSP).
+```bash
+git clone https://github.com/gauthamnair2005/Linea.git
+cd Linea
+cargo build --release
+./target/release/linea --version
+```
 
-## What was new in Linea 1.7 'Mishka'?
+## 🤝 Contributing
 
-* Mathematical Update.
-* Updated help documentation.
-* Added support for `getMemory()`.
+Linea is 100% open source and community-driven. We welcome contributions of all kinds!
 
-## What was new in Linea 1.5 'Mishka'?
+1.  Fork the repository
+2.  Create a feature branch (`git checkout -b feature/amazing-feature`)
+3.  Commit your changes (`git commit -m 'Add amazing feature'`)
+4.  Push to the branch (`git push origin feature/amazing-feature`)
+5.  Open a Pull Request
 
-* Added support for `timeout` and `web` commands:
-  * `timeout` command is used to set a timeout for the code execution.
-  * `web` command is used to run the provided HTML code in default browser.
+## 📄 License
 
-## What was new in Linea 1.2 'Mishka'?
-
-* Entered stable phase.
-* Added support for memClear() function, which clears the memory, same as the killAll() function.
-* Added support for ping() function, which pings the server.
-
-## What was new in Linea 0.5 'Bettafish'?
-
-* Added support for mathematical operations.
-* Added support for statistical operations.
-* Added support for file handling (only read and write).
-
-## What was new in Linea 0.2 'Bettafish' Beta 5?
-
-* Fixed many known bugs.
-* Code refactoring by adding more edge cases in exception handling. (No exception handling!)
-* Added handling of undefined arguments.
-
-## Version History
-
-### Linea 3.3.0 (Current)
-- **Type**: Minor (feature: standard libraries)
-- **Release Date**: March 2025
-- **Key Additions**: 
-  - 5 new standard libraries: http, csv, markdown, excel, graphics
-  - Native compiled HTTP client
-  - CSV parsing and writing
-  - Excel automation
-  - Data visualization (charts)
-
-### Linea 3.2.0-alpha-1 (Previous Alpha)
-- **Type**: Alpha (features: native arrays, matrices, tensors)
-- **Release Date**: March 2025
-- **Key Additions**: 
-  - Native array, matrix, tensor types (no imports needed)
-  - Array indexing and slicing
-  - Element-wise arithmetic operations
-  - 6 built-in array functions: len, sum, mean, max, min, shape
-  - Type conversion for arrays: asFloat, asInt, asString
-  - Full interpreter ↔ compiler parity
-
-### Linea 3.1.0 (Previous Minor Release)
-- **Type**: Minor (feature: module system)
-- **Release Date**: March 2025
-- **Key Additions**:
-  - Complete module system with import statements
-  - Three standard libraries: math.ln, strings.ln, utils.ln
-  - Version flags: -V, --version
-  - 24 library functions
-
-### Linea 3.0.1 (Previous Patch Release)
-- **Type**: Patch (bug fixes)
-- **Release Date**: March 2025
-- **Key Fixes**:
-  - Fixed string concatenation (String + int now works)
-  - Fixed type casting (proper .parse() for String→Int)
-  - Removed compiler warnings from generated code
-
-### Linea 3.0.0 'Avocado' (Initial Major Release)
-- **Type**: Major (complete rewrite)
-- **Release Date**: March 2025
-- **Key Features**:
-  - Complete Rust compiler from scratch
-  - Standalone binary generation
-  - Full memory safety
-  - 100-1000x performance improvement
-  - Modern website design
-  - Professional branding
-
-## Roadmap
-
-### v3.2.0 (Next Minor - Data Science)
-- [ ] Optimize array operation codegen
-- [ ] Add array slicing with step support
-- [ ] Add negative indexing support
-- [ ] Create 8 standard data science libraries
-  - arrays.ln, dataframe.ln, io.ln, stats.ln
-  - linalg.ln, preprocessing.ln, datasets.ln, transforms.ln
-
-### v4.0.0 (Future Major - GPU & AI)
-- [ ] GPU detection (NVIDIA, AMD, Intel dGPU/iGPU)
-- [ ] LLM inference with GGML (GGUF format)
-- [ ] Model training with LoRA support
-- [ ] AI/ML standard libraries
-
-### What should we expect in future versions?
-
-/!\ All of these mentioned features might or might not be implemented in next version!
-
-* `lambda` and `lambdaCall`.
-* File Handling.
-* More built-in functions/commands without need of importing libraries or modules.
-* Updated graph plotting.
-* Ternary and simple one-line if-else.
-
-## What was new in Linea 0.1 Beta 4?
-
-* Fixed known bugs.
-* Removed argument support (for time being) in experimental `lambda` feature.
-* `lambda` and `lambdaCall` replaced with `worker` and `workerCall`.
-
-## What was new in Linea (0.1 Beta 3)?
-
-* Although the syntax remains almost unchanged, it's written from scratch.
-* Removed unnecessary code from ProcyoLang 2.0.1 Beta 2.
-* Added experimental `lambda` support.
-* Improved error handling. (No exception handling!)
-
-## Author & License
-
-**Author:** Gautham Nair  
-**Email:** gautham.nair.2005@gmail.com  
-**GitHub:** [@gauthamnair2005](https://github.com/gauthamnair2005)  
-**License:** GPLv3 (See LICENSE file)
-
-Linea 3.3.0 "Avocado" - Utility Powerhouse with full standard library support. Compiles to standalone native binaries with zero dependencies. Built with Rust for safety and speed.
-
-Copyright © 2025 Gautham Nair. All rights reserved.
+Copyright © 2025 Gautham Nair.
+Licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
