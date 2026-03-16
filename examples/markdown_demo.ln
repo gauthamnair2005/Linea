@@ -1,0 +1,43 @@
+#!/usr/bin/env linea
+# Markdown Library Demonstration
+
+import markdown { parse, toHtml }
+
+display "=== Linea Markdown Library Demo ==="
+display ""
+
+# ============================================================================
+# EXAMPLE 1: Basic Markdown Parsing
+# ============================================================================
+
+display "1. Basic Markdown Parsing:"
+display "---"
+
+var mdText = "# Hello, Linea!\n\nThis is a **bold** statement.\n- Item 1\n- Item 2"
+display "Input Markdown:"
+display mdText
+display ""
+
+var html = markdown::parse(mdText)
+display "Output HTML:"
+display html
+display ""
+
+# ============================================================================
+# EXAMPLE 2: Complex Markdown
+# ============================================================================
+
+display "2. Complex Markdown:"
+display "---"
+
+var complexMd = "## Code Example\n\n```rust\nfn main() {\n    println!(\"Hello\");\n}\n```\n\n[Link to Google](https://google.com)"
+display "Input Markdown:"
+display complexMd
+display ""
+
+var complexHtml = markdown::toHtml(complexMd)
+display "Output HTML:"
+display complexHtml
+display ""
+
+display "Demo Complete!"

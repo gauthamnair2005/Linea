@@ -2,9 +2,37 @@ use std::collections::HashMap;
 use linea_core::{Type, TypeContext, Value, Result, Error};
 use linea_ast::{Program, Statement, Expression, BinaryOp, UnaryOp};
 
+// Graphics State Structures
+#[derive(Clone, Debug)]
+pub struct ChartConfig {
+    pub title: String,
+    pub x_label: String,
+    pub y_label: String,
+    pub series: Vec<Series>,
+}
+
+#[derive(Clone, Debug)]
+pub enum Series {
+    Line { x: Vec<f64>, y: Vec<f64>, label: String, color: String },
+    Scatter { x: Vec<f64>, y: Vec<f64>, label: String, color: String },
+    Bar { labels: Vec<String>, values: Vec<f64>, label: String, color: String },
+}
+
+impl ChartConfig {
+    pub fn new() -> Self {
+        ChartConfig {
+            title: "Chart".to_string(),
+            x_label: "X".to_string(),
+            y_label: "Y".to_string(),
+            series: Vec::new(),
+        }
+    }
+}
+
 pub struct Executor {
     type_context: TypeContext,
     variables: HashMap<String, Value>,
+    chart_config: ChartConfig,
 }
 
 impl Executor {
@@ -12,6 +40,7 @@ impl Executor {
         Executor {
             type_context: TypeContext::new(),
             variables: HashMap::new(),
+            chart_config: ChartConfig::new(),
         }
     }
 
@@ -142,6 +171,81 @@ impl Executor {
                 for elem in elements {
                     values.push(self.eval_expression(elem)?);
                 }
+                
+                // Auto-detect Matrix (2D) and Tensor (3D) structure
+                if !values.is_empty() {
+                    // Check if elements are arrays (potential Matrix)
+                    if let Value::Array(_) = values[0] {
+                        let is_matrix_structure = values.iter().all(|v| matches!(v, Value::Array(_)));
+                        
+                        if is_matrix_structure {
+                            let rows: Vec<Vec<Value>> = values.into_iter().map(|v| {
+                                if let Value::Array(a) = v { a } else { unreachable!() }
+                            }).collect();
+                            
+                            // Check if elements are matrices (potential Tensor)
+                            // Actually, since we process recursively, inner arrays would have already been converted to Matrix/Tensor?
+                            // No, because strict evaluation happens bottom-up.
+                            // But wait, if inner elements were [1, 2], they became Value::Array.
+                            // So [[1, 2]] becomes Array(Array). We convert to Matrix.
+                            // If we have [[[1]], [[2]]]:
+                            // Inner [1] -> Array.
+                            // Middle [[1]] -> Matrix? No, because inner is Array.
+                            // So [[1]] becomes Matrix containing arrays? No, Matrix contains Vec<Value>.
+                            // Value::Matrix(Vec<Vec<Value>>).
+                            // So [[1]] -> Matrix([[1]]).
+                            
+                            // What about 3D? [[[1]]]
+                            // Inner [1] -> Array.
+                            // Middle [[1]] -> Matrix([[1]])?
+                            // Outer [[[1]]] -> Array(Matrix).
+                            // We should convert Array(Matrix) to Tensor.
+                            
+                            // Let's check for Tensor structure first (Array of Matrix)
+                            /*
+                            if let Value::Matrix(_) = values[0] { // This won't happen because values[0] is from recursive eval which returns Array/Matrix/Tensor
+                                // If recursive eval returns Matrix, then we have Array of Matrix -> Tensor
+                            }
+                            */
+                            
+                            // Let's rely on what we have.
+                            // If we just converted `values` (which are Arrays) to `rows` (Vec<Vec<Value>>),
+                            // we have a Matrix structure.
+                            
+                            // Now check if it's actually 3D (Tensor)
+                            if !rows.is_empty() && !rows[0].is_empty() {
+                                if let Value::Array(_) = rows[0][0] {
+                                    // It looks like 3D: Vec<Vec<Array>>
+                                    // We need to flatten it to Vec<Vec<Vec<Value>>>
+                                    let is_tensor = rows.iter().all(|row| row.iter().all(|cell| matches!(cell, Value::Array(_))));
+                                    
+                                    if is_tensor {
+                                         let cubes: Vec<Vec<Vec<Value>>> = rows.into_iter().map(|row| {
+                                             row.into_iter().map(|cell| {
+                                                 if let Value::Array(a) = cell { a } else { unreachable!() }
+                                             }).collect()
+                                         }).collect();
+                                         return Ok(Value::Tensor(cubes));
+                                    }
+                                }
+                            }
+                            
+                            return Ok(Value::Matrix(rows));
+                        }
+                        
+                        // Check if elements are Matrices (explicitly constructed or returned from functions)
+                        if let Value::Matrix(_) = values[0] {
+                             let is_tensor_from_matrices = values.iter().all(|v| matches!(v, Value::Matrix(_)));
+                             if is_tensor_from_matrices {
+                                 let cubes: Vec<Vec<Vec<Value>>> = values.into_iter().map(|v| {
+                                     if let Value::Matrix(m) = v { m } else { unreachable!() }
+                                 }).collect();
+                                 return Ok(Value::Tensor(cubes));
+                             }
+                        }
+                    }
+                }
+                
                 Ok(Value::Array(values))
             }
             Expression::Index { expr, index } => {
@@ -347,6 +451,30 @@ impl Executor {
                         _ => Ok(Value::Float(val.to_float()?)),
                     }
                 }
+                "sin" => {
+                    if args.len() != 1 { return Err(Error::RuntimeError("sin() expects 1 argument".to_string())); }
+                    let val = self.eval_expression(&args[0])?.to_float()?;
+                    Ok(Value::Float(val.sin()))
+                }
+                "cos" => {
+                    if args.len() != 1 { return Err(Error::RuntimeError("cos() expects 1 argument".to_string())); }
+                    let val = self.eval_expression(&args[0])?.to_float()?;
+                    Ok(Value::Float(val.cos()))
+                }
+                "append" => {
+                    if args.len() != 2 { return Err(Error::RuntimeError("append() expects 2 arguments".to_string())); }
+                    let arr_val = self.eval_expression(&args[0])?;
+                    let val = self.eval_expression(&args[1])?;
+                    
+                    match arr_val {
+                        Value::Array(a) => {
+                             let mut new_arr = a.clone();
+                             new_arr.push(val);
+                             Ok(Value::Array(new_arr))
+                        }
+                        _ => Err(Error::TypeError("append() expects array".to_string())),
+                    }
+                }
                 "asInt" => {
                     if args.len() != 1 {
                         return Err(Error::RuntimeError("asInt() expects 1 argument".to_string()));
@@ -368,6 +496,954 @@ impl Executor {
                     }
                     let val = self.eval_expression(&args[0])?;
                     Ok(Value::String(val.to_string()))
+                }
+                // CSV LIBRARY FUNCTIONS
+                // HTTP Functions
+                "http::get" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("http::get() expects 1 argument".to_string()));
+                    }
+                    let url = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("http::get() expects string URL".to_string())),
+                    };
+                    
+                    match reqwest::blocking::get(&url) {
+                        Ok(resp) => {
+                            let status = resp.status().as_u16() as i64;
+                            let ok = resp.status().is_success();
+                            let body = resp.text().unwrap_or_default();
+                            Ok(Value::Array(vec![
+                                Value::String(status.to_string()),
+                                Value::String(ok.to_string()),
+                                Value::String(body)
+                            ]))
+                        }
+                        Err(e) => Err(Error::RuntimeError(format!("HTTP Request failed: {}", e))),
+                    }
+                }
+                "http::post" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("http::post() expects 2 arguments".to_string()));
+                    }
+                    let url = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("http::post() expects string URL".to_string())),
+                    };
+                    let body = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("http::post() expects string body".to_string())),
+                    };
+                    
+                    let client = reqwest::blocking::Client::new();
+                    match client.post(&url).body(body).send() {
+                         Ok(resp) => {
+                            let status = resp.status().as_u16() as i64;
+                            let ok = resp.status().is_success();
+                            let body_text = resp.text().unwrap_or_default();
+                            Ok(Value::Array(vec![
+                                Value::String(status.to_string()),
+                                Value::String(ok.to_string()),
+                                Value::String(body_text)
+                            ]))
+                        }
+                        Err(e) => Err(Error::RuntimeError(format!("HTTP Request failed: {}", e))),
+                    }
+                }
+                "http::request" => {
+                    if args.len() != 4 {
+                        return Err(Error::RuntimeError("http::request() expects 4 arguments".to_string()));
+                    }
+                    let method_str = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s.to_uppercase(),
+                        _ => return Err(Error::TypeError("Method must be string".to_string())),
+                    };
+                    let url = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("URL must be string".to_string())),
+                    };
+                    let headers_str = match self.eval_expression(&args[2])? {
+                        Value::String(s) => s,
+                        _ => "{}".to_string(),
+                    };
+                    let body = match self.eval_expression(&args[3])? {
+                        Value::String(s) => s,
+                        _ => "".to_string(),
+                    };
+                    
+                    let client = reqwest::blocking::Client::new();
+                    let method = match method_str.as_str() {
+                        "GET" => reqwest::Method::GET,
+                        "POST" => reqwest::Method::POST,
+                        "PUT" => reqwest::Method::PUT,
+                        "DELETE" => reqwest::Method::DELETE,
+                        _ => return Err(Error::RuntimeError(format!("Unsupported method: {}", method_str))),
+                    };
+                    
+                    let mut req = client.request(method, &url);
+                    
+                    if !headers_str.is_empty() {
+                         if let Ok(json) = serde_json::from_str::<std::collections::HashMap<String, String>>(&headers_str) {
+                             for (k, v) in json {
+                                 req = req.header(k, v);
+                             }
+                         }
+                    }
+                    
+                    req = req.body(body);
+                    
+                    match req.send() {
+                        Ok(resp) => {
+                            let status = resp.status().as_u16() as i64;
+                            let ok = resp.status().is_success();
+                            let body_text = resp.text().unwrap_or_default();
+                            Ok(Value::Array(vec![
+                                Value::String(status.to_string()),
+                                Value::String(ok.to_string()),
+                                Value::String(body_text)
+                            ]))
+                        }
+                        Err(e) => Err(Error::RuntimeError(format!("HTTP Request failed: {}", e))),
+                    }
+                }
+                "http::download" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("http::download() expects 2 arguments".to_string()));
+                    }
+                    let url = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("URL must be string".to_string())),
+                    };
+                    let path = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("Path must be string".to_string())),
+                    };
+                    
+                    match reqwest::blocking::get(&url) {
+                         Ok(mut resp) => {
+                             let mut file = std::fs::File::create(&path)
+                                 .map_err(|e| Error::RuntimeError(format!("Failed to create file: {}", e)))?;
+                             resp.copy_to(&mut file)
+                                 .map_err(|e| Error::RuntimeError(format!("Failed to write content: {}", e)))?;
+                             Ok(Value::Bool(true))
+                         }
+                         Err(_) => Ok(Value::Bool(false)),
+                    }
+                }
+                "csv::parse" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("csv::parse() expects 1 argument".to_string()));
+                    }
+                    let csv_text = self.eval_expression(&args[0])?.to_string();
+                    let rows: Vec<Value> = csv_text.lines()
+                        .map(|line| {
+                            let cells: Vec<Value> = line.split(',')
+                                .map(|cell| Value::String(cell.trim().to_string()))
+                                .collect();
+                            Value::Array(cells)
+                        })
+                        .collect();
+                    Ok(Value::Matrix(rows.into_iter()
+                        .map(|v| if let Value::Array(cells) = v { cells } else { vec![] })
+                        .collect()))
+                }
+                "csv::stringify" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("csv::stringify() expects 1 argument".to_string()));
+                    }
+                    let val = self.eval_expression(&args[0])?;
+                    match val {
+                        Value::Matrix(rows) => {
+                            let csv_lines: Vec<String> = rows.iter()
+                                .map(|row| {
+                                    row.iter()
+                                        .map(|cell| cell.to_string())
+                                        .collect::<Vec<_>>()
+                                        .join(",")
+                                })
+                                .collect();
+                            Ok(Value::String(csv_lines.join("\n")))
+                        }
+                        _ => Err(Error::TypeError("csv::stringify() expects 2D array".to_string())),
+                    }
+                }
+                "csv::headers" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("csv::headers() expects 1 argument".to_string()));
+                    }
+                    let val = self.eval_expression(&args[0])?;
+                    match val {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                Ok(Value::Array(vec![]))
+                            } else {
+                                Ok(Value::Array(rows[0].clone()))
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::headers() expects 2D array".to_string())),
+                    }
+                }
+                "csv::rows" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("csv::rows() expects 1 argument".to_string()));
+                    }
+                    let val = self.eval_expression(&args[0])?;
+                    match val {
+                        Value::Matrix(mut rows) => {
+                            if !rows.is_empty() {
+                                rows.remove(0);
+                            }
+                            Ok(Value::Matrix(rows))
+                        }
+                        _ => Err(Error::TypeError("csv::rows() expects 2D array".to_string())),
+                    }
+                }
+                "csv::getColumn" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::getColumn() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_name = self.eval_expression(&args[1])?.to_string();
+                    
+                    match data {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                return Ok(Value::Array(vec![]));
+                            }
+                            
+                            let headers = &rows[0];
+                            let col_idx = headers.iter().position(|h| h.to_string() == col_name);
+                            
+                            match col_idx {
+                                Some(idx) => {
+                                    let column: Vec<Value> = rows.iter().skip(1)
+                                        .map(|row| {
+                                            if idx < row.len() {
+                                                row[idx].clone()
+                                            } else {
+                                                Value::String("".to_string())
+                                            }
+                                        })
+                                        .collect();
+                                    Ok(Value::Array(column))
+                                }
+                                None => Ok(Value::Array(vec![])),
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::getColumn() expects 2D array".to_string())),
+                    }
+                }
+                "csv::filter" => {
+                    if args.len() != 3 {
+                        return Err(Error::RuntimeError("csv::filter() expects 3 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_name = self.eval_expression(&args[1])?.to_string();
+                    let filter_val = self.eval_expression(&args[2])?.to_string();
+                    
+                    match data {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                return Ok(Value::Matrix(vec![]));
+                            }
+                            
+                            let headers = rows[0].clone();
+                            let col_idx = headers.iter().position(|h| h.to_string() == col_name);
+                            
+                            match col_idx {
+                                Some(idx) => {
+                                    let mut result = vec![headers];
+                                    for row in rows.iter().skip(1) {
+                                        if idx < row.len() && row[idx].to_string() == filter_val {
+                                            result.push(row.clone());
+                                        }
+                                    }
+                                    Ok(Value::Matrix(result))
+                                }
+                                None => Ok(Value::Matrix(vec![headers])),
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::filter() expects 2D array".to_string())),
+                    }
+                }
+                "csv::sort" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::sort() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_name = self.eval_expression(&args[1])?.to_string();
+                    
+                    match data {
+                        Value::Matrix(mut rows) => {
+                            if rows.is_empty() {
+                                return Ok(Value::Matrix(rows));
+                            }
+                            
+                            let headers = rows[0].clone();
+                            let col_idx = headers.iter().position(|h| h.to_string() == col_name);
+                            
+                            match col_idx {
+                                Some(idx) => {
+                                    let mut data_rows = rows.drain(1..).collect::<Vec<_>>();
+                                    data_rows.sort_by(|a, b| {
+                                        let a_val = if idx < a.len() { a[idx].to_string() } else { "".to_string() };
+                                        let b_val = if idx < b.len() { b[idx].to_string() } else { "".to_string() };
+                                        a_val.cmp(&b_val)
+                                    });
+                                    
+                                    let mut result = vec![headers];
+                                    result.extend(data_rows);
+                                    Ok(Value::Matrix(result))
+                                }
+                                None => {
+                                    rows.insert(0, headers);
+                                    Ok(Value::Matrix(rows))
+                                }
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::sort() expects 2D array".to_string())),
+                    }
+                }
+                "csv::unique" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::unique() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_name = self.eval_expression(&args[1])?.to_string();
+                    
+                    match data {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                return Ok(Value::Array(vec![]));
+                            }
+                            
+                            let headers = &rows[0];
+                            let col_idx = headers.iter().position(|h| h.to_string() == col_name);
+                            
+                            match col_idx {
+                                Some(idx) => {
+                                    let mut unique_vals = vec![];
+                                    let mut seen = std::collections::HashSet::new();
+                                    
+                                    for row in rows.iter().skip(1) {
+                                        if idx < row.len() {
+                                            let val_str = row[idx].to_string();
+                                            if !seen.contains(&val_str) {
+                                                seen.insert(val_str);
+                                                unique_vals.push(row[idx].clone());
+                                            }
+                                        }
+                                    }
+                                    Ok(Value::Array(unique_vals))
+                                }
+                                None => Ok(Value::Array(vec![])),
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::unique() expects 2D array".to_string())),
+                    }
+                }
+                "csv::stats" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::stats() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_name = self.eval_expression(&args[1])?.to_string();
+                    
+                    match data {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                return Ok(Value::Array(vec![]));
+                            }
+                            
+                            let headers = &rows[0];
+                            let col_idx = headers.iter().position(|h| h.to_string() == col_name);
+                            
+                            match col_idx {
+                                Some(idx) => {
+                                    let mut values = vec![];
+                                    for row in rows.iter().skip(1) {
+                                        if idx < row.len() {
+                                            if let Ok(num) = row[idx].to_float() {
+                                                values.push(num);
+                                            }
+                                        }
+                                    }
+                                    
+                                    if values.is_empty() {
+                                        return Ok(Value::Array(vec![]));
+                                    }
+                                    
+                                    let min = values.iter().cloned().fold(f64::INFINITY, f64::min);
+                                    let max = values.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
+                                    let mean = values.iter().sum::<f64>() / values.len() as f64;
+                                    let count = values.len() as i64;
+                                    let sum = values.iter().sum::<f64>();
+                                    
+                                    Ok(Value::Array(vec![
+                                        Value::Float(min),
+                                        Value::Float(max),
+                                        Value::Float(mean),
+                                        Value::Int(count),
+                                        Value::Float(sum),
+                                    ]))
+                                }
+                                None => Ok(Value::Array(vec![])),
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::stats() expects 2D array".to_string())),
+                    }
+                }
+                "csv::min" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::min() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_name = self.eval_expression(&args[1])?.to_string();
+                    
+                    match data {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                return Err(Error::RuntimeError("Empty CSV data".to_string()));
+                            }
+                            
+                            let headers = &rows[0];
+                            let col_idx = headers.iter().position(|h| h.to_string() == col_name);
+                            
+                            match col_idx {
+                                Some(idx) => {
+                                    let mut min_val = f64::INFINITY;
+                                    for row in rows.iter().skip(1) {
+                                        if idx < row.len() {
+                                            if let Ok(num) = row[idx].to_float() {
+                                                if num < min_val {
+                                                    min_val = num;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Ok(Value::Float(min_val))
+                                }
+                                None => Err(Error::RuntimeError("Column not found".to_string())),
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::min() expects 2D array".to_string())),
+                    }
+                }
+                "csv::max" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::max() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_name = self.eval_expression(&args[1])?.to_string();
+                    
+                    match data {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                return Err(Error::RuntimeError("Empty CSV data".to_string()));
+                            }
+                            
+                            let headers = &rows[0];
+                            let col_idx = headers.iter().position(|h| h.to_string() == col_name);
+                            
+                            match col_idx {
+                                Some(idx) => {
+                                    let mut max_val = f64::NEG_INFINITY;
+                                    for row in rows.iter().skip(1) {
+                                        if idx < row.len() {
+                                            if let Ok(num) = row[idx].to_float() {
+                                                if num > max_val {
+                                                    max_val = num;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Ok(Value::Float(max_val))
+                                }
+                                None => Err(Error::RuntimeError("Column not found".to_string())),
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::max() expects 2D array".to_string())),
+                    }
+                }
+                "csv::mean" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::mean() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_name = self.eval_expression(&args[1])?.to_string();
+                    
+                    match data {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                return Err(Error::RuntimeError("Empty CSV data".to_string()));
+                            }
+                            
+                            let headers = &rows[0];
+                            let col_idx = headers.iter().position(|h| h.to_string() == col_name);
+                            
+                            match col_idx {
+                                Some(idx) => {
+                                    let mut sum = 0.0;
+                                    let mut count = 0;
+                                    for row in rows.iter().skip(1) {
+                                        if idx < row.len() {
+                                            if let Ok(num) = row[idx].to_float() {
+                                                sum += num;
+                                                count += 1;
+                                            }
+                                        }
+                                    }
+                                    if count == 0 {
+                                        return Err(Error::RuntimeError("No numeric values in column".to_string()));
+                                    }
+                                    Ok(Value::Float(sum / count as f64))
+                                }
+                                None => Err(Error::RuntimeError("Column not found".to_string())),
+                            }
+                        }
+                        _ => Err(Error::TypeError("csv::mean() expects 2D array".to_string())),
+                    }
+                }
+                "csv::rowCount" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("csv::rowCount() expects 1 argument".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    match data {
+                        Value::Matrix(rows) => {
+                            let count = if rows.is_empty() { 0 } else { rows.len() - 1 };
+                            Ok(Value::Int(count as i64))
+                        }
+                        _ => Err(Error::TypeError("csv::rowCount() expects 2D array".to_string())),
+                    }
+                }
+                "csv::columnCount" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("csv::columnCount() expects 1 argument".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    match data {
+                        Value::Matrix(rows) => {
+                            let count = if rows.is_empty() { 0 } else { rows[0].len() };
+                            Ok(Value::Int(count as i64))
+                        }
+                        _ => Err(Error::TypeError("csv::columnCount() expects 2D array".to_string())),
+                    }
+                }
+                "csv::select" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::select() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let col_names_val = self.eval_expression(&args[1])?;
+                    
+                    match (data, col_names_val) {
+                        (Value::Matrix(rows), Value::Array(col_names)) => {
+                            if rows.is_empty() {
+                                return Ok(Value::Matrix(vec![]));
+                            }
+                            
+                            let headers = &rows[0];
+                            let col_indices: Vec<usize> = col_names.iter()
+                                .filter_map(|name| {
+                                    headers.iter().position(|h| h.to_string() == name.to_string())
+                                })
+                                .collect();
+                            
+                            if col_indices.is_empty() {
+                                return Ok(Value::Matrix(vec![]));
+                            }
+                            
+                            let mut result = vec![];
+                            for row in rows {
+                                let selected: Vec<Value> = col_indices.iter()
+                                    .map(|&idx| {
+                                        if idx < row.len() {
+                                            row[idx].clone()
+                                        } else {
+                                            Value::String("".to_string())
+                                        }
+                                    })
+                                    .collect();
+                                result.push(selected);
+                            }
+                            Ok(Value::Matrix(result))
+                        }
+                        _ => Err(Error::TypeError("csv::select() expects 2D array and column array".to_string())),
+                    }
+                }
+                "csv::removeDuplicates" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("csv::removeDuplicates() expects 1 argument".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    match data {
+                        Value::Matrix(rows) => {
+                            if rows.is_empty() {
+                                return Ok(Value::Matrix(vec![]));
+                            }
+                            
+                            let mut result = vec![rows[0].clone()];
+                            let mut seen = std::collections::HashSet::new();
+                            
+                            for row in rows.iter().skip(1) {
+                                let row_str = format!("{:?}", row);
+                                if !seen.contains(&row_str) {
+                                    seen.insert(row_str);
+                                    result.push(row.clone());
+                                }
+                            }
+                            Ok(Value::Matrix(result))
+                        }
+                        _ => Err(Error::TypeError("csv::removeDuplicates() expects 2D array".to_string())),
+                    }
+                }
+                "csv::addRow" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("csv::addRow() expects 2 arguments".to_string()));
+                    }
+                    let data = self.eval_expression(&args[0])?;
+                    let new_row = self.eval_expression(&args[1])?;
+                    
+                    match (data, new_row) {
+                        (Value::Matrix(mut rows), Value::Array(row_values)) => {
+                            rows.push(row_values);
+                            Ok(Value::Matrix(rows))
+                        }
+                        _ => Err(Error::TypeError("csv::addRow() expects 2D array and row array".to_string())),
+                    }
+                }
+                // Markdown Functions
+                "markdown::parse" | "markdown::toHtml" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("markdown::parse() expects 1 argument".to_string()));
+                    }
+                    let md_text = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("Markdown text must be string".to_string())),
+                    };
+                    let options = comrak::ComrakOptions::default();
+                    let html = comrak::markdown_to_html(&md_text, &options);
+                    Ok(Value::String(html))
+                }
+                // Excel Functions
+                "excel::read" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("excel::read() expects 1 argument".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("File path must be string".to_string())),
+                    };
+                    
+                    use calamine::{Reader, Xlsx, open_workbook, Data as ExcelData};
+                    let workbook_result: std::result::Result<Xlsx<_>, calamine::XlsxError> = open_workbook(&path);
+                    let mut workbook = match workbook_result {
+                        Ok(wb) => wb,
+                        Err(e) => return Err(Error::RuntimeError(format!("Failed to open workbook: {}", e))),
+                    };
+                    
+                    if let Some(Ok(range)) = workbook.worksheet_range_at(0) {
+                        let mut rows: Vec<Vec<Value>> = Vec::new();
+                        for row in range.rows() {
+                                let cells: Vec<Value> = row.iter()
+                                    .map(|cell| match cell {
+                                        ExcelData::String(s) => Value::String(s.to_string()),
+                                        ExcelData::Float(f) => Value::Float(*f),
+                                        ExcelData::Int(i) => Value::Int(*i),
+                                        ExcelData::Bool(b) => Value::Bool(*b),
+                                        ExcelData::Empty => Value::String("".to_string()),
+                                        ExcelData::DateTime(d) => Value::String(d.to_string()),
+                                        ExcelData::Error(e) => Value::String(format!("{:?}", e)),
+                                        ExcelData::DateTimeIso(d) => Value::String(d.clone()),
+                                        ExcelData::DurationIso(d) => Value::String(d.clone()),
+                                    })
+                                    .collect();
+                                rows.push(cells);
+                        }
+                        Ok(Value::Matrix(rows))
+                    } else {
+                        Ok(Value::Matrix(vec![]))
+                    }
+                }
+                "excel::write" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("excel::write() expects 2 arguments".to_string()));
+                    }
+                    let path_val = self.eval_expression(&args[0])?;
+                    let path = match path_val {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("File path must be string".to_string())),
+                    };
+                    let data_val = self.eval_expression(&args[1])?;
+                    let data = match data_val {
+                        Value::Matrix(m) => m,
+                        Value::Array(a) => {
+                             let mut matrix = Vec::new();
+                             for row in a {
+                                 if let Value::Array(cells) = row {
+                                     matrix.push(cells);
+                                 } else {
+                                     // Handle scalar in array by wrapping in array? No, skip or error.
+                                     // For simplicity, just skip non-array rows
+                                 }
+                             }
+                             matrix
+                        }
+                        _ => return Err(Error::TypeError("Data must be a matrix/2D array".to_string())),
+                    };
+                    
+                    use rust_xlsxwriter::{Workbook};
+                    let mut workbook = Workbook::new();
+                    let worksheet = workbook.add_worksheet();
+                    
+                    for (row_idx, row_data) in data.iter().enumerate() {
+                        for (col_idx, cell_val) in row_data.iter().enumerate() {
+                            match cell_val {
+                                Value::String(s) => { let _ = worksheet.write_string(row_idx as u32, col_idx as u16, s); },
+                                Value::Int(i) => { let _ = worksheet.write_number(row_idx as u32, col_idx as u16, *i as f64); },
+                                Value::Float(f) => { let _ = worksheet.write_number(row_idx as u32, col_idx as u16, *f); },
+                                Value::Bool(b) => { let _ = worksheet.write_boolean(row_idx as u32, col_idx as u16, *b); },
+                                _ => { let _ = worksheet.write_string(row_idx as u32, col_idx as u16, &cell_val.to_string()); },
+                            };
+                        }
+                    }
+                    
+                    match workbook.save(&path) {
+                        Ok(_) => Ok(Value::Bool(true)),
+                        Err(_) => Ok(Value::Bool(false)),
+                    }
+                }
+                // Graphics Functions
+                "graphics::title" => {
+                     if args.len() != 1 {
+                         return Err(Error::RuntimeError("graphics::title() expects 1 argument".to_string()));
+                     }
+                     if let Value::String(t) = self.eval_expression(&args[0])? {
+                         self.chart_config.title = t;
+                     }
+                     Ok(Value::Bool(true))
+                }
+                "graphics::plot" => {
+                    if args.len() < 2 {
+                        return Err(Error::RuntimeError("graphics::plot() expects at least x and y arrays".to_string()));
+                    }
+                    let x_val = self.eval_expression(&args[0])?;
+                    let y_val = self.eval_expression(&args[1])?;
+                    
+                    let x: Vec<f64> = match x_val {
+                        Value::Array(arr) => arr.iter().map(|v| match v {
+                            Value::Int(i) => *i as f64,
+                            Value::Float(f) => *f,
+                            _ => 0.0,
+                        }).collect(),
+                        _ => return Err(Error::TypeError("X must be array".to_string())),
+                    };
+                    let y: Vec<f64> = match y_val {
+                        Value::Array(arr) => arr.iter().map(|v| match v {
+                            Value::Int(i) => *i as f64,
+                            Value::Float(f) => *f,
+                            _ => 0.0,
+                        }).collect(),
+                        _ => return Err(Error::TypeError("Y must be array".to_string())),
+                    };
+                    
+                    let label = if args.len() > 2 {
+                        match self.eval_expression(&args[2])? { Value::String(s) => s, _ => "Series".to_string() }
+                    } else { "Series".to_string() };
+
+                    let color = if args.len() > 3 {
+                         match self.eval_expression(&args[3])? { Value::String(s) => s, _ => "blue".to_string() }
+                    } else { "blue".to_string() };
+
+                    self.chart_config.series.push(Series::Line { x, y, label, color });
+                    Ok(Value::Bool(true))
+                }
+                "graphics::scatter" => {
+                    if args.len() < 2 {
+                        return Err(Error::RuntimeError("graphics::scatter() expects at least x and y arrays".to_string()));
+                    }
+                    let x_val = self.eval_expression(&args[0])?;
+                    let y_val = self.eval_expression(&args[1])?;
+                    
+                    let x: Vec<f64> = match x_val {
+                        Value::Array(arr) => arr.iter().map(|v| match v {
+                            Value::Int(i) => *i as f64,
+                            Value::Float(f) => *f,
+                            _ => 0.0,
+                        }).collect(),
+                        _ => return Err(Error::TypeError("X must be array".to_string())),
+                    };
+                    let y: Vec<f64> = match y_val {
+                        Value::Array(arr) => arr.iter().map(|v| match v {
+                            Value::Int(i) => *i as f64,
+                            Value::Float(f) => *f,
+                            _ => 0.0,
+                        }).collect(),
+                        _ => return Err(Error::TypeError("Y must be array".to_string())),
+                    };
+                    
+                    let label = if args.len() > 2 {
+                        match self.eval_expression(&args[2])? { Value::String(s) => s, _ => "Series".to_string() }
+                    } else { "Series".to_string() };
+
+                    let color = if args.len() > 3 {
+                         match self.eval_expression(&args[3])? { Value::String(s) => s, _ => "red".to_string() }
+                    } else { "red".to_string() };
+
+                    self.chart_config.series.push(Series::Scatter { x, y, label, color });
+                    Ok(Value::Bool(true))
+                }
+                "graphics::bar" => {
+                    if args.len() < 2 {
+                        return Err(Error::RuntimeError("graphics::bar() expects labels and values arrays".to_string()));
+                    }
+                    let labels_val = self.eval_expression(&args[0])?;
+                    let values_val = self.eval_expression(&args[1])?;
+                    
+                    let labels: Vec<String> = match labels_val {
+                        Value::Array(arr) => arr.iter().map(|v| v.to_string()).collect(),
+                        _ => return Err(Error::TypeError("Labels must be array".to_string())),
+                    };
+                    let values: Vec<f64> = match values_val {
+                        Value::Array(arr) => arr.iter().map(|v| match v {
+                            Value::Int(i) => *i as f64,
+                            Value::Float(f) => *f,
+                            _ => 0.0,
+                        }).collect(),
+                        _ => return Err(Error::TypeError("Values must be array".to_string())),
+                    };
+                    
+                    let label = if args.len() > 2 {
+                        match self.eval_expression(&args[2])? { Value::String(s) => s, _ => "Data".to_string() }
+                    } else { "Data".to_string() };
+                    
+                    let color = if args.len() > 3 {
+                         match self.eval_expression(&args[3])? { Value::String(s) => s, _ => "green".to_string() }
+                    } else { "green".to_string() };
+
+                    self.chart_config.series.push(Series::Bar { labels, values, label, color });
+                    Ok(Value::Bool(true))
+                }
+                "graphics::save" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("graphics::save() expects filename".to_string()));
+                    }
+                    let filename = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("Filename must be string".to_string())),
+                    };
+                    
+                    use plotters::prelude::*;
+                    let root = BitMapBackend::new(&filename, (800, 600)).into_drawing_area();
+                    root.fill(&WHITE).map_err(|e| Error::RuntimeError(format!("Drawing error: {:?}", e)))?;
+                    
+                    // Determine ranges
+                    let mut x_min = f64::INFINITY;
+                    let mut x_max = f64::NEG_INFINITY;
+                    let mut y_min = f64::INFINITY;
+                    let mut y_max = f64::NEG_INFINITY;
+                    
+                    for s in &self.chart_config.series {
+                        match s {
+                            Series::Line { x, y, .. } | Series::Scatter { x, y, .. } => {
+                                for val in x { if *val < x_min { x_min = *val; } if *val > x_max { x_max = *val; } }
+                                for val in y { if *val < y_min { y_min = *val; } if *val > y_max { y_max = *val; } }
+                            },
+                            Series::Bar { values, .. } => {
+                                x_min = 0.0;
+                                x_max = values.len() as f64;
+                                y_min = 0.0;
+                                for val in values { if *val > y_max { y_max = *val; } }
+                            }
+                        }
+                    }
+                    
+                    if x_min == f64::INFINITY { x_min = 0.0; x_max = 10.0; }
+                    if y_min == f64::INFINITY { y_min = 0.0; y_max = 10.0; }
+                    
+                    // Add padding
+                    let x_range = x_max - x_min;
+                    let y_range = y_max - y_min;
+                    x_min -= x_range * 0.1;
+                    x_max += x_range * 0.1;
+                    y_min -= y_range * 0.1;
+                    y_max += y_range * 0.1;
+
+                    let mut chart = ChartBuilder::on(&root)
+                        //.caption(&self.chart_config.title, ("sans-serif", 40).into_font())
+                        .margin(5)
+                        //.x_label_area_size(30)
+                        //.y_label_area_size(30)
+                        .build_cartesian_2d(x_min..x_max, y_min..y_max)
+                        .map_err(|e| Error::RuntimeError(format!("Chart build error: {:?}", e)))?;
+
+                    chart.configure_mesh().draw().map_err(|e| Error::RuntimeError(format!("Mesh error: {:?}", e)))?;
+
+                    for s in &self.chart_config.series {
+                        let color = match s {
+                            Series::Line { color, .. } => color,
+                            Series::Scatter { color, .. } => color,
+                            Series::Bar { color, .. } => color,
+                        };
+                        
+                        let plot_color = match color.as_str() {
+                            "red" => RED,
+                            "blue" => BLUE,
+                            "green" => GREEN,
+                            "yellow" => YELLOW,
+                            "black" => BLACK,
+                            "cyan" => CYAN,
+                            "magenta" => MAGENTA,
+                            _ => BLUE,
+                        };
+
+                        match s {
+                            Series::Line { x, y, label, .. } => {
+                                let points: Vec<(f64, f64)> = x.iter().zip(y.iter()).map(|(a, b)| (*a, *b)).collect();
+                                chart.draw_series(LineSeries::new(points, plot_color.stroke_width(2)))
+                                    .map_err(|e| Error::RuntimeError(format!("Draw error: {:?}", e)))?;
+                                    //.label(label)
+                                    //.legend(move |(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], plot_color.filled()));
+                            },
+                            Series::Scatter { x, y, label, .. } => {
+                                let points: Vec<(f64, f64)> = x.iter().zip(y.iter()).map(|(a, b)| (*a, *b)).collect();
+                                chart.draw_series(PointSeries::of_element(
+                                    points,
+                                    5,
+                                    plot_color.filled(),
+                                    &|c, s, st| {
+                                        return EmptyElement::at(c) + Circle::new((0,0), s, st.filled());
+                                    },
+                                ))
+                                .map_err(|e| Error::RuntimeError(format!("Draw error: {:?}", e)))?;
+                                //.label(label)
+                                //.legend(move |(x, y)| Circle::new((x + 10, y), 5, plot_color.filled()));
+                            },
+                            Series::Bar { labels, values, label, .. } => {
+                                // Simplified bar handling for 2D cartesian using Rectangles
+                                let bars: Vec<(f64, f64)> = values.iter().enumerate().map(|(i, v)| (i as f64, *v)).collect();
+                                chart.draw_series(
+                                    bars.iter().map(|(x, y)| {
+                                        Rectangle::new([(*x - 0.4, 0.0), (*x + 0.4, *y)], plot_color.filled())
+                                    })
+                                ).map_err(|e| Error::RuntimeError(format!("Draw error: {:?}", e)))?;
+                                //.label(label)
+                                //.legend(move |(x, y)| Rectangle::new([(x, y - 5), (x + 10, y + 5)], plot_color.filled()));
+                            }
+                        }
+                    }
+                    
+                    /*chart.configure_series_labels()
+                        .background_style(&WHITE.mix(0.8))
+                        .border_style(&BLACK)
+                        .draw()
+                        .map_err(|e| Error::RuntimeError(format!("Legend error: {:?}", e)))?;*/
+                        
+                    // Reset chart config after save
+                    self.chart_config = ChartConfig::new();
+                    
+                    Ok(Value::Bool(true))
                 }
                 _ => Err(Error::RuntimeError(format!("Unknown function: {}", name))),
             }

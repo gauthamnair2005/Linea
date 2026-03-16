@@ -42,6 +42,7 @@ pub enum TokenType {
     Comma,
     Semicolon,
     Colon,
+    DoubleColon,
     Arrow,
     FatArrow,
     Range,

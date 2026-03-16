@@ -1,0 +1,61 @@
+#!/usr/bin/env linea
+# Graphics Library Demonstration
+
+import graphics { plot, scatter, bar, title, save }
+
+display "=== Linea Graphics Library Demo ==="
+display ""
+
+# 1. Line Plot (Sine Wave)
+display "1. Generating Line Plot (Sine Wave)..."
+graphics::title("Sine Wave")
+
+var x = [0.0]
+var y = [0.0]
+var val = 0.0
+
+# Generate data points
+# Starting from 1 to avoid duplicate 0.0 (since x initialized with 0.0)
+for i from 1~101 {
+    varUpd val = i / 10.0
+    varUpd x = append(x, val)
+    varUpd y = append(y, sin(val))
+}
+
+graphics::plot(x, y, "sin(x)", "blue")
+graphics::save("sine_wave.png")
+display "✓ Saved sine_wave.png"
+
+# 2. Scatter Plot (Random-ish)
+display "2. Generating Scatter Plot..."
+graphics::title("Scatter Plot")
+
+var sx = [0.0]
+var sy = [0.0]
+var val_s = 0.0
+var noise = 0.0
+
+for i from 1~51 {
+    varUpd val_s = i / 1.0
+    varUpd sx = append(sx, val_s)
+    # Simple pseudo-random pattern
+    varUpd noise = sin(val_s * 10.0) * 5.0
+    varUpd sy = append(sy, val_s + noise)
+}
+
+graphics::scatter(sx, sy, "Data", "red")
+graphics::save("scatter_plot.png")
+display "✓ Saved scatter_plot.png"
+
+# 3. Bar Chart
+display "3. Generating Bar Chart..."
+graphics::title("Monthly Sales")
+
+var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+var sales = [150, 200, 180, 220, 250, 210]
+
+graphics::bar(months, sales, "Sales", "green")
+graphics::save("bar_chart.png")
+display "✓ Saved bar_chart.png"
+
+display "Demo Complete!"

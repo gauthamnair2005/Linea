@@ -1,0 +1,26 @@
+# HTTP Library for Linea
+# Provides networking and HTTP request capabilities
+
+# Performs a GET request
+# Returns a Map with keys: "status", "body", "ok"
+pub fn get(url) {
+    # Native implementation
+}
+
+# Performs a POST request with body (string or JSON)
+pub fn post(url, body) {
+    # Native implementation
+}
+
+# Downloads a file to the specified path
+pub fn download(url, filepath) {
+    # Native implementation
+}
+
+# Performs a generic request
+# method: "GET", "POST", "PUT", "DELETE"
+# headers: Map of headers
+# body: String
+pub fn request(method, url, headers, body) {
+    # Native implementation
+}

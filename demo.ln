@@ -18,6 +18,28 @@ display "b = " + b
 display "a + b = " + (a + b)
 display "a * b = " + (a * b)
 display "a / b = " + (a / b)
+
+display ""
+display "=== Excel Automation Demo ==="
+import excel { write }
+var data = [["Name", "Age"], ["Alice", "30"], ["Bob", "25"]]
+# excel::write("demo.xlsx", data) # Commented out to avoid file creation in demo run
+
+display "=== Graphics Library Demo ==="
+import graphics { plot, title }
+var gx = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+var gy = [0.0, 1.0, 4.0, 9.0, 16.0, 25.0]
+graphics::title("y = x^2")
+graphics::plot(gx, gy, "Squared", "red")
+# graphics::save("demo_plot.png") # Commented out
+
+display "=== CSV Library Demo ==="
+import csv { parse, stringify }
+var csv_data = [["Name", "Role"], ["Neo", "One"], ["Trinity", "Hacker"]]
+var csv_str = csv::stringify(csv_data)
+display "CSV Output:"
+display csv_str
+
 display ""
 
 # Loops

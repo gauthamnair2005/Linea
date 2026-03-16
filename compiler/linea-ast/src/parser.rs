@@ -488,8 +488,23 @@ impl Parser {
                 Ok(Expression::Bool(false))
             }
             TokenType::Identifier(name) => {
-                let name = name.clone();
+                let mut name = name.clone();
                 self.advance();
+                // Handle module::function syntax (e.g., csv::parse)
+                while self.current_token().token_type == TokenType::DoubleColon {
+                    self.advance();
+                    if let TokenType::Identifier(next_name) = &self.current_token().token_type {
+                        name.push_str("::");
+                        name.push_str(next_name);
+                        self.advance();
+                    } else {
+                        return Err(Error::Syntax { 
+                            line: self.current_token().line, 
+                            column: self.current_token().column, 
+                            message: "Expected identifier after '::'".to_string() 
+                        });
+                    }
+                }
                 Ok(Expression::Identifier(name))
             }
             TokenType::LeftParen => {

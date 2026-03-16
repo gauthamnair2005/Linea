@@ -116,7 +116,15 @@ impl Lexer {
             '.' => { self.advance(); Ok(Token::new(TokenType::Dot, line, column)) }
             ',' => { self.advance(); Ok(Token::new(TokenType::Comma, line, column)) }
             ';' => { self.advance(); Ok(Token::new(TokenType::Semicolon, line, column)) }
-            ':' => { self.advance(); Ok(Token::new(TokenType::Colon, line, column)) }
+            ':' => { 
+                self.advance(); 
+                if self.current_char() == ':' {
+                    self.advance();
+                    Ok(Token::new(TokenType::DoubleColon, line, column))
+                } else {
+                    Ok(Token::new(TokenType::Colon, line, column))
+                }
+            }
             '~' => { self.advance(); Ok(Token::new(TokenType::Range, line, column)) }
             '(' => { self.advance(); Ok(Token::new(TokenType::LeftParen, line, column)) }
             ')' => { self.advance(); Ok(Token::new(TokenType::RightParen, line, column)) }

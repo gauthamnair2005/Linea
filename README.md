@@ -1,24 +1,76 @@
 # The Linea Programming Language - Compiler Edition
 
-✅ **Version 3.2.0-alpha-1 'Avocado - Data Science Edition'** - Native Array Support (Minor: Core Datatypes)
+✅ **Version 3.3.0 'Avocado - Utility Powerhouse'** - Comprehensive Standard Library (Minor: New Libraries)
 
-> **Latest Update**: Added native array, matrix, and tensor types as core language features! Zero-copy indexing, element-wise operations, slicing, and built-in functions. Seamless interpreter ↔ compiler parity.
+> **Latest Update**: Introduced 5 powerful standard libraries for Networking, Data Processing, and Visualization! Added `http`, `csv`, `markdown`, `excel`, and `graphics` modules. Full compiled support for modern data workflows.
 
-## 🚀 What's New in Linea 3.2.0-alpha-1 'Avocado - Data Science Edition'
+## 🚀 What's New in Linea 3.3.0 'Avocado - Utility Powerhouse'
 
-**Alpha Release - New Features: Native Arrays, Matrices & Tensors:**
+**New Standard Libraries & Features:**
 
-* ✅ **Native Arrays (1D)** - `var arr = [1, 2, 3, 4, 5]` - no imports needed!
-* ✅ **Native Matrices (2D)** - `var matrix = [[1, 2], [3, 4]]` - direct support
-* ✅ **Native Tensors (3D)** - `var tensor = [[[1, 2]], [[3, 4]]]` - multi-dimensional
-* ✅ **Array Indexing** - `arr[0]`, `matrix[1][2]`, `tensor[0][1][1]`
-* ✅ **Array Slicing** - `arr[1:4]` gets elements 1-3, `arr[::2]` gets every 2nd element
-* ✅ **Element-wise Arithmetic** - `[1, 2] + [3, 4] = [4, 6]`, `arr * 2 = [2, 4, 6]`
-* ✅ **Built-in Array Functions** - `len()`, `sum()`, `mean()`, `max()`, `min()`, `shape()`
-* ✅ **Type Conversions** - `asFloat()`, `asInt()`, `asString()` work on arrays
-* ✅ **Array Iteration** - `for x in arr` iterates over elements
-* ✅ **Optimized Rust Code** - Uses Vec<T> with zero-copy operations
-* ✅ **Interpreter ↔ Compiler Parity** - Identical output in both modes
+1. 🌐 **HTTP Library (`http.ln`)** - Python `requests`-like simplicity
+   - `get(url)`, `post(url, data)`, `put`, `delete`
+   - `json(data)`, `text()`, `status()`
+   - `download(url, path)`
+   - Native compiled HTTP client with HTTPS support
+
+2. 📊 **CSV Library (`csv.ln`)** - Data processing made easy
+   - `read(file)`, `write(file, data)`
+   - `parse(string)`, `stringify(data)`
+   - `filter`, `sort`, `unique`, `stats`
+   - Zero-copy parsing for speed
+
+3. 📝 **Markdown Library (`markdown.ln`)** - Content generation
+   - `parse(md_text)` -> HTML
+   - `render(md_text)` -> Terminal formatting
+   - `toHtml`, `toText`, `extractHeadings`
+
+4. 📈 **Excel Library (`excel.ln`)** - Spreadsheet automation
+   - `create(data)`, `open(file)`
+   - `read(file, sheet)`, `write(file, data)`
+   - `save(file)`
+   - Generate native .xlsx files without Excel installed
+
+5. 🎨 **Graphics Library (`graphics.ln`)** - Data visualization
+   - `plot(x, y)`, `scatter(x, y)`, `bar(labels, values)`
+   - `title`, `save(filename)`
+   - Generates high-quality PNG charts
+   - *Note: Text rendering disabled in this build due to missing font backend.*
+
+6. 🔢 **Native Array Enhancements**
+   - `append(arr, val)` functional update
+   - `sin()`, `cos()` math helpers
+   - Matrix/Tensor improvements
+
+### Example: Fetching Data & Plotting
+```linea
+import http { get }
+import csv { parse }
+import graphics { plot, save }
+
+var response = http::get("https://api.example.com/data.csv")
+var body = response[2]
+var data = csv::parse(body)
+
+# Assume data is [[x1, y1], [x2, y2], ...]
+var x = []
+var y = []
+# Extract columns manually
+```
+
+### Example: Excel Automation
+```linea
+import excel { write }
+
+var report = [
+    ["Month", "Sales", "Growth"],
+    ["Jan", "100", "0.0"],
+    ["Feb", "120", "0.2"]
+]
+
+excel::write("quarterly_report.xlsx", report)
+```
+
 
 ### Array Examples:
 
@@ -279,7 +331,17 @@ linea compile myapp.ln -o myapp
 
 ## Version History
 
-### Linea 3.2.0-alpha-1 (Current)
+### Linea 3.3.0 (Current)
+- **Type**: Minor (feature: standard libraries)
+- **Release Date**: March 2025
+- **Key Additions**: 
+  - 5 new standard libraries: http, csv, markdown, excel, graphics
+  - Native compiled HTTP client
+  - CSV parsing and writing
+  - Excel automation
+  - Data visualization (charts)
+
+### Linea 3.2.0-alpha-1 (Previous Alpha)
 - **Type**: Alpha (features: native arrays, matrices, tensors)
 - **Release Date**: March 2025
 - **Key Additions**: 
@@ -364,6 +426,6 @@ linea compile myapp.ln -o myapp
 **GitHub:** [@gauthamnair2005](https://github.com/gauthamnair2005)  
 **License:** GPLv3 (See LICENSE file)
 
-Linea 3.2.0-alpha-1 "Avocado" - Data Science Edition with native array, matrix, and tensor types added to the core language. Still a complete compilation from Python interpreter to Rust-based compiled language with full memory safety and native data science support.
+Linea 3.3.0 "Avocado" - Utility Powerhouse with full standard library support. Compiles to standalone native binaries with zero dependencies. Built with Rust for safety and speed.
 
 Copyright © 2025 Gautham Nair. All rights reserved.

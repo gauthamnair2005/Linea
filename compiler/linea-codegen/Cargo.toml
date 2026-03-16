@@ -7,3 +7,4 @@ edition = "2021"
 linea-ast = { path = "../linea-ast" }
 linea-core = { path = "../linea-core" }
 anyhow = "1"
+plotters = { version = "0.3.7", default-features = false, features = ["bitmap_backend", "bitmap_encoder", "line_series", "point_series", "histogram", "ab_glyph"] }

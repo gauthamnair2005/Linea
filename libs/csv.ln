@@ -1,0 +1,384 @@
+# Linea CSV Library
+# Comprehensive CSV file parsing and generation with data manipulation
+# Handles reading, writing, filtering, sorting, and statistical analysis
+
+# ============================================================================
+# FILE OPERATIONS
+# ============================================================================
+
+# Read CSV file and return as 2D array
+# Returns: Array of arrays (rows), with first row as headers
+func read {filepath}
+  # Built-in function - implemented in executor
+  # Reads CSV file from filesystem
+  # Validates file exists and is readable
+  # Parses CSV with proper quote and escape handling
+  return nil
+end
+
+# Write 2D array data to CSV file
+# data: Array of arrays (rows)
+# filepath: Output file path
+# Returns: true if successful, false if error
+func write {filepath, data}
+  # Built-in function - implemented in executor
+  # Converts 2D array to CSV format
+  # Handles quoting for fields with commas/quotes
+  # Creates/overwrites file with proper encoding
+  return true
+end
+
+# Parse CSV string and return as 2D array
+# Returns: Array of arrays (rows)
+func parse {csvText}
+  # Built-in function - implemented in executor
+  # Parses CSV string directly (no file I/O)
+  # Handles quotes, escapes, newlines
+  # Returns in-memory 2D array
+  return nil
+end
+
+# Convert 2D array to CSV string format
+# data: Array of arrays (rows)
+# Returns: CSV string with proper formatting
+func stringify {data}
+  # Built-in function - implemented in executor
+  # Converts 2D array to CSV text
+  # Handles quoting and escaping
+  # Returns string (not written to file)
+  return ""
+end
+
+# ============================================================================
+# DATA ACCESS
+# ============================================================================
+
+# Get first row as headers
+# data: CSV data from read() or parse()
+# Returns: Array of header names
+func headers {data}
+  # Built-in function - implemented in executor
+  # Returns first row (header row)
+  # Safely handles edge cases (empty data, single row)
+  return data[0]
+end
+
+# Get all data rows (excluding header)
+# data: CSV data from read() or parse()
+# Returns: Array of arrays (data rows only)
+func rows {data}
+  # Built-in function - implemented in executor
+  # Returns all rows except first (header)
+  # Returns empty array if only header exists
+  return nil
+end
+
+# Get data organized by columns
+# data: CSV data from read() or parse()
+# Returns: Array of columns (each column is array of values)
+func columns {data}
+  # Built-in function - implemented in executor
+  # Transposes 2D array from row-major to column-major
+  # Preserves header order
+  return nil
+end
+
+# Get specific column by name
+# data: CSV data from read() or parse()
+# columnName: Name of column (from header)
+# Returns: Array of values in that column (excluding header)
+func getColumn {data, columnName}
+  # Built-in function - implemented in executor
+  # Finds column by header name
+  # Returns column values as array
+  # Returns nil if column not found
+  return nil
+end
+
+# Get specific column by index
+# data: CSV data from read() or parse()
+# columnIndex: 0-based column index
+# Returns: Array of values in that column
+func getColumnByIndex {data, columnIndex}
+  # Built-in function - implemented in executor
+  # Direct index-based column access
+  # Faster than getColumn() for known indexes
+  return nil
+end
+
+# ============================================================================
+# DATA FILTERING & SELECTION
+# ============================================================================
+
+# Filter rows where column equals value
+# data: CSV data
+# columnName: Name of column to filter on
+# value: Value to match
+# Returns: Filtered 2D array (includes header as first row)
+func filter {data, columnName, value}
+  # Built-in function - implemented in executor
+  # Returns rows matching criteria
+  # Includes header in output
+  # Case-sensitive comparison
+  return nil
+end
+
+# Filter rows where column contains substring
+# data: CSV data
+# columnName: Name of column
+# substring: String to search for
+# Returns: Filtered 2D array with matching rows
+func filterContains {data, columnName, substring}
+  # Built-in function - implemented in executor
+  # Substring matching (not exact)
+  # Useful for text search
+  # Case-sensitive
+  return nil
+end
+
+# Filter rows by numeric range
+# data: CSV data
+# columnName: Numeric column name
+# minValue: Minimum value (inclusive)
+# maxValue: Maximum value (inclusive)
+# Returns: Filtered 2D array
+func filterRange {data, columnName, minValue, maxValue}
+  # Built-in function - implemented in executor
+  # Numeric range filtering
+  # Converts string values to numbers
+  # Returns nil if column not numeric
+  return nil
+end
+
+# Get unique values in a column
+# data: CSV data
+# columnName: Column name
+# Returns: Array of unique values
+func unique {data, columnName}
+  # Built-in function - implemented in executor
+  # Removes duplicates from column
+  # Preserves order of first occurrence
+  # Returns 1D array of unique values
+  return nil
+end
+
+# ============================================================================
+# DATA SORTING & ORDERING
+# ============================================================================
+
+# Sort all rows by column (ascending)
+# data: CSV data
+# columnName: Column name to sort by
+# Returns: Sorted 2D array (header as first row)
+func sort {data, columnName}
+  # Built-in function - implemented in executor
+  # Sorts data by specified column
+  # Ascending order (A-Z, 0-9)
+  # Preserves header as first row
+  return nil
+end
+
+# Sort by column in descending order
+# data: CSV data
+# columnName: Column name
+# Returns: Sorted 2D array (descending)
+func sortDesc {data, columnName}
+  # Built-in function - implemented in executor
+  # Same as sort() but reverse order
+  # Z-A, 9-0
+  return nil
+end
+
+# Sort by multiple columns
+# data: CSV data
+# columns: Array of column names (sort by first, then second, etc.)
+# Returns: Sorted 2D array
+func sortMulti {data, columns}
+  # Built-in function - implemented in executor
+  # Multi-column sorting
+  # Primary sort by first column, then secondary, etc.
+  # Useful for complex ordering
+  return nil
+end
+
+# ============================================================================
+# TRANSFORMATION
+# ============================================================================
+
+# Apply function to each row
+# data: CSV data
+# This is a template - actual implementation requires function parameters
+func map {data, transformFunction}
+  # Built-in function - implemented in executor
+  # Transforms each row using provided function
+  # Complex operation - requires function passing support
+  return nil
+end
+
+# Join two datasets on common column
+# data1: First CSV data
+# data2: Second CSV data
+# joinColumn: Column name to join on
+# Returns: Combined 2D array with columns from both datasets
+func join {data1, data2, joinColumn}
+  # Built-in function - implemented in executor
+  # Inner join on specified column
+  # Combines rows where join column matches
+  # Returns nil if join column not found in either dataset
+  return nil
+end
+
+# Left join two datasets
+# data1: Left dataset
+# data2: Right dataset
+# joinColumn: Column name
+# Returns: All rows from data1, with matching rows from data2
+func leftJoin {data1, data2, joinColumn}
+  # Built-in function - implemented in executor
+  # Preserves all rows from left dataset
+  # Adds columns from right dataset where keys match
+  # Fills with empty strings for non-matches
+  return nil
+end
+
+# ============================================================================
+# STATISTICAL ANALYSIS
+# ============================================================================
+
+# Get statistics for numeric column
+# data: CSV data
+# columnName: Numeric column name
+# Returns: Array with [min, max, mean, count, sum]
+func stats {data, columnName}
+  # Built-in function - implemented in executor
+  # Returns array: [minimum, maximum, average, count, sum]
+  # Automatically converts string values to numbers
+  # Returns nil if column not found or not numeric
+  return nil
+end
+
+# Get minimum value in column
+# data: CSV data
+# columnName: Column name
+# Returns: Minimum numeric value
+func min {data, columnName}
+  # Built-in function - implemented in executor
+  # Returns minimum value
+  # Converts strings to numbers
+  # Returns nil for non-numeric columns
+  return nil
+end
+
+# Get maximum value in column
+# data: CSV data
+# columnName: Column name
+# Returns: Maximum numeric value
+func max {data, columnName}
+  # Built-in function - implemented in executor
+  # Returns maximum value
+  return nil
+end
+
+# Calculate average/mean of numeric column
+# data: CSV data
+# columnName: Column name
+# Returns: Mean value
+func mean {data, columnName}
+  # Built-in function - implemented in executor
+  # Returns arithmetic mean
+  # Handles string-to-number conversion
+  return nil
+end
+
+# Get row count (excluding header)
+# data: CSV data
+# Returns: Number of data rows
+func rowCount {data}
+  # Built-in function - implemented in executor
+  # Returns number of rows (excluding header)
+  return 0
+end
+
+# Get column count
+# data: CSV data
+# Returns: Number of columns
+func columnCount {data}
+  # Built-in function - implemented in executor
+  # Returns number of columns from first row
+  return 0
+end
+
+# ============================================================================
+# UTILITIES
+# ============================================================================
+
+# Convert column values to integers
+# data: CSV data
+# columnName: Column name to convert
+# Returns: New CSV data with column converted to numbers
+func toNumeric {data, columnName}
+  # Built-in function - implemented in executor
+  # Converts string column values to numbers
+  # Useful for numeric operations
+  # Returns nil if conversion fails
+  return nil
+end
+
+# Rename column
+# data: CSV data
+# oldName: Current column name
+# newName: New column name
+# Returns: New CSV data with renamed column
+func renameColumn {data, oldName, newName}
+  # Built-in function - implemented in executor
+  # Changes column header name
+  # Preserves all data
+  # Returns nil if column not found
+  return nil
+end
+
+# Remove duplicate rows
+# data: CSV data
+# Returns: CSV data with duplicate rows removed
+func removeDuplicates {data}
+  # Built-in function - implemented in executor
+  # Removes completely duplicate rows
+  # Preserves order of first occurrence
+  # Preserves header
+  return nil
+end
+
+# Select specific columns
+# data: CSV data
+# columnNames: Array of column names to keep
+# Returns: CSV data with only selected columns
+func select {data, columnNames}
+  # Built-in function - implemented in executor
+  # Returns subset of columns
+  # Reorders columns to match input array order
+  # Returns nil if any column not found
+  return nil
+end
+
+# Add new row to CSV data
+# data: CSV data
+# row: Array of values for new row
+# Returns: CSV data with new row appended
+func addRow {data, row}
+  # Built-in function - implemented in executor
+  # Appends row to end of data
+  # Should match column count
+  return nil
+end
+
+# Add new column to CSV data
+# data: CSV data
+# columnName: Name for new column
+# values: Array of values (should match data row count)
+# Returns: CSV data with new column
+func addColumn {data, columnName, values}
+  # Built-in function - implemented in executor
+  # Adds column to right side of dataset
+  # Values array length should match row count
+  return nil
+end

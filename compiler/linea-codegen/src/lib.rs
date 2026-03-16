@@ -34,9 +34,10 @@ impl RustGenerator {
         self.emit_line("}");
 
         let output = format!(
-            "{}\n{}",
-            "// Generated Linea Rust code\nuse std::io::Write;",
-            self.code
+            "{}\n{}\n{}",
+            "// Generated Linea Rust code\nuse std::io::Write;\nuse std::collections::HashSet;",
+            self.code,
+            include_str!("linea_runtime.rs")
         );
         Ok(output)
     }
@@ -133,8 +134,15 @@ impl RustGenerator {
     fn generate_expression(&mut self, expr: &Expression) -> Result<(String, String)> {
         match expr {
             Expression::Integer(n) => Ok((n.to_string(), "i64".to_string())),
-            Expression::Float(f) => Ok((f.to_string(), "f64".to_string())),
-            Expression::String(s) => Ok((format!("\"{}\".to_string()", s), "String".to_string())),
+            Expression::Float(f) => {
+                let s = f.to_string();
+                if s.contains('.') {
+                    Ok((s, "f64".to_string()))
+                } else {
+                    Ok((format!("{}.0", s), "f64".to_string()))
+                }
+            },
+            Expression::String(s) => Ok((format!("{:?}.to_string()", s), "String".to_string())),
             Expression::Bool(b) => Ok((b.to_string(), "bool".to_string())),
             Expression::Identifier(name) => {
                 let ty = self.variable_types.get(name).cloned().unwrap_or_else(|| "i64".to_string());
@@ -147,8 +155,8 @@ impl RustGenerator {
                 match op {
                     BinaryOp::Add => {
                         if left_ty.starts_with("Vec") && right_ty.starts_with("Vec") {
-                            // Array + Array
-                            let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
+                             // ... existing array logic ...
+                             let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
                                 left_ty[4..left_ty.len()-1].to_string()
                             } else {
                                 "i64".to_string()
@@ -159,10 +167,10 @@ impl RustGenerator {
                             );
                             Ok((code, format!("Vec<{}>", elem_ty)))
                         } else if left_ty == "String" || right_ty == "String" {
+                            // ... existing string logic ...
                             let left_str = if left_ty == "String" {
                                 format!("{}", left_expr)
                             } else if left_ty.starts_with("Vec") {
-                                // For arrays, use debug format
                                 format!("(format!(\"{{:?}}\", {}))", left_expr)
                             } else {
                                 format!("(({}).to_string())", left_expr)
@@ -170,19 +178,23 @@ impl RustGenerator {
                             let right_str = if right_ty == "String" {
                                 format!("{}", right_expr)
                             } else if right_ty.starts_with("Vec") {
-                                // For arrays, use debug format
                                 format!("(format!(\"{{:?}}\", {}))", right_expr)
                             } else {
                                 format!("(({}).to_string())", right_expr)
                             };
                             Ok((format!("format!(\"{{}}{{}}\", {}, {})", left_str, right_str), "String".to_string()))
+                        } else if left_ty == "i64" && right_ty == "f64" {
+                            Ok((format!("({} as f64 + {})", left_expr, right_expr), "f64".to_string()))
+                        } else if left_ty == "f64" && right_ty == "i64" {
+                            Ok((format!("({} + {} as f64)", left_expr, right_expr), "f64".to_string()))
                         } else {
                             Ok((format!("({} + {})", left_expr, right_expr), left_ty.clone()))
                         }
                     }
                     BinaryOp::Subtract => {
                         if left_ty.starts_with("Vec") && right_ty.starts_with("Vec") {
-                            let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
+                             // ... existing array logic ...
+                             let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
                                 left_ty[4..left_ty.len()-1].to_string()
                             } else {
                                 "i64".to_string()
@@ -192,14 +204,18 @@ impl RustGenerator {
                                 left_expr, right_expr
                             );
                             Ok((code, format!("Vec<{}>", elem_ty)))
+                        } else if left_ty == "i64" && right_ty == "f64" {
+                            Ok((format!("({} as f64 - {})", left_expr, right_expr), "f64".to_string()))
+                        } else if left_ty == "f64" && right_ty == "i64" {
+                            Ok((format!("({} - {} as f64)", left_expr, right_expr), "f64".to_string()))
                         } else {
                             Ok((format!("({} - {})", left_expr, right_expr), left_ty.clone()))
                         }
                     }
                     BinaryOp::Multiply => {
                         if left_ty.starts_with("Vec") && right_ty.starts_with("Vec") {
-                            // Array * Array
-                            let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
+                             // ... existing array logic ...
+                             let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
                                 left_ty[4..left_ty.len()-1].to_string()
                             } else {
                                 "i64".to_string()
@@ -210,8 +226,8 @@ impl RustGenerator {
                             );
                             Ok((code, format!("Vec<{}>", elem_ty)))
                         } else if left_ty.starts_with("Vec") && !right_ty.starts_with("Vec") {
-                            // Array * Scalar
-                            let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
+                            // ... existing broadcast logic ...
+                             let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
                                 left_ty[4..left_ty.len()-1].to_string()
                             } else {
                                 "i64".to_string()
@@ -222,8 +238,8 @@ impl RustGenerator {
                             );
                             Ok((code, format!("Vec<{}>", elem_ty)))
                         } else if !left_ty.starts_with("Vec") && right_ty.starts_with("Vec") {
-                            // Scalar * Array
-                            let elem_ty = if right_ty.starts_with("Vec<") && right_ty.ends_with(">") {
+                            // ... existing broadcast logic ...
+                             let elem_ty = if right_ty.starts_with("Vec<") && right_ty.ends_with(">") {
                                 right_ty[4..right_ty.len()-1].to_string()
                             } else {
                                 "i64".to_string()
@@ -233,13 +249,18 @@ impl RustGenerator {
                                 right_expr, left_expr
                             );
                             Ok((code, format!("Vec<{}>", elem_ty)))
+                        } else if left_ty == "i64" && right_ty == "f64" {
+                            Ok((format!("({} as f64 * {})", left_expr, right_expr), "f64".to_string()))
+                        } else if left_ty == "f64" && right_ty == "i64" {
+                            Ok((format!("({} * {} as f64)", left_expr, right_expr), "f64".to_string()))
                         } else {
                             Ok((format!("({} * {})", left_expr, right_expr), left_ty.clone()))
                         }
                     }
                     BinaryOp::Divide => {
                         if left_ty.starts_with("Vec") && right_ty.starts_with("Vec") {
-                            let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
+                            // ... existing logic ...
+                             let elem_ty = if left_ty.starts_with("Vec<") && left_ty.ends_with(">") {
                                 left_ty[4..left_ty.len()-1].to_string()
                             } else {
                                 "i64".to_string()
@@ -249,10 +270,15 @@ impl RustGenerator {
                                 left_expr, right_expr
                             );
                             Ok((code, format!("Vec<{}>", elem_ty)))
+                        } else if left_ty == "i64" && right_ty == "f64" {
+                            Ok((format!("({} as f64 / {})", left_expr, right_expr), "f64".to_string()))
+                        } else if left_ty == "f64" && right_ty == "i64" {
+                            Ok((format!("({} / {} as f64)", left_expr, right_expr), "f64".to_string()))
                         } else {
                             Ok((format!("({} / {})", left_expr, right_expr), left_ty.clone()))
                         }
                     }
+
                     _ => {
                         let (op_str, result_ty) = match op {
                             BinaryOp::Modulo => ("%", left_ty.clone()),
@@ -300,8 +326,8 @@ impl RustGenerator {
                     "i64".to_string()
                 };
                 
-                // For nested Vec types (Vec<Vec<...>>), use .clone()
-                if elem_type.contains("Vec") {
+                // For nested Vec types (Vec<Vec<...>>) or String, use .clone()
+                if elem_type.contains("Vec") || elem_type == "String" {
                     Ok((format!("{}[{} as usize].clone()", expr_code, idx_code), elem_type))
                 } else {
                     Ok((format!("{}[{} as usize]", expr_code, idx_code), elem_type))
@@ -332,7 +358,24 @@ impl RustGenerator {
                 Ok((format!("{}[{}..{}].to_vec()", expr_code, start_code, end_code), format!("Vec<{}>", elem_type)))
             }
             Expression::Call { func, args } => {
-                if let Expression::Identifier(name) = &**func {
+                // eprintln!("Generating Call: {:?}", func);
+                let func_name = if let Expression::Identifier(name) = &**func {
+                    Some(name.clone())
+                } else if let Expression::MemberAccess { object, member } = &**func {
+                    if let Expression::Identifier(obj_name) = &**object {
+                         // eprintln!("Call is MemberAccess: {}.{}", obj_name, member);
+                         Some(format!("{}::{}", obj_name, member))
+                    } else {
+                        // eprintln!("Call MemberAccess object not Identifier: {:?}", object);
+                        None
+                    }
+                } else {
+                    // eprintln!("Call func is unknown type: {:?}", func);
+                    None
+                };
+
+                if let Some(name) = func_name {
+                    // eprintln!("Matching function name: {}", name);
                     match name.as_str() {
                         "len" => {
                             if args.len() != 1 {
@@ -404,6 +447,280 @@ impl RustGenerator {
                             }
                             let (expr_code, _) = self.generate_expression(&args[0])?;
                             Ok((format!("({}.to_string())", expr_code), "String".to_string()))
+                        }
+                        "sin" => {
+                            if args.len() != 1 { return Ok(("0.0".to_string(), "f64".to_string())); }
+                            let (arg, ty) = self.generate_expression(&args[0])?;
+                            if ty == "i64" {
+                                Ok((format!("({} as f64).sin()", arg), "f64".to_string()))
+                            } else {
+                                Ok((format!("{}.sin()", arg), "f64".to_string()))
+                            }
+                        }
+                        "cos" => {
+                            if args.len() != 1 { return Ok(("0.0".to_string(), "f64".to_string())); }
+                            let (arg, ty) = self.generate_expression(&args[0])?;
+                            if ty == "i64" {
+                                Ok((format!("({} as f64).cos()", arg), "f64".to_string()))
+                            } else {
+                                Ok((format!("{}.cos()", arg), "f64".to_string()))
+                            }
+                        }
+                        "append" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<i64>".to_string())); }
+                            let (arr, arr_ty) = self.generate_expression(&args[0])?;
+                            let (val, val_ty) = self.generate_expression(&args[1])?;
+                            
+                            let elem_ty = if arr_ty.starts_with("Vec<") && arr_ty.ends_with(">") {
+                                arr_ty[4..arr_ty.len()-1].to_string()
+                            } else {
+                                "i64".to_string()
+                            };
+                            
+                            let val_arg = if elem_ty == "f64" && val_ty == "i64" {
+                                format!("{} as f64", val)
+                            } else if elem_ty == "i64" && val_ty == "f64" {
+                                format!("{} as i64", val)
+                            } else {
+                                val
+                            };
+                            
+                            Ok((format!("{{ let mut v = {}.clone(); v.push({}); v }}", arr, val_arg), arr_ty))
+                        }
+                        // HTTP Functions
+                        "http::get" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (url, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::http::get({})", url), "Vec<String>".to_string()))
+                        }
+                        "http::post" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (url, _) = self.generate_expression(&args[0])?;
+                            let (body, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::http::post({}, {})", url, body), "Vec<String>".to_string()))
+                        }
+                        "http::download" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (url, _) = self.generate_expression(&args[0])?;
+                            let (path, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::http::download(&{}, &{})", url, path), "bool".to_string()))
+                        }
+                        "http::request" => {
+                            if args.len() != 4 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (method, _) = self.generate_expression(&args[0])?;
+                            let (url, _) = self.generate_expression(&args[1])?;
+                            let (headers, _) = self.generate_expression(&args[2])?;
+                            let (body, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::http::request({}, {}, {}, {})", method, url, headers, body), "Vec<String>".to_string()))
+                        }
+
+                        // CSV Functions
+                        "csv::parse" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::csv::parse({})", arg), "Vec<Vec<String>>".to_string()))
+                        }
+                        "csv::stringify" => {
+                            if args.len() != 1 { return Ok(("\"\"".to_string(), "String".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::csv::stringify(&{})", arg), "String".to_string()))
+                        }
+                        "csv::read" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::csv::read({})", arg), "Vec<Vec<String>>".to_string()))
+                        }
+                        "csv::write" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path, _) = self.generate_expression(&args[0])?;
+                            let (data, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::write({}, &{})", path, data), "bool".to_string()))
+                        }
+                        "csv::headers" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::csv::headers(&{})", arg), "Vec<String>".to_string()))
+                        }
+                        "csv::rows" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::csv::rows(&{})", arg), "Vec<Vec<String>>".to_string()))
+                        }
+                        "csv::getColumn" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (col, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::get_column(&{}, {})", data, col), "Vec<String>".to_string()))
+                        }
+                        "csv::filter" => {
+                            if args.len() != 3 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (col, _) = self.generate_expression(&args[1])?;
+                            let (val, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::csv::filter(&{}, {}, {})", data, col, val), "Vec<Vec<String>>".to_string()))
+                        }
+                        "csv::sort" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (col, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::sort(&{}, {})", data, col), "Vec<Vec<String>>".to_string()))
+                        }
+                        "csv::unique" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (col, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::unique(&{}, {})", data, col), "Vec<String>".to_string()))
+                        }
+                        "csv::stats" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<f64>".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (col, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::stats(&{}, {})", data, col), "Vec<f64>".to_string()))
+                        }
+                        "csv::min" => {
+                            if args.len() != 2 { return Ok(("0.0".to_string(), "f64".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (col, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::min(&{}, {})", data, col), "f64".to_string()))
+                        }
+                        "csv::max" => {
+                            if args.len() != 2 { return Ok(("0.0".to_string(), "f64".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (col, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::max(&{}, {})", data, col), "f64".to_string()))
+                        }
+                        "csv::mean" => {
+                            if args.len() != 2 { return Ok(("0.0".to_string(), "f64".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (col, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::mean(&{}, {})", data, col), "f64".to_string()))
+                        }
+                        "csv::rowCount" => {
+                            if args.len() != 1 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::csv::row_count(&{})", arg), "i64".to_string()))
+                        }
+                        "csv::columnCount" => {
+                            if args.len() != 1 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::csv::column_count(&{})", arg), "i64".to_string()))
+                        }
+                        "csv::select" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (cols, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::select(&{}, {})", data, cols), "Vec<Vec<String>>".to_string()))
+                        }
+                        "csv::removeDuplicates" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::csv::remove_duplicates(&{})", arg), "Vec<Vec<String>>".to_string()))
+                        }
+                        "csv::addRow" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (data, _) = self.generate_expression(&args[0])?;
+                            let (row, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::csv::add_row(&{}, {})", data, row), "Vec<Vec<String>>".to_string()))
+                        }
+                        // Markdown Functions
+                        "markdown::parse" | "markdown::toHtml" => {
+                            if args.len() != 1 { return Ok(("\"\"".to_string(), "String".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::markdown::parse({})", arg), "String".to_string()))
+                        }
+                        // Excel Functions
+                        "excel::read" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (path, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::excel::read({})", path), "Vec<Vec<String>>".to_string()))
+                        }
+                        "excel::write" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path, _) = self.generate_expression(&args[0])?;
+                            let (data, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::excel::write({}, &{})", path, data), "bool".to_string()))
+                        }
+                        // Graphics Functions
+                        "graphics::title" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::graphics::title({}.to_string())", arg), "bool".to_string()))
+                        }
+                        "graphics::plot" => {
+                            if args.len() < 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (x, x_ty) = self.generate_expression(&args[0])?;
+                            let (y, y_ty) = self.generate_expression(&args[1])?;
+                            
+                            let x_arg = if x_ty.contains("i64") {
+                                format!("{}.iter().map(|&v| v as f64).collect()", x)
+                            } else { x };
+                            
+                            let y_arg = if y_ty.contains("i64") {
+                                format!("{}.iter().map(|&v| v as f64).collect()", y)
+                            } else { y };
+
+                            let label = if args.len() > 2 { 
+                                let (l, _) = self.generate_expression(&args[2])?;
+                                format!("{}.to_string()", l)
+                            } else { "\"Series\".to_string()".to_string() };
+
+                            let color = if args.len() > 3 { 
+                                let (c, _) = self.generate_expression(&args[3])?;
+                                format!("{}.to_string()", c)
+                            } else { "\"blue\".to_string()".to_string() };
+
+                            Ok((format!("linea_runtime::graphics::plot({}, {}, {}, {})", x_arg, y_arg, label, color), "bool".to_string()))
+                        }
+                        "graphics::scatter" => {
+                            if args.len() < 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (x, x_ty) = self.generate_expression(&args[0])?;
+                            let (y, y_ty) = self.generate_expression(&args[1])?;
+                            
+                            let x_arg = if x_ty.contains("i64") {
+                                format!("{}.iter().map(|&v| v as f64).collect()", x)
+                            } else { x };
+                            
+                            let y_arg = if y_ty.contains("i64") {
+                                format!("{}.iter().map(|&v| v as f64).collect()", y)
+                            } else { y };
+
+                            let label = if args.len() > 2 { 
+                                let (l, _) = self.generate_expression(&args[2])?;
+                                format!("{}.to_string()", l)
+                            } else { "\"Series\".to_string()".to_string() };
+
+                            let color = if args.len() > 3 { 
+                                let (c, _) = self.generate_expression(&args[3])?;
+                                format!("{}.to_string()", c)
+                            } else { "\"red\".to_string()".to_string() };
+
+                            Ok((format!("linea_runtime::graphics::scatter({}, {}, {}, {})", x_arg, y_arg, label, color), "bool".to_string()))
+                        }
+                        "graphics::bar" => {
+                            if args.len() < 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (labels, _) = self.generate_expression(&args[0])?;
+                            let (values, v_ty) = self.generate_expression(&args[1])?;
+                            
+                            let v_arg = if v_ty.contains("i64") {
+                                format!("{}.iter().map(|&v| v as f64).collect()", values)
+                            } else { values };
+
+                            let label = if args.len() > 2 { 
+                                let (l, _) = self.generate_expression(&args[2])?;
+                                format!("{}.to_string()", l)
+                            } else { "\"Data\".to_string()".to_string() };
+
+                            let color = if args.len() > 3 { 
+                                let (c, _) = self.generate_expression(&args[3])?;
+                                format!("{}.to_string()", c)
+                            } else { "\"green\".to_string()".to_string() };
+
+                            Ok((format!("linea_runtime::graphics::bar({}, {}, {}, {})", labels, v_arg, label, color), "bool".to_string()))
+                        }
+                        "graphics::save" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (arg, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::graphics::save({}.to_string())", arg), "bool".to_string()))
                         }
                         _ => Ok(("0".to_string(), "i64".to_string())),
                     }

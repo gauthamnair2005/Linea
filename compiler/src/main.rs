@@ -94,31 +94,70 @@ fn compile_file(input: &PathBuf, output: Option<PathBuf>) {
                     });
 
                     let rs_file = format!("{}.rs", output_path.display());
-                    if let Err(e) = fs::write(&rs_file, rust_code) {
-                        eprintln!("✗ Error writing Rust file: {}", e);
-                        std::process::exit(1);
+                    // Create a temporary Cargo project
+                    let project_name = output_path.file_stem().unwrap().to_str().unwrap();
+                    let build_dir = std::env::temp_dir().join(format!("linea_build_{}", project_name));
+                    
+                    if build_dir.exists() {
+                        let _ = fs::remove_dir_all(&build_dir);
                     }
+                    fs::create_dir_all(build_dir.join("src")).expect("Failed to create build dir");
+                    
+                    // Write Cargo.toml
+                    let cargo_toml = format!(r#"[package]
+name = "{}"
+version = "0.1.0"
+edition = "2021"
 
-                    match Command::new("rustc")
-                        .arg("-O")
-                        .arg(&rs_file)
-                        .arg("-o")
-                        .arg(&output_path)
+[dependencies]
+csv = "1.3"
+rand = "0.8"
+reqwest = {{ version = "0.12", features = ["blocking", "json", "rustls-tls"], default-features = false }}
+serde_json = "1.0"
+comrak = "0.18"
+calamine = "0.24"
+rust_xlsxwriter = "0.68"
+plotters = {{ version = "0.3.7", default-features = false, features = ["bitmap_backend", "bitmap_encoder", "line_series", "point_series", "histogram", "ab_glyph"] }}
+"#, project_name);
+
+                    fs::write(build_dir.join("Cargo.toml"), cargo_toml).expect("Failed to write Cargo.toml");
+                    fs::write(build_dir.join("src/main.rs"), rust_code).expect("Failed to write main.rs");
+
+                    println!("Building with Cargo in {}...", build_dir.display());
+
+                    match Command::new("cargo")
+                        .arg("build")
+                        .arg("--release")
+                        .current_dir(&build_dir)
                         .output() {
                         Ok(output) => {
                             if output.status.success() {
                                 println!("✓ Compilation successful!");
-                                println!("Output: {}", output_path.display());
-                                let _ = fs::remove_file(&rs_file);
+                                
+                                // Move binary to output location
+                                let binary_name = if cfg!(windows) { format!("{}.exe", project_name) } else { project_name.to_string() };
+                                let built_binary = build_dir.join("target/release").join(&binary_name);
+                                let final_output = if output_path.extension().is_none() && cfg!(windows) {
+                                    output_path.with_extension("exe")
+                                } else {
+                                    output_path.clone()
+                                };
+                                
+                                match fs::copy(&built_binary, &final_output) {
+                                    Ok(_) => println!("Output: {}", final_output.display()),
+                                    Err(e) => eprintln!("✗ Error copying binary: {}", e),
+                                }
+                                
+                                // Cleanup
+                                // let _ = fs::remove_dir_all(&build_dir);
                             } else {
-                                eprintln!("✗ Rustc compilation failed");
+                                eprintln!("✗ Cargo compilation failed");
                                 eprintln!("{}", String::from_utf8_lossy(&output.stderr));
                                 std::process::exit(1);
                             }
                         }
                         Err(e) => {
-                            eprintln!("✗ Failed to run rustc: {}", e);
-                            eprintln!("Make sure Rust compiler is installed: rustup install stable");
+                            eprintln!("✗ Failed to run cargo: {}", e);
                             std::process::exit(1);
                         }
                     }

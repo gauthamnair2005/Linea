@@ -1,0 +1,59 @@
+#!/usr/bin/env linea
+# Excel Library Demonstration
+
+import excel { read, write }
+import csv { addRow }
+
+display "=== Linea Excel Library Demo ==="
+display ""
+
+# ============================================================================
+# EXAMPLE 1: Creating an Excel File
+# ============================================================================
+
+display "1. Creating 'demo_data.xlsx'..."
+display "---"
+
+var data = [
+    ["ID", "Name", "Department", "Salary"],
+    ["101", "Alice Johnson", "Engineering", "85000"],
+    ["102", "Bob Smith", "Marketing", "62000"],
+    ["103", "Charlie Brown", "Sales", "55000"]
+]
+
+# Add another row using CSV utility (compatible structure)
+varUpd data = csv::addRow(data, ["104", "Diana Prince", "Management", "95000"])
+
+var success = excel::write("demo_data.xlsx", data)
+
+if success {
+    display "✓ Successfully wrote demo_data.xlsx"
+} else {
+    display "✗ Failed to write file"
+}
+display ""
+
+# ============================================================================
+# EXAMPLE 2: Reading Excel File
+# ============================================================================
+
+display "2. Reading 'demo_data.xlsx'..."
+display "---"
+
+var readData = excel::read("demo_data.xlsx")
+
+if len(readData) > 0 {
+    display "✓ Successfully read file. Row count: " + len(readData)
+    display "Content Preview:"
+    
+    # Display headers
+    display readData[0]
+    
+    # Display first data row
+    display readData[1]
+} else {
+    display "✗ Failed to read file or file is empty"
+}
+display ""
+
+display "Demo Complete!"

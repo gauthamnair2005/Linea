@@ -1,0 +1,93 @@
+#!/usr/bin/env linea
+# HTTP Library Demonstration
+
+# Note: The 'http' module is imported implicitly or explicitly
+import http { get, post, request, download }
+
+display "=== Linea HTTP Library Demo ==="
+display ""
+
+# ============================================================================
+# EXAMPLE 1: Basic GET Request
+# ============================================================================
+
+display "1. Basic GET Request:"
+display "---"
+
+var url = "https://httpbin.org/get"
+display "Sending GET request to: " + url
+
+# Returns [status (str), ok (str), body (str)]
+var resp = http::get(url)
+var status = resp[0]
+var ok = resp[1]
+var body = resp[2]
+
+display "Status: " + status
+display "OK: " + ok
+display "Headers:"
+# display resp["headers"] # Not supported yet
+
+display "Body Preview (first 100 chars):"
+# display body.substring(0, 100) ...
+display "Body length: " + len(body) 
+display ""
+
+# ============================================================================
+# EXAMPLE 2: POST Request (JSON)
+# ============================================================================
+
+display "2. POST Request (JSON):"
+display "---"
+
+var postUrl = "https://httpbin.org/post"
+var jsonData = "{\"name\": \"Linea User\", \"language\": \"Linea\"}"
+
+display "Sending POST to: " + postUrl
+display "Data: " + jsonData
+
+var postResp = http::post(postUrl, jsonData)
+
+display "Status: " + postResp[0]
+display "Response Body (Echoed Data):"
+display postResp[2]
+display ""
+
+# ============================================================================
+# EXAMPLE 3: File Download
+# ============================================================================
+
+display "3. File Download:"
+display "---"
+
+var imgUrl = "https://httpbin.org/image/png"
+var imgPath = "test_image.png"
+
+display "Downloading image from: " + imgUrl
+var success = http::download(imgUrl, imgPath)
+
+if success {
+    display "✓ Download successful to: " + imgPath
+} else {
+    display "✗ Download failed"
+}
+display ""
+
+# ============================================================================
+# EXAMPLE 4: Custom Headers (using generic request)
+# ============================================================================
+
+display "4. Custom Headers:"
+display "---"
+
+var headerUrl = "https://httpbin.org/headers"
+# Headers passed as JSON string
+var headers = "{\"X-Custom-Header\": \"Linea-Test\"}"
+var headerResp = http::request("GET", headerUrl, headers, "")
+
+display "Status: " + headerResp[0]
+display "Response Body:"
+display headerResp[2]
+display ""
+
+display "Demo Complete!"
