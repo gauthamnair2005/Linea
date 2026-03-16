@@ -9,48 +9,51 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/github/v/release/gauthamnair2005/Linea?style=flat-square" alt="Version" />
-  </a>
   <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/gauthamnair2005/Linea?style=flat-square" alt="License" />
+    <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License" />
   </a>
-  <a href="https://github.com/gauthamnair2005/Linea/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/gauthamnair2005/Linea/ci.yml?style=flat-square" alt="Build Status" />
+  <a href="https://github.com/gauthamnair2005/Linea">
+    <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
 </p>
 
 ---
 
-**Linea** is a modern, statically-typed, compiled programming language designed for high-performance systems programming and artificial intelligence. It combines the safety and speed of Rust with the simplicity of Python, making it the ideal choice for building next-generation AI applications, system tools, and web services.
+**Linea** is a modern, statically-typed, compiled programming language designed for high-performance systems programming and artificial intelligence. It combines the safety and speed of Rust with the simplicity of Python.
 
 ## 🚀 Key Features
 
-*   **Native Performance**: Compiles directly to machine code via LLVM/Rust backend. 100x-1000x faster than interpreted languages.
-*   **GPU Accelerated AI**: First-class support for hardware-accelerated tensor operations. Automatically detects and utilizes NVIDIA (CUDA), AMD (ROCm), and Intel (OneAPI) GPUs via Vulkan/WGPU.
-*   **Memory Safety**: Ownership-based memory management ensures zero use-after-free or buffer overflow bugs without the overhead of a garbage collector.
-*   **Zero Dependencies**: Produces single, standalone binaries (~1.3MB) that run anywhere. No "dependency hell".
-*   **Professional Tooling**: Built-in package manager, build system, formatter, and language server protocol (LSP) support.
+*   **Native Performance**: Compiles directly to machine code via LLVM/Rust backend.
+*   **GPU Accelerated AI**: Built-in support for hardware-accelerated tensor operations using WGPU (Vulkan/Metal/DX12).
+*   **Memory Safety**: Ownership-based memory management ensures zero use-after-free bugs.
+*   **Zero Dependencies**: Produces single, standalone binaries (~1.3MB) that run on Linux.
+*   **Professional Tooling**: Built-in package manager and build system.
 
 ## 📦 Installation
 
-### Linux / macOS
+### Linux
+
+Clone the repository and run the install script:
+
 ```bash
-curl -fsSL https://get.linea-lang.org/install.sh | sh
+git clone https://github.com/gauthamnair2005/Linea.git
+cd Linea
+./install.sh
 ```
 
-### Windows
-```powershell
-iwr https://get.linea-lang.org/install.ps1 -useb | iex
+Or build from source:
+
+```bash
+cargo build --release
+./target/release/linea --version
 ```
 
 ## ⚡ Quick Start
 
 ### 1. Hello World
+Create `hello.ln`:
 ```linea
-func main() {
-    display "Hello, Linea!"
-}
+display "Hello, Linea!"
 ```
 
 Compile and run:
@@ -60,62 +63,44 @@ linea compile hello.ln -o hello
 ```
 
 ### 2. Train a Neural Network
-Linea makes AI development simple and fast. Here is a complete example of training a classifier:
+Linea includes a native Machine Learning library. See `examples/iris_demo.ln` for a full example.
 
 ```linea
 import ml
 import datasets
 
 # Load dataset
-var data = datasets::load_csv("iris.csv")
-var model = ml::Linear(4, 3) # 4 inputs, 3 classes
+var data = datasets::load_csv("examples/iris_dummy.csv")
 
-# Training Loop
-display "Starting training..."
-for epoch from 0~100 {
-    # Forward Pass
-    var pred = ml::forward(model, data.features)
-    
-    # Calculate Loss
-    var loss = ml::cross_entropy(pred, data.labels)
-    
-    # Backward Pass & Optimization
-    var grad = ml::backward(pred, data.labels)
-    ml::step(model, grad, 0.01)
-    
-    if epoch % 10 == 0 {
-        display "Epoch " + epoch + " | Loss: " + loss
-    }
-}
+# Create a model
+var model = ml::Linear(4, 3) 
+
+# Training loop...
 ```
 
-## 📚 Documentation
+## 📚 Standard Library
 
-*   [Language Tour](docs/tour.md)
-*   [Standard Library Reference](docs/stdlib/README.md)
-*   [AI/ML Guide](docs/ai/README.md)
-*   [Compiler Internals](docs/internals.md)
+The following libraries are included in `libs/`:
 
-## 🛠️ Building from Source
+*   **`ml`**: Neural network layers, activations, and optimizers.
+*   **`compute`**: Low-level GPU tensor operations.
+*   **`datasets`**: Data loading and preprocessing utilities.
+*   **`http`**: Native HTTP client (`get`, `post`, `download`).
+*   **`math`**: Mathematical functions.
+*   **`strings`**: String manipulation utilities.
+*   **`utils`**: General utility functions.
 
-Requirements: Rust 1.75+
+## 📂 Project Structure
 
-```bash
-git clone https://github.com/gauthamnair2005/Linea.git
-cd Linea
-cargo build --release
-./target/release/linea --version
-```
+*   `compiler/`: Rust source code for the Linea compiler.
+*   `libs/`: Standard library source files (`.ln`).
+*   `examples/`: Example programs including ML demos.
+*   `docs/`: Documentation files.
+*   `linea`: Pre-compiled binary.
 
 ## 🤝 Contributing
 
-Linea is 100% open source and community-driven. We welcome contributions of all kinds!
-
-1.  Fork the repository
-2.  Create a feature branch (`git checkout -b feature/amazing-feature`)
-3.  Commit your changes (`git commit -m 'Add amazing feature'`)
-4.  Push to the branch (`git push origin feature/amazing-feature`)
-5.  Open a Pull Request
+Linea is open source. Contributions are welcome!
 
 ## 📄 License
 
