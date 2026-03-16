@@ -460,10 +460,11 @@ impl Executor {
 
                     Ok(Value::Matrix(result_val))
                 }
-                "compute::add" | "compute::sub" | "compute::mul" | "compute::div" => {
+                "compute::add" | "compute::sub" | "compute::mul" | "compute::div" | "compute::pow" => {
                     let op = if name.contains("add") { "add" }
                              else if name.contains("sub") { "sub" }
                              else if name.contains("mul") { "mul" }
+                             else if name.contains("pow") { "pow" }
                              else { "div" };
 
                     if args.len() != 2 { return Err(Error::InvalidOperation("element-wise op requires 2 arguments".to_string())); }
@@ -651,7 +652,7 @@ impl Executor {
                     let result_val = mat.into_iter().map(|row| row.into_iter().map(Value::Float).collect()).collect();
                     Ok(Value::Matrix(result_val))
                 }
-                "compute::transpose" | "compute::exp" | "compute::log" | "compute::relu" | "compute::sigmoid" | "compute::tanh" | "compute::sum_columns" | "compute::softmax" => {
+                "compute::transpose" | "compute::exp" | "compute::log" | "compute::relu" | "compute::sigmoid" | "compute::tanh" | "compute::sum_columns" | "compute::softmax" | "compute::sqrt" => {
                      if args.len() != 1 { return Err(Error::InvalidOperation("Unary compute op requires 1 argument".to_string())); }
                      let arg = self.eval_expression(&args[0])?;
                      
@@ -670,6 +671,7 @@ impl Executor {
                          "compute::relu" => compute::relu(&mat),
                          "compute::sigmoid" => compute::sigmoid(&mat),
                          "compute::tanh" => compute::tanh(&mat),
+                         "compute::sqrt" => compute::sqrt(&mat),
                          _ => unreachable!(),
                      };
                      

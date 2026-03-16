@@ -46,6 +46,10 @@ pub fn exp(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     a.iter().map(|row| row.iter().map(|x| x.exp()).collect()).collect()
 }
 
+pub fn sqrt(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    a.iter().map(|row| row.iter().map(|x| x.sqrt()).collect()).collect()
+}
+
 pub fn log(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     a.iter().map(|row| row.iter().map(|x| x.ln()).collect()).collect()
 }
@@ -195,6 +199,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         c[i] = a[i] * b[i];
     } else if (u.op == 3u) {
         c[i] = a[i] / b[i];
+    } else if (u.op == 4u) {
+        c[i] = pow(a[i], b[i]);
     }
 }
 "#;
@@ -239,6 +245,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         c[index] = val_a * val_b;
     } else if (u.op == 3u) {
         c[index] = val_a / val_b;
+    } else if (u.op == 4u) {
+        c[index] = pow(val_a, val_b);
     }
 }
 "#;
@@ -524,6 +532,7 @@ pub fn broadcast_op_flat(a: &[f64], b: &[f64], m: usize, n: usize, op: &str) -> 
         "sub" => 1,
         "mul" => 2,
         "div" => 3,
+        "pow" => 4,
         _ => return vec![],
     };
 
@@ -683,6 +692,7 @@ pub fn element_wise(a: &Vec<f64>, b: &Vec<f64>, op: &str) -> Vec<f64> {
         "sub" => 1,
         "mul" => 2,
         "div" => 3,
+        "pow" => 4,
         _ => return vec![],
     };
 

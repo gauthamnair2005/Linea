@@ -82,8 +82,8 @@ var model = ml::Linear(4, 3)
 
 The following libraries are included in `libs/`:
 
-*   **`ml`**: Neural network layers, activations, and optimizers.
-*   **`compute`**: Low-level GPU tensor operations.
+*   **`ml`**: Neural network layers (Linear), activations (ReLU, Sigmoid, Tanh, Softmax), losses (MSE, CrossEntropy), and optimizers (SGD, Adam).
+*   **`compute`**: Low-level GPU tensor operations with automatic CPU fallback.
 *   **`datasets`**: Data loading and preprocessing utilities.
 *   **`http`**: Native HTTP client (`get`, `post`, `download`).
 *   **`math`**: Mathematical functions.
