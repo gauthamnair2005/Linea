@@ -40,3 +40,8 @@ __pycache__/
 *.tmp
 *.bak
 linea
+demo
+*_compiled
+*.png
+*.xlsx
+compile_stderr.txt
