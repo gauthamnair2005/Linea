@@ -1,5 +1,18 @@
 # Linea Changelog
 
+## [Unreleased]
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Documentation policy now enforces a single repository README (`README.md`) and disallows version-specific README files.
+- Added explicit requirement that each update must include a SemVer type (`patch`, `minor`, or `major`).
+- Added documentation governance rules requiring relevant website updates, syntax modernization to latest supported forms, and continued wiki expansion.
+- Added rule to commit and push each validated update after it works for at least 95% of in-scope cases.
+
+---
+
 ## [4.1.0] - 2026-03-17 - BREAKING RELEASE
 
 ### ⚠️ Breaking Changes
