@@ -37,6 +37,7 @@
 
 ### Systems Performance
 *   **Compiled Efficiency**: Compiles directly to optimized machine code via LLVM/Rust backend.
+*   **Auto-Parallel Compilation**: The compiler detects available system threads and builds generated Rust code with matching parallel jobs for faster compilation.
 *   **Zero-Cost Abstractions**: High-level syntax with low-level performance characteristics.
 *   **Memory Safety**: Ownership-based memory management ensures zero use-after-free bugs without a garbage collector.
 *   **Standalone Binaries**: Produces single, dependency-free executables (~1.3MB) for easy deployment.

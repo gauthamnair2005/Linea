@@ -141,7 +141,7 @@ impl Executor {
                 } else {
                     // Ignore missing built-in modules for now as they are simulated
                     match module.as_str() {
-                         "math" | "strings" | "csv" | "excel" | "graphics" | "sql" | "password" => {},
+                         "math" | "strings" | "csv" | "excel" | "graphics" | "sql" | "password" | "system" => {},
                          _ => return Err(Error::RuntimeError(format!("Module '{}' not found in paths: {:?}", module, paths))),
                     }
                 }
@@ -1046,6 +1046,15 @@ impl Executor {
                     }
                     let val = self.eval_expression(&args[0])?;
                     Ok(Value::String(val.to_string()))
+                }
+                "system::threads" | "system::compileJobs" => {
+                    if !args.is_empty() {
+                        return Err(Error::RuntimeError(format!("{}() expects 0 arguments", name)));
+                    }
+                    let threads = std::thread::available_parallelism()
+                        .map(|n| n.get() as i64)
+                        .unwrap_or(1);
+                    Ok(Value::Int(threads))
                 }
                 // CSV LIBRARY FUNCTIONS
                 // HTTP Functions

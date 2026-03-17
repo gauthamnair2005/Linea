@@ -1,0 +1,10 @@
+# Linea System Library
+# Native runtime implementations are provided in linea-executor.
+
+func system::threads() -> int {
+  return system::threads()
+}
+
+func system::compileJobs() -> int {
+  return system::compileJobs()
+}

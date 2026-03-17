@@ -1,0 +1,5 @@
+import system
+
+display "Detected parallel compile jobs / logical threads:"
+display system::threads()
+display system::compileJobs()

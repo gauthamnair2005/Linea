@@ -1,5 +1,17 @@
 # Linea Changelog
 
+## [4.3.0] - 2026-03-17
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added native system parallelism support for compilation:
+  - Compiler now detects available system threads and invokes `cargo build --jobs <threads>` for `.ln` compilation.
+  - Added native `system` module functions: `system::threads()` and `system::compileJobs()`.
+- Added feature usage example: `examples/system_threads_demo.ln`.
+- Updated website/docs + markdown docs to document automatic parallel compilation behavior.
+
 ## [4.2.1] - 2026-03-17
 
 ### SemVer Type

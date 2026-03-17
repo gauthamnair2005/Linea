@@ -6,6 +6,12 @@ use linea_ast::parse;
 use linea_executor::Executor;
 use linea_codegen::generate_rust_code;
 
+fn detected_parallel_jobs() -> usize {
+    std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1)
+}
+
 #[derive(Parser)]
 #[command(name = "linea")]
 #[command(about = "Linea Compiler | High-Performance AI & Data Language", long_about = None)]
@@ -138,13 +144,21 @@ futures = "0.3"
                     fs::write(build_dir.join("Cargo.toml"), cargo_toml).expect("Failed to write Cargo.toml");
                     fs::write(build_dir.join("src/main.rs"), rust_code).expect("Failed to write main.rs");
 
-                    println!(">> Building optimized binary (release mode)...");
+                    let parallel_jobs = detected_parallel_jobs();
+                    println!(
+                        ">> Building optimized binary (release mode) using {} parallel jobs...",
+                        parallel_jobs
+                    );
 
-                    match Command::new("cargo")
+                    let mut cargo_cmd = Command::new("cargo");
+                    cargo_cmd
                         .arg("build")
                         .arg("--release")
-                        .current_dir(&build_dir)
-                        .output() {
+                        .arg("--jobs")
+                        .arg(parallel_jobs.to_string())
+                        .current_dir(&build_dir);
+
+                    match cargo_cmd.output() {
                         Ok(cargo_output) => {
                             if cargo_output.status.success() {
                                 println!(">> Finalizing build...");
