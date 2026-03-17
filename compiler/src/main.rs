@@ -15,7 +15,7 @@ fn detected_parallel_jobs() -> usize {
 #[derive(Parser)]
 #[command(name = "linea")]
 #[command(about = "Linea Compiler | High-Performance AI & Data Language", long_about = None)]
-#[command(version = "3.4.0 (Professional Edition)")]
+#[command(version = concat!(env!("CARGO_PKG_VERSION"), " (Professional Edition)"))]
 #[command(author = "Gautham Nair")]
 struct Cli {
     #[command(subcommand)]
@@ -81,7 +81,10 @@ fn main() {
 }
 
 fn print_header(action: &str, file: &std::path::Path) {
-    println!("Linea Compiler v3.4.0 | Professional Edition");
+    println!(
+        "Linea Compiler v{} | Professional Edition",
+        env!("CARGO_PKG_VERSION")
+    );
     println!("Action: {} | Target: {}", action, file.display());
     println!("--------------------------------------------------");
 }

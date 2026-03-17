@@ -13,4 +13,5 @@
 - For every update, declare the SemVer update type: `patch`, `minor`, or `major`.
 - Record the chosen SemVer type in the relevant released `CHANGELOG.md` version entry (no unreleased bucket).
 - Any version change must be propagated across website pages and markdown documentation files so version references remain consistent everywhere.
+- Any version change must also be propagated to the compiler binary metadata/output (CLI `--version` and startup banner) so reported binary version always matches the released project version.
 - After an update is validated to work for at least 95% of in-scope cases, commit and push the update to GitHub.

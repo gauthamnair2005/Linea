@@ -1,5 +1,18 @@
 # Linea Changelog
 
+## [4.5.3] - 2026-03-17
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Added explicit governance rule that every version bump must also update compiler binary-reported version output.
+- Updated contributor policy with the same binary-version sync requirement.
+- Fixed compiler version mismatch by aligning binary metadata/output with current release line:
+  - `compiler/Cargo.toml` package version updated to `4.5.3`
+  - CLI version output now uses `env!(\"CARGO_PKG_VERSION\")`
+  - startup banner now uses `env!(\"CARGO_PKG_VERSION\")`
+
 ## [4.5.2] - 2026-03-17
 
 ### SemVer Type
