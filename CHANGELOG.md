@@ -1,5 +1,16 @@
 # Linea Changelog
 
+## [4.5.6] - 2026-03-17
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Redesigned the shared website theme with an Apple-like liquid glass visual style.
+- Added glassmorphism surfaces, soft translucent panels, blur/saturation layers, and refined hover motion across shared UI components.
+- Updated typography and contrast tuning for readability on glass backgrounds while preserving existing structure/content.
+- Synced release version text to `4.5.6` across compiler metadata and key docs pages.
+
 ## [4.5.5] - 2026-03-17
 
 ### SemVer Type

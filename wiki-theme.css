@@ -1,49 +1,110 @@
-/* Shared wiki UI theme for all site pages */
+/* Shared Liquid-Glass inspired UI theme */
 :root {
-    --primary: #00d4ff;
-    --secondary: #ff006e;
-    --accent: #8338ec;
-    --bg-dark: #0a0e27;
-    --bg-darker: #050813;
-    --text-light: #e0e0e0;
-    --text-muted: #a0a0a0;
-    --border: #1a2f5f;
+    --glass-bg: rgba(255, 255, 255, 0.12);
+    --glass-bg-strong: rgba(255, 255, 255, 0.18);
+    --glass-stroke: rgba(255, 255, 255, 0.34);
+    --glass-shadow: 0 14px 40px rgba(7, 10, 22, 0.45);
+    --text-main: #f4f7ff;
+    --text-muted: #cfd8f8;
+    --link: #98d8ff;
+    --accent: #8aa4ff;
 }
 
 body {
-    font-family: 'Monaco', 'Courier New', monospace !important;
-    color: var(--text-light);
-    background: radial-gradient(circle at 18% 12%, rgba(255, 0, 110, 0.16) 0%, transparent 34%),
-                radial-gradient(circle at 82% 14%, rgba(0, 194, 168, 0.14) 0%, transparent 34%),
-                radial-gradient(circle at 52% 88%, rgba(131, 56, 236, 0.22) 0%, transparent 36%),
-                linear-gradient(135deg, #070913 0%, #140f2e 50%, #121a28 100%) !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important;
+    color: var(--text-main) !important;
+    background:
+        radial-gradient(1200px 700px at 10% 10%, rgba(109, 139, 255, 0.26), transparent 60%),
+        radial-gradient(900px 560px at 88% 18%, rgba(120, 225, 255, 0.18), transparent 58%),
+        radial-gradient(980px 580px at 50% 100%, rgba(186, 142, 255, 0.2), transparent 62%),
+        linear-gradient(145deg, #0b1020 0%, #121833 46%, #1b1f3f 100%) !important;
+    background-attachment: fixed !important;
 }
 
+/* Glass surfaces */
+header,
 .container,
 .showcase,
 .feature-card,
 .category,
-.quick-links {
-    background: rgba(17, 26, 51, 0.86) !important;
-    border: 1px solid var(--border) !important;
-    color: var(--text-light);
+.quick-links,
+.nav-btn,
+.btn,
+.code-block,
+pre,
+table,
+.quick-link,
+.wiki-link,
+.global-linea-logo {
+    background: linear-gradient(165deg, var(--glass-bg-strong), var(--glass-bg)) !important;
+    border: 1px solid var(--glass-stroke) !important;
+    box-shadow: var(--glass-shadow) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+    backdrop-filter: blur(18px) saturate(135%) !important;
 }
 
-h1, h2, h3 {
-    color: var(--primary);
+/* Typography + contrast */
+h1, h2, h3, h4, h5, h6 {
+    color: #eef4ff !important;
+    letter-spacing: 0.01em;
 }
 
-a {
-    color: var(--primary);
+p, li, span, .subtitle, .wiki-link-desc {
+    color: var(--text-muted) !important;
 }
 
-code, pre {
-    color: var(--text-light);
+a, .wiki-link-title {
+    color: var(--link) !important;
 }
 
-/* Ensure badge text remains readable even when nested in gradient-text headings */
+/* Inputs/links/buttons */
+.btn,
+.nav-btn,
+.quick-link {
+    color: #f5f8ff !important;
+    border-radius: 14px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+.btn:hover,
+.nav-btn:hover,
+.quick-link:hover,
+.feature-card:hover,
+.category:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(191, 220, 255, 0.74) !important;
+    box-shadow: 0 18px 44px rgba(7, 10, 22, 0.54) !important;
+}
+
+/* Code blocks read better on glass */
+pre,
+code,
+.code-block code {
+    color: #eaf2ff !important;
+}
+
+pre,
+.code-block {
+    border-radius: 16px !important;
+}
+
+/* Top nav polish */
+header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.26) !important;
+}
+
+.nav-links a {
+    color: #e7efff !important;
+}
+
+.nav-links a:hover {
+    color: #a8ddff !important;
+}
+
+/* Ensure badge text remains readable even inside gradient headings */
 .version-badge {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     background-clip: border-box !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
 }
