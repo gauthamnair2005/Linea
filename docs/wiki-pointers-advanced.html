@@ -108,19 +108,23 @@
             <h1>Advanced Pointer Operations</h1>
             <p class="subtitle">Comprehensive guide to Advanced Pointers in Linea</p>
         </header>
-        
         <main>
-            <h2>Coming Soon</h2>
-            
+            <h2>Advanced pointer usage (ptr type)</h2>
+            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
             <div class="note">
-                <p>This page is under construction. Check back soon for comprehensive documentation on <strong>Advanced Pointers</strong>.</p>
-                <p>In the meantime, visit the <a href="guide.html" style="color:var(--primary);">main guide</a> for general information.</p>
+                <p>Use this as a quick reference snippet:</p>
+                <pre>var x @ int = 42
+var p @ ptr = x
+display p
+
+var arr @ [int] = [10,20,30]
+var p_arr @ ptr = arr[0]
+display p_arr</pre>
             </div>
-            
             <div class="nav-buttons">
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>
         </main>
-    </div>
+</div>
 </body>
 </html>

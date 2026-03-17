@@ -108,19 +108,22 @@
             <h1>Inference and GPU Modes</h1>
             <p class="subtitle">Comprehensive guide to Inference in Linea</p>
         </header>
-        
         <main>
-            <h2>Coming Soon</h2>
-            
+            <h2>Inference</h2>
+            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
             <div class="note">
-                <p>This page is under construction. Check back soon for comprehensive documentation on <strong>Inference</strong>.</p>
-                <p>In the meantime, visit the <a href="guide.html" style="color:var(--primary);">main guide</a> for general information.</p>
+                <p>Use this as a quick reference snippet:</p>
+                <pre>import ml
+
+var model = ml::Linear(4, 3)
+var sample = [[5.0, 3.6, 1.3, 0.2]]
+var probs = ml::softmax(ml::forward(model, sample))
+display probs</pre>
             </div>
-            
             <div class="nav-buttons">
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>
         </main>
-    </div>
+</div>
 </body>
 </html>

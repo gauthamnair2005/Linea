@@ -326,7 +326,7 @@ new_model.fine_tune(new_data, epochs: 10)</pre>
             <pre>// Inspect what the model learned
 components_info := model.explain_components()
 for comp in components_info {
-    print("Component " + comp.id + ": " + comp.meaning)
+    display "Component " + comp.id + ": " + comp.meaning
 }</pre>
 
             <h3>4. GPU Optimization</h3>
@@ -360,13 +360,13 @@ fn main() {
     
     // Train with adaptive learning
     optimizer := ml::Adam(learning_rate: 0.001)
-    for epoch in 0..50 {
+    for epoch from 0~50 {
         loss := model.train_step(X_train, y_train, optimizer)
         
         if epoch % 10 == 0 {
             accuracy := model.evaluate(X_val, y_val)
             model.adapt_learning_rate(accuracy)
-            print("Epoch " + epoch + ": loss=" + loss + 
+            display "Epoch " + epoch + ": loss=" + loss + 
                   " acc=" + accuracy)
         }
     }
@@ -376,8 +376,8 @@ fn main() {
     explanations := model.explain_reasoning(X_test)
     
     for i in 0..len(predictions) {
-        print("Sample " + i + ": " + predictions[i])
-        print("Explanation: " + explanations[i])
+        display "Sample " + i + ": " + predictions[i]
+        display "Explanation: " + explanations[i]
     }
 }</pre>
         </div>

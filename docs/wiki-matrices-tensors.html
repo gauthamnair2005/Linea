@@ -108,19 +108,22 @@
             <h1>Matrices and Tensors</h1>
             <p class="subtitle">Comprehensive guide to Matrices & Tensors in Linea</p>
         </header>
-        
         <main>
-            <h2>Coming Soon</h2>
-            
+            <h2>Matrices and tensors</h2>
+            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
             <div class="note">
-                <p>This page is under construction. Check back soon for comprehensive documentation on <strong>Matrices & Tensors</strong>.</p>
-                <p>In the meantime, visit the <a href="guide.html" style="color:var(--primary);">main guide</a> for general information.</p>
+                <p>Use this as a quick reference snippet:</p>
+                <pre>var m @ [[float]] = [[1.0,2.0],[3.0,4.0]]
+display m
+
+import compute
+var t = compute::matmul(m, m)
+display t</pre>
             </div>
-            
             <div class="nav-buttons">
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>
         </main>
-    </div>
+</div>
 </body>
 </html>

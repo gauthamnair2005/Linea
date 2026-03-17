@@ -108,19 +108,22 @@
             <h1>Neural Network Layers</h1>
             <p class="subtitle">Comprehensive guide to Neural Network Layers in Linea</p>
         </header>
-        
         <main>
-            <h2>Coming Soon</h2>
-            
+            <h2>ML layers</h2>
+            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
             <div class="note">
-                <p>This page is under construction. Check back soon for comprehensive documentation on <strong>Neural Network Layers</strong>.</p>
-                <p>In the meantime, visit the <a href="guide.html" style="color:var(--primary);">main guide</a> for general information.</p>
+                <p>Use this as a quick reference snippet:</p>
+                <pre>import ml
+
+var layer = ml::Linear(4, 3)
+var x = [[5.1, 3.5, 1.4, 0.2]]
+var logits = ml::forward(layer, x)
+display logits</pre>
             </div>
-            
             <div class="nav-buttons">
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>
         </main>
-    </div>
+</div>
 </body>
 </html>

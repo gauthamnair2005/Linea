@@ -108,19 +108,22 @@
             <h1>HTTP Library</h1>
             <p class="subtitle">Comprehensive guide to HTTP in Linea</p>
         </header>
-        
         <main>
-            <h2>Coming Soon</h2>
-            
+            <h2>HTTP module</h2>
+            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
             <div class="note">
-                <p>This page is under construction. Check back soon for comprehensive documentation on <strong>HTTP</strong>.</p>
-                <p>In the meantime, visit the <a href="guide.html" style="color:var(--primary);">main guide</a> for general information.</p>
+                <p>Use this as a quick reference snippet:</p>
+                <pre>import http
+
+# Returns [status, ok, body]
+var res = http::get("https://example.com")
+display res[0]
+display res[1]</pre>
             </div>
-            
             <div class="nav-buttons">
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>
         </main>
-    </div>
+</div>
 </body>
 </html>

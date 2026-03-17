@@ -108,19 +108,22 @@
             <h1>Common Patterns</h1>
             <p class="subtitle">Comprehensive guide to Patterns in Linea</p>
         </header>
-        
         <main>
-            <h2>Coming Soon</h2>
-            
+            <h2>Common patterns</h2>
+            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
             <div class="note">
-                <p>This page is under construction. Check back soon for comprehensive documentation on <strong>Patterns</strong>.</p>
-                <p>In the meantime, visit the <a href="guide.html" style="color:var(--primary);">main guide</a> for general information.</p>
+                <p>Use this as a quick reference snippet:</p>
+                <pre>import system
+
+system::mkdir("tmp")
+system::writeText("tmp/log.txt", "ok")
+display system::readText("tmp/log.txt")
+system::removeDir("tmp")</pre>
             </div>
-            
             <div class="nav-buttons">
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>
         </main>
-    </div>
+</div>
 </body>
 </html>

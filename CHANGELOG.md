@@ -1,5 +1,16 @@
 # Linea Changelog
 
+## [4.5.4] - 2026-03-17
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Replaced remaining “Coming Soon”/placeholder wiki pages with concrete, runnable Linea examples and guidance.
+- Removed old pointer-style wiki/docs snippets and aligned pointer docs to current `ptr`-handle syntax.
+- Updated syntax samples on core docs pages to match current supported forms (for example, `display` and `from ...~...` ranges).
+- Synced version references across compiler metadata, website pages, and markdown docs to `4.5.4`.
+
 ## [4.5.3] - 2026-03-17
 
 ### SemVer Type

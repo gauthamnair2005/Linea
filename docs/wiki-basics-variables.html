@@ -412,12 +412,12 @@
             <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">42</span>
 <span class="keyword">var</span> ptr_x <span class="keyword">@</span> <span class="type">ptr</span> <span class="keyword">=</span> x  <span class="comment">// Automatically captures address</span></code></pre>
             
-            <h3>Traditional Pointer Syntax</h3>
-            <p>For advanced use cases, use address-of (&) and dereference (*) operators:</p>
+            <h3>Pointer Handles in Practice</h3>
+            <p>Use <code>ptr</code> handles consistently in examples and projects:</p>
             
-            <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">99</span>
-<span class="keyword">var</span> ptr <span class="keyword">@</span> &<span class="type">int</span> <span class="keyword">=</span> &x         <span class="comment">// Address-of</span>
-<span class="keyword">var</span> value <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> *ptr       <span class="comment">// Dereference</span></code></pre>
+            <pre><code><span class="keyword">var</span> count <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">99</span>
+<span class="keyword">var</span> count_ptr <span class="keyword">@</span> <span class="type">ptr</span> <span class="keyword">=</span> count
+display <span class="string">"Pointer handle ready"</span></code></pre>
             
             <h2>Variable Updates</h2>
             

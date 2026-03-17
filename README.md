@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.5.3-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.5.4-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -128,14 +128,10 @@ var ptr_to_x @ ptr = x    // Automatically captures address
 var y @ int = 100
 var ptr_to_y @ ptr = y    // Type-safe pointer storage
 
-// Traditional address-of and dereference
-var ptr @ &int = &x       // Address-of operator
-var value @ int = *ptr    // Dereference operator
-
-// Array pointers
+// Array pointer captures
 var arr @ [int] = [1, 2, 3, 4, 5]
 var ptr_arr @ ptr = arr[0]
-display *(ptr_arr + 1)    // Access second element
+display ptr_arr
 ```
 
 ## 📚 Standard Library
@@ -160,7 +156,7 @@ Linea provides a rich standard library for professional development:
 | **`strings`** | String manipulation utilities |
 | **`utils`** | General utility functions |
 
-### System Programming Primitives (v4.5.3)
+### System Programming Primitives (v4.5.4)
 
 `system` now includes low-level/mid-level operations:
 

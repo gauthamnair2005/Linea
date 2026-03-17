@@ -108,19 +108,22 @@
             <h1>GPU Computation</h1>
             <p class="subtitle">Comprehensive guide to GPU Computation in Linea</p>
         </header>
-        
         <main>
-            <h2>Coming Soon</h2>
-            
+            <h2>GPU/compute module</h2>
+            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
             <div class="note">
-                <p>This page is under construction. Check back soon for comprehensive documentation on <strong>GPU Computation</strong>.</p>
-                <p>In the meantime, visit the <a href="guide.html" style="color:var(--primary);">main guide</a> for general information.</p>
+                <p>Use this as a quick reference snippet:</p>
+                <pre>import compute
+
+display compute::device()
+var a = [[1.0,2.0],[3.0,4.0]]
+var b = [[5.0,6.0],[7.0,8.0]]
+display compute::matmul(a, b)</pre>
             </div>
-            
             <div class="nav-buttons">
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>
         </main>
-    </div>
+</div>
 </body>
 </html>

@@ -1340,7 +1340,7 @@ dependencies = [
 
 [[package]]
 name = "linea-compiler"
-version = "3.4.0"
+version = "4.5.4"
 dependencies = [
  "anyhow",
  "calamine",

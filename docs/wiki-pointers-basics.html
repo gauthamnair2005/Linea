@@ -118,135 +118,45 @@
             <h1>Pointers and References</h1>
             <p class="subtitle">Master memory addressing with Linea's ptr type</p>
         </header>
-        
         <main>
-            <h2>Overview</h2>
-            
-            <p>Linea v4.1 introduces pointer support for middle-level memory control. The <code>ptr</code> datatype provides a clean, type-safe way to work with memory addresses.</p>
-            
-            <h2>The Ptr Datatype (Recommended)</h2>
-            
-            <h3>Basic Usage</h3>
-            <p>The simplest way to work with pointers in Linea:</p>
-            
-            <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">42</span>
-<span class="keyword">var</span> ptr_x <span class="keyword">@</span> ptr <span class="keyword">=</span> x  <span class="comment">// Automatically captures address</span>
-display "Pointer created"</code></pre>
-            
-            <h3>Multiple Pointers</h3>
-            <pre><code><span class="keyword">var</span> a <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">10</span>
-<span class="keyword">var</span> b <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">20</span>
-<span class="keyword">var</span> ptr_a <span class="keyword">@</span> ptr <span class="keyword">=</span> a
-<span class="keyword">var</span> ptr_b <span class="keyword">@</span> ptr <span class="keyword">=</span> b</code></pre>
-            
-            <h2>Traditional Pointer Syntax</h2>
-            
-            <h3>Address-Of Operator (&)</h3>
-            <p>Get the address of a variable:</p>
-            
-            <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">99</span>
-<span class="keyword">var</span> ptr <span class="keyword">@</span> &int <span class="keyword">=</span> &x  <span class="comment">// Get address with &</span></code></pre>
-            
-            <h3>Dereference Operator (*)</h3>
-            <p>Access the value at a pointer:</p>
-            
-            <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">50</span>
-<span class="keyword">var</span> ptr <span class="keyword">@</span> &int <span class="keyword">=</span> &x
-<span class="keyword">var</span> value <span class="keyword">@</span> int <span class="keyword">=</span> *ptr  <span class="comment">// Get value: 50</span>
-display value</code></pre>
-            
-            <h2>Pointer Arithmetic</h2>
-            
-            <h3>Array Pointers</h3>
-            <p>Access array elements using pointer arithmetic:</p>
-            
-            <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>]
-<span class="keyword">var</span> ptr <span class="keyword">@</span> &int <span class="keyword">=</span> &arr[<span class="number">0</span>]  <span class="comment">// Point to first element</span>
+            <h2>Pointer Basics with <code>ptr</code></h2>
+            <p>This page documents the current supported pointer style in Linea: <code>ptr</code> handles.</p>
+            <pre><code>var x @ int = 42
+var p_x @ ptr = x
 
-display *ptr          <span class="comment">// 10 (first element)</span>
-display *(ptr + <span class="number">1</span>)   <span class="comment">// 20 (second element)</span>
-display *(ptr + <span class="number">2</span>)   <span class="comment">// 30 (third element)</span></code></pre>
-            
-            <h3>Pointer Loops</h3>
-            <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
-<span class="keyword">var</span> ptr <span class="keyword">@</span> &int <span class="keyword">=</span> &arr[<span class="number">0</span>]
-<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~<span class="number">4</span> {
-    display *(ptr + i)
-}</code></pre>
-            
-            <h2>Common Patterns</h2>
-            
+var arr @ [int] = [10, 20, 30]
+var p_arr @ ptr = arr[0]
+display "Pointer handles ready"</code></pre>
+
+            <h2>Common Pointer Patterns</h2>
             <div class="example-box">
-                <h4>Swapping Values via Pointers</h4>
-                <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">10</span>
-<span class="keyword">var</span> y <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">20</span>
-<span class="keyword">var</span> ptr_x <span class="keyword">@</span> ptr <span class="keyword">=</span> x
-<span class="keyword">var</span> ptr_y <span class="keyword">@</span> ptr <span class="keyword">=</span> y
-<span class="comment">// Now x and y are tracked via pointers</span></code></pre>
+                <h4>Tracking Multiple Values</h4>
+                <pre><code>var a @ int = 10
+var b @ int = 20
+var p_a @ ptr = a
+var p_b @ ptr = b
+display "Pointer references created"</code></pre>
             </div>
-            
+
             <div class="example-box">
-                <h4>Matrix Element Access</h4>
-                <pre><code><span class="keyword">var</span> matrix <span class="keyword">@</span> [[int]] <span class="keyword">=</span> [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]]
-<span class="keyword">var</span> ptr <span class="keyword">@</span> &int <span class="keyword">=</span> &matrix[<span class="number">0</span>][<span class="number">0</span>]
-display *ptr  <span class="comment">// First element</span></code></pre>
+                <h4>Array Base Pointer</h4>
+                <pre><code>var numbers @ [int] = [1, 2, 3, 4]
+var base_ptr @ ptr = numbers[0]
+display "Base pointer captured"</code></pre>
             </div>
-            
-            <h2>Memory Safety</h2>
-            
-            <p>Linea manages memory automatically. Pointers are safe because:</p>
-            
+
+            <h2>Safety Notes</h2>
             <ul>
-                <li><strong>No dangling pointers:</strong> Memory is not freed while pointers exist</li>
-                <li><strong>Bounds checking:</strong> Array access is checked at runtime</li>
-                <li><strong>Type safety:</strong> Pointer types are checked at compile time</li>
-                <li><strong>Automatic cleanup:</strong> Memory is freed when no longer needed</li>
+                <li><strong>Prefer <code>ptr</code> handles:</strong> this is the recommended style.</li>
+                <li><strong>Keep pointer usage explicit:</strong> document intent clearly.</li>
+                <li><strong>Use bounds-safe array workflows:</strong> avoid invalid index assumptions.</li>
             </ul>
-            
-            <div class="warning">
-                <strong>⚠️ Warning:</strong> Using pointers requires careful attention. Incorrect pointer arithmetic can cause undefined behavior.
-            </div>
-            
-            <h2>Ptr vs Traditional Syntax</h2>
-            
-            <table style="width:100%; border-collapse:collapse; margin:1.5rem 0;">
-                <tr style="background: rgba(131,56,236,0.2);">
-                    <th style="padding:0.75rem; text-align:left; border-bottom:1px solid var(--border); color:var(--accent);">Feature</th>
-                    <th style="padding:0.75rem; text-align:left; border-bottom:1px solid var(--border); color:var(--accent);">Ptr Type</th>
-                    <th style="padding:0.75rem; text-align:left; border-bottom:1px solid var(--border); color:var(--accent);">Traditional</th>
-                </tr>
-                <tr>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Syntax</td>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);"><code>var p @ ptr = x</code></td>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);"><code>var p @ &int = &x</code></td>
-                </tr>
-                <tr>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Ease</td>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Simple</td>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">More control</td>
-                </tr>
-                <tr>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Auto-reference</td>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">✓ Yes</td>
-                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">✗ Manual</td>
-                </tr>
-            </table>
-            
-            <h2>Best Practices</h2>
-            
-            <ul>
-                <li><strong>Prefer ptr type:</strong> Simpler and safer for most use cases</li>
-                <li><strong>Use traditional syntax sparingly:</strong> Only when you need explicit control</li>
-                <li><strong>Document pointer usage:</strong> Make intent clear in comments</li>
-                <li><strong>Validate bounds:</strong> Check array sizes before pointer arithmetic</li>
-                <li><strong>Avoid deep nesting:</strong> Keep pointer chains shallow</li>
-            </ul>
-            
+
             <div class="nav-buttons">
                 <a href="wiki-index.html" class="nav-btn">← Back to Wiki</a>
-                <a href="wiki-basics-variables.html" class="nav-btn primary">See: Variables & Types →</a>
+                <a href="wiki-pointers-advanced.html" class="nav-btn primary">Advanced Pointer Usage →</a>
             </div>
         </main>
-    </div>
+</div>
 </body>
 </html>
