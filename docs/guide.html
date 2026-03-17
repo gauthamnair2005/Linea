@@ -473,12 +473,14 @@ shape: Vector<i64> = t.shape()  // [2, 2, 2]</pre>
 import ml
 import datasets
 import http
+import system
 import greeter  // Installed via package-manager/linea_pkg.py
 
 // Use functions
 var data = datasets::load_csv("data.csv")
 var model = ml::Sequential([...])
 var response = http::get("https://api.example.com")
+var pwd = system::cwd()
 greeter::hello("Linea")</pre>
 
             <h3>Installing Third-Party Modules</h3>
@@ -538,9 +540,17 @@ import greeter</pre>
                 </tr>
                 <tr>
                     <td>system</td>
-                    <td>System metadata (threads and compiler parallel jobs)</td>
+                    <td>System operations: files, env vars, process exec, timing, and thread metadata</td>
                 </tr>
             </table>
+            <h3>System Programming Example</h3>
+            <pre>import system
+
+system::mkdir("tmp_build")
+system::writeText("tmp_build/log.txt", "build started\n")
+var status = system::exec("echo", ["ok"])
+display status[1]
+system::removeDir("tmp_build")</pre>
         </div>
 
         <div class="section">

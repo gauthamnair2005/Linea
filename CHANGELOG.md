@@ -1,5 +1,19 @@
 # Linea Changelog
 
+## [4.5.0] - 2026-03-17
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Expanded native `system` module to improve system programming capabilities:
+  - File/dir operations: `cwd`, `exists`, `isFile`, `isDir`, `readText`, `writeText`, `appendText`, `mkdir`, `rename`, `removeFile`, `removeDir`.
+  - Runtime/environment operations: `envGet`, `envSet`, `nowMillis`, `sleepMs`, `exec`.
+  - Preserved compilation introspection functions: `system::threads()`, `system::compileJobs()`.
+- Updated `libs/system.ln` with wrappers for all new operations.
+- Added runnable example: `examples/system_ops_demo.ln`.
+- Updated website, wiki, and markdown docs for the expanded systems feature set.
+
 ## [4.4.0] - 2026-03-17
 
 ### SemVer Type

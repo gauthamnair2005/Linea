@@ -425,7 +425,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.4.0</span>
+                <span class="version-badge">v4.5.0</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -481,6 +481,10 @@
                 <h3>🧩 Third-Party Package Manager</h3>
                 <p>Install custom `.ln` modules from an XML metadata registry with automatic dependency resolution into `libs/`.</p>
             </div>
+            <div class="feature-card">
+                <h3>⚙️ Systems Primitives</h3>
+                <p>Build system-level tools with native file I/O, env variables, process execution, timing, and thread-aware runtime helpers.</p>
+            </div>
         </div>
     </section>
 
@@ -507,7 +511,16 @@ fn main() {
             <h3>4. Install a Third-Party Module</h3>
             <div class="code-block">python3 package-manager/linea_pkg.py greeter --registry ~/projects/linea-third-party-registry --libs-dir ./libs</div>
 
-            <h3>5. Train a Neural Network</h3>
+            <h3>5. Use System Operations</h3>
+            <div class="code-block">import system
+
+system::mkdir("tmp")
+system::writeText("tmp/a.txt", "hello")
+var out = system::exec("echo", ["Linea"])
+display out[1]
+system::removeDir("tmp")</div>
+
+            <h3>6. Train a Neural Network</h3>
             <div class="code-block">import ml
 import datasets
 
@@ -562,7 +575,7 @@ fn main() {
     </section>
 
     <section>
-        <h2>🌟 v4.4.0 Highlights</h2>
+        <h2>🌟 v4.5.0 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -585,7 +598,7 @@ fn main() {
 
         <div class="showcase">
             <h3>🔬 ARL-Tangram Algorithm</h3>
-            <p>Linea v4.4.0 introduces third-party package management with XML metadata, dependency resolution, and reproducible lockfiles for custom `.ln` libraries.</p>
+            <p>Linea v4.5.0 expands system programming support with native file, environment, process, and timing operations in the `system` module.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">

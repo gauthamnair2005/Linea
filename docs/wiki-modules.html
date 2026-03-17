@@ -116,9 +116,12 @@
                 <p><strong>Example</strong></p>
                 <pre>import ml
 import sql
+import system
 
 fn main() {
     var db = sql::open("app.db")
+    var cwd = system::cwd()
+    display cwd
     display db
 }</pre>
             </div>
@@ -150,6 +153,7 @@ fn main() {
 &lt;/package&gt;</pre>
             
             <div class="nav-buttons">
+                <a href="wiki-system-programming.html" class="nav-btn">System Programming Wiki →</a>
                 <a href="wiki-package-manager.html" class="nav-btn">Package Manager Wiki →</a>
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>

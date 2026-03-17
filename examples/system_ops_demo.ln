@@ -1,0 +1,19 @@
+import system
+
+display "cwd: " + system::cwd()
+display "threads: " + system::threads()
+display "compile jobs: " + system::compileJobs()
+
+system::mkdir("tmp_sys_demo")
+system::writeText("tmp_sys_demo/info.txt", "Linea system module demo\n")
+system::appendText("tmp_sys_demo/info.txt", "nowMillis=" + system::nowMillis() + "\n")
+
+var content = system::readText("tmp_sys_demo/info.txt")
+display content
+
+var result = system::exec("echo", ["System exec works"])
+display "exec status: " + result[0]
+display "exec stdout: " + result[1]
+
+system::removeFile("tmp_sys_demo/info.txt")
+system::removeDir("tmp_sys_demo")

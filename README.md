@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.4.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.5.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -155,10 +155,21 @@ Linea provides a rich standard library for professional development:
 | **`http`** | HTTP client for REST API integration |
 | **`sql`** | SQLite access with parameterized queries and secure lock/unlock |
 | **`password`** | Masked CLI/GUI password entry plus hashing/verification helpers |
-| **`system`** | Runtime system introspection (`threads`, `compileJobs`) |
+| **`system`** | System operations: threads, files, env vars, process exec, time |
 | **`math`** | Mathematical functions and constants |
 | **`strings`** | String manipulation utilities |
 | **`utils`** | General utility functions |
+
+### System Programming Primitives (v4.5.0)
+
+`system` now includes low-level/mid-level operations:
+
+* Thread/core introspection: `system::threads()`, `system::compileJobs()`
+* File/dir operations: `cwd`, `exists`, `isFile`, `isDir`, `readText`, `writeText`, `appendText`, `mkdir`, `rename`, `removeFile`, `removeDir`
+* Environment variables: `envGet`, `envSet`
+* Time/process: `nowMillis`, `sleepMs`, `exec`
+
+See runnable example: `examples/system_ops_demo.ln`.
 
 ## 📦 Third-Party Package Manager
 

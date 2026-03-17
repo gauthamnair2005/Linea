@@ -1,6 +1,10 @@
 use std::collections::HashMap;
+use std::env;
+use std::fs;
+use std::fs::OpenOptions;
 use std::io::{self, Write};
 use std::process::Command;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use linea_core::{Type, TypeContext, Value, Result, Error};
 use linea_ast::{Program, Statement, Expression, BinaryOp, UnaryOp};
 use linea_ast::lexer::Lexer;
@@ -1055,6 +1059,223 @@ impl Executor {
                         .map(|n| n.get() as i64)
                         .unwrap_or(1);
                     Ok(Value::Int(threads))
+                }
+                "system::cwd" => {
+                    if !args.is_empty() {
+                        return Err(Error::RuntimeError("system::cwd() expects 0 arguments".to_string()));
+                    }
+                    let cwd = env::current_dir()
+                        .map_err(|e| Error::RuntimeError(format!("system::cwd() failed: {}", e)))?;
+                    Ok(Value::String(cwd.display().to_string()))
+                }
+                "system::exists" | "system::isFile" | "system::isDir" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError(format!("{}() expects 1 argument", name)));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError(format!("{}() expects string path", name))),
+                    };
+                    let value = match name.as_str() {
+                        "system::exists" => std::path::Path::new(&path).exists(),
+                        "system::isFile" => std::path::Path::new(&path).is_file(),
+                        _ => std::path::Path::new(&path).is_dir(),
+                    };
+                    Ok(Value::Bool(value))
+                }
+                "system::readText" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("system::readText() expects 1 argument".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::readText() expects string path".to_string())),
+                    };
+                    let content = fs::read_to_string(&path)
+                        .map_err(|e| Error::RuntimeError(format!("system::readText() failed: {}", e)))?;
+                    Ok(Value::String(content))
+                }
+                "system::writeText" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("system::writeText() expects 2 arguments".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::writeText() expects string path".to_string())),
+                    };
+                    let content = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::writeText() expects string content".to_string())),
+                    };
+                    fs::write(&path, content)
+                        .map_err(|e| Error::RuntimeError(format!("system::writeText() failed: {}", e)))?;
+                    Ok(Value::Bool(true))
+                }
+                "system::appendText" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("system::appendText() expects 2 arguments".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::appendText() expects string path".to_string())),
+                    };
+                    let content = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::appendText() expects string content".to_string())),
+                    };
+                    let mut file = OpenOptions::new()
+                        .create(true)
+                        .append(true)
+                        .open(&path)
+                        .map_err(|e| Error::RuntimeError(format!("system::appendText() failed: {}", e)))?;
+                    file.write_all(content.as_bytes())
+                        .map_err(|e| Error::RuntimeError(format!("system::appendText() failed: {}", e)))?;
+                    Ok(Value::Bool(true))
+                }
+                "system::mkdir" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("system::mkdir() expects 1 argument".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::mkdir() expects string path".to_string())),
+                    };
+                    fs::create_dir_all(&path)
+                        .map_err(|e| Error::RuntimeError(format!("system::mkdir() failed: {}", e)))?;
+                    Ok(Value::Bool(true))
+                }
+                "system::removeFile" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("system::removeFile() expects 1 argument".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::removeFile() expects string path".to_string())),
+                    };
+                    let file_path = std::path::Path::new(&path);
+                    if !file_path.exists() {
+                        return Ok(Value::Bool(false));
+                    }
+                    fs::remove_file(file_path)
+                        .map_err(|e| Error::RuntimeError(format!("system::removeFile() failed: {}", e)))?;
+                    Ok(Value::Bool(true))
+                }
+                "system::removeDir" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("system::removeDir() expects 1 argument".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::removeDir() expects string path".to_string())),
+                    };
+                    let dir_path = std::path::Path::new(&path);
+                    if !dir_path.exists() {
+                        return Ok(Value::Bool(false));
+                    }
+                    fs::remove_dir_all(dir_path)
+                        .map_err(|e| Error::RuntimeError(format!("system::removeDir() failed: {}", e)))?;
+                    Ok(Value::Bool(true))
+                }
+                "system::rename" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("system::rename() expects 2 arguments".to_string()));
+                    }
+                    let from = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::rename() expects string source path".to_string())),
+                    };
+                    let to = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::rename() expects string destination path".to_string())),
+                    };
+                    fs::rename(&from, &to)
+                        .map_err(|e| Error::RuntimeError(format!("system::rename() failed: {}", e)))?;
+                    Ok(Value::Bool(true))
+                }
+                "system::envGet" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("system::envGet() expects 1 argument".to_string()));
+                    }
+                    let key = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::envGet() expects string key".to_string())),
+                    };
+                    match env::var(&key) {
+                        Ok(value) => Ok(Value::String(value)),
+                        Err(env::VarError::NotPresent) => Ok(Value::Null),
+                        Err(e) => Err(Error::RuntimeError(format!("system::envGet() failed: {}", e))),
+                    }
+                }
+                "system::envSet" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("system::envSet() expects 2 arguments".to_string()));
+                    }
+                    let key = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::envSet() expects string key".to_string())),
+                    };
+                    let value = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::envSet() expects string value".to_string())),
+                    };
+                    env::set_var(key, value);
+                    Ok(Value::Bool(true))
+                }
+                "system::nowMillis" => {
+                    if !args.is_empty() {
+                        return Err(Error::RuntimeError("system::nowMillis() expects 0 arguments".to_string()));
+                    }
+                    let millis = SystemTime::now()
+                        .duration_since(UNIX_EPOCH)
+                        .map_err(|e| Error::RuntimeError(format!("system::nowMillis() failed: {}", e)))?
+                        .as_millis() as i64;
+                    Ok(Value::Int(millis))
+                }
+                "system::sleepMs" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("system::sleepMs() expects 1 argument".to_string()));
+                    }
+                    let ms = match self.eval_expression(&args[0])? {
+                        Value::Int(v) => v,
+                        _ => return Err(Error::TypeError("system::sleepMs() expects int milliseconds".to_string())),
+                    };
+                    if ms < 0 {
+                        return Err(Error::RuntimeError("system::sleepMs() expects non-negative milliseconds".to_string()));
+                    }
+                    std::thread::sleep(Duration::from_millis(ms as u64));
+                    Ok(Value::Bool(true))
+                }
+                "system::exec" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("system::exec() expects 2 arguments".to_string()));
+                    }
+                    let command = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("system::exec() expects string command".to_string())),
+                    };
+                    let arg_values = match self.eval_expression(&args[1])? {
+                        Value::Array(items) => items,
+                        _ => return Err(Error::TypeError("system::exec() expects array args".to_string())),
+                    };
+                    let mut cmd_args = Vec::with_capacity(arg_values.len());
+                    for value in arg_values {
+                        match value {
+                            Value::String(s) => cmd_args.push(s),
+                            _ => return Err(Error::TypeError("system::exec() args array must contain strings".to_string())),
+                        }
+                    }
+                    let output = Command::new(&command)
+                        .args(&cmd_args)
+                        .output()
+                        .map_err(|e| Error::RuntimeError(format!("system::exec() failed: {}", e)))?;
+                    let status = output.status.code().unwrap_or(-1) as i64;
+                    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+                    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+                    Ok(Value::Array(vec![
+                        Value::Int(status),
+                        Value::String(stdout),
+                        Value::String(stderr),
+                    ]))
                 }
                 // CSV LIBRARY FUNCTIONS
                 // HTTP Functions

@@ -8,3 +8,67 @@ func system::threads() -> int {
 func system::compileJobs() -> int {
   return system::compileJobs()
 }
+
+func system::cwd() -> string {
+  return system::cwd()
+}
+
+func system::exists(path: string) -> bool {
+  return system::exists(path)
+}
+
+func system::isFile(path: string) -> bool {
+  return system::isFile(path)
+}
+
+func system::isDir(path: string) -> bool {
+  return system::isDir(path)
+}
+
+func system::readText(path: string) -> string {
+  return system::readText(path)
+}
+
+func system::writeText(path: string, content: string) -> bool {
+  return system::writeText(path, content)
+}
+
+func system::appendText(path: string, content: string) -> bool {
+  return system::appendText(path, content)
+}
+
+func system::mkdir(path: string) -> bool {
+  return system::mkdir(path)
+}
+
+func system::removeFile(path: string) -> bool {
+  return system::removeFile(path)
+}
+
+func system::removeDir(path: string) -> bool {
+  return system::removeDir(path)
+}
+
+func system::rename(fromPath: string, toPath: string) -> bool {
+  return system::rename(fromPath, toPath)
+}
+
+func system::envGet(key: string) -> any {
+  return system::envGet(key)
+}
+
+func system::envSet(key: string, value: string) -> bool {
+  return system::envSet(key, value)
+}
+
+func system::nowMillis() -> int {
+  return system::nowMillis()
+}
+
+func system::sleepMs(ms: int) -> bool {
+  return system::sleepMs(ms)
+}
+
+func system::exec(command: string, args: any) -> any {
+  return system::exec(command, args)
+}

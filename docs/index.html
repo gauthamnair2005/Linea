@@ -455,6 +455,10 @@
                 <h3>🧩 Third-Party Package Manager</h3>
                 <p>Install external `.ln` modules from an XML registry with automatic dependency installation into your local `libs/` folder.</p>
             </div>
+            <div class="feature-card">
+                <h3>⚙️ Systems Primitives</h3>
+                <p>Use low-level operations for files, directories, env vars, process execution, and timing via the native `system` module.</p>
+            </div>
         </div>
     </section>
 
@@ -479,6 +483,15 @@ fn main() {
 
             <h3>Install Third-Party Library</h3>
             <div class="code-block"><code>python3 package-manager/linea_pkg.py greeter --registry ~/projects/linea-third-party-registry --libs-dir ./libs</code></div>
+
+            <h3>Use System Operations</h3>
+            <div class="code-block"><code>import system
+
+system::mkdir("tmp")
+system::writeText("tmp/data.txt", "hello")
+var result = system::exec("echo", ["Linea"])
+display result[1]
+system::removeDir("tmp")</code></div>
         </div>
     </section>
 
