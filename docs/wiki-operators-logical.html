@@ -109,19 +109,25 @@
             <p class="subtitle">Comprehensive guide to Logical Operators in Linea</p>
         </header>
         <main>
-            <h2>Logical operators</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>var a @ bool = true
-var b @ bool = false
-display a && b
-display a || b
-display !b</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>Logical Operators</h2>
+            <p>Logical operators combine boolean expressions in guards and filters.</p>
+            <h3>Core Operators</h3>
+            <ul>
+                <li><code>and</code></li>
+                <li><code>or</code></li>
+                <li><code>not</code></li>
+            </ul>
+            <pre><code>var age @ int = 22
+var has_id @ bool = True
+
+if age &gt;= 18 and has_id {
+    display "Access granted"
+}
+
+if not has_id {
+    display "Bring an ID"
+}</code></pre>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

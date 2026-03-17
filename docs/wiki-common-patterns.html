@@ -109,20 +109,26 @@
             <p class="subtitle">Comprehensive guide to Patterns in Linea</p>
         </header>
         <main>
-            <h2>Common patterns</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>import system
-
-system::mkdir("tmp")
-system::writeText("tmp/log.txt", "ok")
-display system::readText("tmp/log.txt")
-system::removeDir("tmp")</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>Common Coding Patterns</h2>
+            <p>These patterns are widely used across examples and libraries.</p>
+            <h3>Guard + Early Branch</h3>
+            <pre><code>var value @ int = -1
+if value &lt; 0 {
+    display "Invalid value"
+} else {
+    display "Accepted"
+}</code></pre>
+            <h3>Accumulate in Loop</h3>
+            <pre><code>var total @ int = 0
+for n from 1~5 {
+    total = total + n
+}
+display total</code></pre>
+            <h3>Import and Use Module</h3>
+            <pre><code>import system
+var threads = system::threads()
+display threads</code></pre>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

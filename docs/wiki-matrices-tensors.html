@@ -109,20 +109,18 @@
             <p class="subtitle">Comprehensive guide to Matrices & Tensors in Linea</p>
         </header>
         <main>
-            <h2>Matrices and tensors</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>var m @ [[float]] = [[1.0,2.0],[3.0,4.0]]
-display m
-
-import compute
-var t = compute::matmul(m, m)
-display t</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>Matrices and Tensors</h2>
+            <p>Matrices and tensors are central for ML and numeric computing in Linea.</p>
+            <h3>Matrix Basics</h3>
+            <pre><code>var m = [[1.0, 2.0], [3.0, 4.0]]
+var first_row = m[0]
+display first_row</code></pre>
+            <h3>Tensor-style Nested Data</h3>
+            <pre><code>var t = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+display t[1][0][1]</code></pre>
+            <h3>Slicing Note</h3>
+            <p>Prefer explicit intermediate variables when slicing to keep transformations readable.</p>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

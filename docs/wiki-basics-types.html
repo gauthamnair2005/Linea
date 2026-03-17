@@ -109,19 +109,20 @@
             <p class="subtitle">Comprehensive guide to Data Types in Linea</p>
         </header>
         <main>
-            <h2>Data types</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>var i @ int = 42
-var f @ float = 3.14
-var s @ str = "Linea"
-var ok @ bool = true
-var arr @ [int] = [1,2,3]</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>Core Types</h2>
+            <p>Linea uses explicit type annotations with <code>@</code>.</p>
+            <pre><code>var count @ int = 10
+var price @ float = 19.99
+var name @ str = "Linea"
+var ok @ bool = True
+var ids @ [int] = [1, 2, 3]</code></pre>
+            <h3>When to Use Explicit Types</h3>
+            <ul>
+                <li>Public function interfaces</li>
+                <li>Shared modules in <code>libs/</code></li>
+                <li>Any value with non-obvious inferred type</li>
+            </ul>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

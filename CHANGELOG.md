@@ -1,5 +1,16 @@
 # Linea Changelog
 
+## [4.5.5] - 2026-03-17
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Reworked the remaining weak wiki pages with topic-specific explanations instead of placeholder-like snippets.
+- Replaced random/low-signal examples with practical, feature-aligned examples for operators, control flow, pointers, async preview, HTTP/CSV, performance, and ML pages.
+- Kept syntax modern and compiler-aligned across updated wiki pages (for example: `display`, `from ...~...`, and `ptr` style).
+- Synced release version text to `4.5.5` across compiler metadata and primary docs pages.
+
 ## [4.5.4] - 2026-03-17
 
 ### SemVer Type

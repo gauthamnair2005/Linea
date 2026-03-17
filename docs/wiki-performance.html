@@ -109,17 +109,20 @@
             <p class="subtitle">Comprehensive guide to Performance in Linea</p>
         </header>
         <main>
-            <h2>Performance tips</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>display "Use release builds for compile outputs."
-display "Prefer compute::matmul and vectorized ops over manual loops."
-display "Use system::threads()/compileJobs() for parallel build visibility."</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>Performance Guidelines</h2>
+            <p>Prefer straightforward loops, avoid repeated expensive calls, and use built-in parallel compile jobs.</p>
+            <h3>Practical Checklist</h3>
+            <ul>
+                <li>Cache values reused in tight loops.</li>
+                <li>Batch file/network operations where possible.</li>
+                <li>Use compiler defaults for parallel native builds.</li>
+            </ul>
+            <h3>Inspect Build Jobs</h3>
+            <pre><code>import system
+
+display "Detected threads: " + system::threads()
+display "Compile jobs: " + system::compileJobs()</code></pre>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

@@ -109,20 +109,21 @@
             <p class="subtitle">Comprehensive guide to GPU Computation in Linea</p>
         </header>
         <main>
-            <h2>GPU/compute module</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>import compute
+            <h2>GPU Computation</h2>
+            <p>Use <code>@gpu</code> functions and <code>compute</code> helpers for accelerated numeric operations.</p>
+            <pre><code>import compute
 
-display compute::device()
-var a = [[1.0,2.0],[3.0,4.0]]
-var b = [[5.0,6.0],[7.0,8.0]]
-display compute::matmul(a, b)</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+@gpu
+fn multiply(a, b) {
+    compute::matmul(a, b)
+}
+
+var a = [[1.0, 2.0], [3.0, 4.0]]
+var b = [[2.0, 0.0], [1.0, 2.0]]
+display multiply(a, b)</code></pre>
+            <h3>When to Use</h3>
+            <p>Prefer GPU paths for repeated large matrix/tensor workloads; keep small scalar logic on regular code paths.</p>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

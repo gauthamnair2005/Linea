@@ -109,16 +109,21 @@
             <p class="subtitle">Comprehensive guide to Pattern Matching in Linea</p>
         </header>
         <main>
-            <h2>Pattern matching (preview)</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>display "Pattern matching syntax is preview-stage in Linea docs.
-Use if/else in production flows until finalized."</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>Pattern Matching (Preview)</h2>
+            <p>Pattern matching docs are kept minimal because the feature is still preview-stage. Use conditionals in production.</p>
+            <h3>Recommended Production Alternative</h3>
+            <pre><code>var status @ str = "ok"
+
+if status == "ok" {
+    display "All systems nominal"
+} else if status == "warn" {
+    display "Investigate warning"
+} else {
+    display "Failure state"
+}</code></pre>
+            <h3>Preview Guidance</h3>
+            <p>When experimenting with match syntax, keep fallback branches explicit and test behavior in examples before relying on it.</p>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

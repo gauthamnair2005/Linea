@@ -109,19 +109,20 @@
             <p class="subtitle">Comprehensive guide to Strings in Linea</p>
         </header>
         <main>
-            <h2>String operations</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>import strings
-
-var name @ str = "Linea"
-display strings::concat("Hello ", name)
-display strings::repeat("-", 10)</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>String Workflows</h2>
+            <p>Use string values for labels, messages, and text-driven logic.</p>
+            <pre><code>var first @ str = "Linea"
+var second @ str = "Lang"
+var full @ str = first + " " + second
+display full</code></pre>
+            <h3>String Logic in Conditionals</h3>
+            <pre><code>var mode @ str = "train"
+if mode == "train" {
+    display "Training mode"
+} else {
+    display "Inference mode"
+}</code></pre>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

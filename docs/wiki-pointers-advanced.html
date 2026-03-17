@@ -109,21 +109,21 @@
             <p class="subtitle">Comprehensive guide to Advanced Pointers in Linea</p>
         </header>
         <main>
-            <h2>Advanced pointer usage (ptr type)</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>var x @ int = 42
-var p @ ptr = x
-display p
-
-var arr @ [int] = [10,20,30]
-var p_arr @ ptr = arr[0]
-display p_arr</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>Advanced Pointer Usage</h2>
+            <p>Use <code>ptr</code> handles for explicit low-level workflows without mixing old pointer syntax.</p>
+            <h3>Pointer Handles Across Variables</h3>
+            <pre><code>var a @ int = 7
+var b @ int = 14
+var p_a @ ptr = a
+var p_b @ ptr = b
+display "Pointers captured"</code></pre>
+            <h3>Array Base Pointer Pattern</h3>
+            <pre><code>var data @ [int] = [5, 10, 15]
+var p_data @ ptr = data[0]
+display p_data</code></pre>
+            <h3>Guideline</h3>
+            <p>Keep pointer-heavy code in small, testable functions and document each pointer's target clearly.</p>
+            <div class="nav-buttons"><a href="wiki-pointers-basics.html" class="nav-btn">← Pointer Basics</a><a href="wiki-index.html" class="nav-btn primary">Back to Wiki</a></div>
         </main>
 </div>
 </body>

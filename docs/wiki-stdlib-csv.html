@@ -109,18 +109,21 @@
             <p class="subtitle">Comprehensive guide to CSV in Linea</p>
         </header>
         <main>
-            <h2>CSV module</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>import csv
+            <h2>CSV Library</h2>
+            <p>Use the <code>csv</code> module for tabular file read/write workflows.</p>
+            <pre><code>import csv
 
-var rows = csv::read("../examples/iris_dummy.csv")
-display csv::rowCount(rows)</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+var rows = csv::read("examples/iris_dummy.csv")
+display rows</code></pre>
+            <h3>Write Example</h3>
+            <pre><code>import csv
+
+var out_rows @ [str] = ["name,score", "alice,91", "bob,88"]
+csv::write("tmp_scores.csv", out_rows)
+display "csv written"</code></pre>
+            <h3>Tip</h3>
+            <p>Validate column counts before transforming rows to avoid malformed downstream data.</p>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

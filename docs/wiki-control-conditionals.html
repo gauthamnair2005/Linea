@@ -110,21 +110,26 @@
         </header>
         <main>
             <h2>Conditionals</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>var score @ int = 87
-if score >= 90 {
-  display "A"
-} else if score >= 80 {
-  display "B"
+            <p>Use <code>if / else if / else</code> to branch on runtime values.</p>
+            <pre><code>var temperature @ int = 30
+
+if temperature &gt; 35 {
+    display "Very hot"
+} else if temperature &gt;= 25 {
+    display "Warm"
 } else {
-  display "C"
-}</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+    display "Cool"
+}</code></pre>
+            <h3>Nested Checks</h3>
+            <pre><code>var user_role @ str = "admin"
+var enabled @ bool = True
+
+if enabled {
+    if user_role == "admin" {
+        display "Admin dashboard"
+    }
+}</code></pre>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

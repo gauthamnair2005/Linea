@@ -109,20 +109,21 @@
             <p class="subtitle">Comprehensive guide to HTTP in Linea</p>
         </header>
         <main>
-            <h2>HTTP module</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>import http
+            <h2>HTTP Library</h2>
+            <p>The <code>http</code> module provides request helpers for service integration and API calls.</p>
+            <pre><code>import http
 
-# Returns [status, ok, body]
-var res = http::get("https://example.com")
-display res[0]
-display res[1]</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+var body = http::get("https://example.com")
+display body</code></pre>
+            <h3>POST Example</h3>
+            <pre><code>import http
+
+var payload @ str = "{\"name\":\"Linea\"}"
+var response = http::post("https://example.com/api", payload)
+display response</code></pre>
+            <h3>Tip</h3>
+            <p>Wrap HTTP calls in helper functions and validate response text before parsing.</p>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

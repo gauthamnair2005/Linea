@@ -109,16 +109,18 @@
             <p class="subtitle">Comprehensive guide to Async Programming in Linea</p>
         </header>
         <main>
-            <h2>Async status</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>display "@async is currently preview-level in docs."
-display "Use synchronous runtime patterns for stable production behavior."</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+            <h2>Async Functions (Preview)</h2>
+            <p>Async support is preview-stage. Keep examples explicit and isolate async experiments from production-critical paths.</p>
+            <pre><code>@async
+fn fetch_text(url @ str) -> str {
+    http::get(url)
+}
+
+// Preview usage pattern:
+// var body = await fetch_text("https://example.com")</code></pre>
+            <h3>Recommended Today</h3>
+            <p>For stable workflows, call synchronous wrappers and add retries/guards in regular functions.</p>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

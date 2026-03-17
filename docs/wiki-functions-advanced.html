@@ -109,20 +109,25 @@
             <p class="subtitle">Comprehensive guide to Advanced Functions in Linea</p>
         </header>
         <main>
-            <h2>Advanced functions</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>func add(a: int, b: int) -> int {
-  return a + b
+            <h2>Advanced Function Patterns</h2>
+            <p>Keep functions focused and composable. Return typed values and separate side effects.</p>
+            <h3>Composed Functions</h3>
+            <pre><code>fn add(a @ int, b @ int) -> int {
+    a + b
 }
 
-var sum @ int = add(10, 20)
-display sum</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+fn weighted_sum(x @ int, y @ int, w @ int) -> int {
+    add(x * w, y)
+}
+
+display weighted_sum(3, 5, 2)</code></pre>
+            <h3>Module-style Utility Function</h3>
+            <pre><code>fn clamp(v @ int, lo @ int, hi @ int) -> int {
+    if v &lt; lo { lo }
+    else if v &gt; hi { hi }
+    else { v }
+}</code></pre>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

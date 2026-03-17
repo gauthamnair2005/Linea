@@ -109,21 +109,22 @@
             <p class="subtitle">Comprehensive guide to Model Training in Linea</p>
         </header>
         <main>
-            <h2>ML training</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>import ml
+            <h2>ML Training</h2>
+            <p>Training loops combine data loading, forward pass, loss computation, and optimizer updates.</p>
+            <pre><code>import ml
+import datasets
 
-var w = ml::Linear(2, 1)
-var x = [[0.0,1.0],[1.0,0.0]]
-var y = [[1.0],[1.0]]
-var pred = ml::sigmoid(ml::forward(w, x))
-display ml::mse_loss(pred, y)</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+var data = datasets::load_csv("examples/iris_dummy.csv")
+var model = ml::Sequential([ml::Dense(4, 8), ml::ReLU(), ml::Dense(8, 3)])
+var optimizer = ml::Adam(0.001)
+
+for epoch from 0~20 {
+    var loss = model.train_step(data::features, data::labels, optimizer)
+    if epoch % 5 == 0 {
+        display "epoch=" + epoch + " loss=" + loss
+    }
+}</code></pre>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>

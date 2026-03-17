@@ -109,20 +109,25 @@
             <p class="subtitle">Comprehensive guide to Error Handling in Linea</p>
         </header>
         <main>
-            <h2>Error handling</h2>
-            <p>This page is synchronized to the currently supported compiler/runtime behavior (v4.5.4).</p>
-            <div class="note">
-                <p>Use this as a quick reference snippet:</p>
-                <pre>display "Prefer explicit checks and clear runtime messages."
-if false {
-  display "unreachable"
+            <h2>Error Handling</h2>
+            <p>Use explicit checks and clear messages for predictable behavior.</p>
+            <h3>Input Validation</h3>
+            <pre><code>var batch_size @ int = 0
+
+if batch_size &lt;= 0 {
+    display "batch_size must be positive"
 } else {
-  display "handled"
-}</pre>
-            </div>
-            <div class="nav-buttons">
-                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
-            </div>
+    display "starting training"
+}</code></pre>
+            <h3>Filesystem Operation Checks</h3>
+            <pre><code>import system
+
+if system::exists("config.json") {
+    display "config found"
+} else {
+    display "config missing"
+}</code></pre>
+            <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>
 </body>
