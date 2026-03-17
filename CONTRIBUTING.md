@@ -45,6 +45,7 @@ To run Linea integration tests:
 *   **Mandatory SemVer Type per Update**: Every update must declare a SemVer type (`patch`, `minor`, or `major`) in `CHANGELOG.md` under the relevant released version entry.
 *   **Version Propagation Requirement**: Any version change must also be reflected across website pages and all markdown documentation files.
 *   **Website Documentation Required**: For relevant changes, update website documentation in `docs/*.html` and keep website content consistent and maintained.
+*   **Feature Documentation + Examples Required**: Every feature addition or behavior change must update website docs and markdown docs, and include updated runnable example source code in `examples/` showing how to import and use it.
 *   **Syntax Modernization**: Prefer updating old syntax to the latest supported syntax in docs, examples, and user-facing references.
 *   **Wiki Expansion**: Add and maintain wiki pages for new features, workflows, and commonly requested topics whenever possible.
 *   **Commit and Push Discipline**: After validating an update works for at least 95% of in-scope cases, commit and push it to GitHub.

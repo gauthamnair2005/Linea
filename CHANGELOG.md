@@ -1,5 +1,16 @@
 # Linea Changelog
 
+## [4.2.1] - 2026-03-17
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Added policy requiring every feature addition/behavior change to update website docs, markdown docs, and runnable `examples/` usage code.
+- Added missing runnable examples for uncovered libraries:
+  - `examples/compute_demo.ln`
+  - `examples/datasets_demo.ln`
+
 ## [4.2.0] - 2026-03-17
 
 ### SemVer Type
