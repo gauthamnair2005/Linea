@@ -1,0 +1,64 @@
+# Linea CSV Library
+# Provides native CSV parsing and manipulation
+
+# Parse CSV string into a matrix
+func csv::parse(csv_string: string) -> any {
+  return csv::parse(csv_string)
+}
+
+# Convert matrix to CSV string
+func csv::stringify(data: any) -> string {
+  return csv::stringify(data)
+}
+
+# Read CSV file
+func csv::read(path: string) -> any {
+  return csv::read(path)
+}
+
+# Write matrix to CSV file
+func csv::write(path: string, data: any) -> bool {
+  return csv::write(path, data)
+}
+
+# Get number of rows (excluding header usually, but native func handles it)
+func csv::rowCount(data: any) -> int {
+  return csv::rowCount(data)
+}
+
+# Get number of columns
+func csv::columnCount(data: any) -> int {
+  return csv::columnCount(data)
+}
+
+# Select specific columns by name
+func csv::select(data: any, columns: string[]) -> any {
+  return csv::select(data, columns)
+}
+
+# Remove duplicate rows
+func csv::removeDuplicates(data: any) -> any {
+  return csv::removeDuplicates(data)
+}
+
+# Add a row to the dataset
+func csv::addRow(data: any, row: any) -> any {
+  return csv::addRow(data, row)
+}
+
+# Get statistics for a column [min, max, mean, count, sum]
+func csv::stats(data: any, column: string) -> float[] {
+  return csv::stats(data, column)
+}
+
+func csv::min(data: any, column: string) -> float {
+  return csv::min(data, column)
+}
+
+func csv::max(data: any, column: string) -> float {
+  return csv::max(data, column)
+}
+
+func csv::mean(data: any, column: string) -> float {
+  return csv::mean(data, column)
+}

@@ -1,0 +1,12 @@
+# Linea Markdown Library
+# Provides Markdown parsing and HTML generation
+
+# Parse Markdown string to HTML
+func markdown::parse(md: string) -> string {
+  return markdown::parse(md)
+}
+
+# Convert Markdown to HTML (alias)
+func markdown::toHtml(md: string) -> string {
+  return markdown::toHtml(md)
+}

@@ -10,12 +10,16 @@ pub enum Type {
     Matrix(Box<Type>),      // 2D: [[1, 2], [3, 4]]
     Tensor(Box<Type>),      // 3D+: [[[1, 2]], [[3, 4]]]
     Function { params: Vec<Type>, return_type: Box<Type> },
+    Void,
+    Any,
     Unknown,
 }
 
 impl Type {
     pub fn can_coerce_to(&self, other: &Type) -> bool {
         match (self, other) {
+            (Type::Any, _) => true,
+            (_, Type::Any) => true,
             (Type::Int, Type::Float) => true,
             (Type::Int, Type::String) => true,
             (Type::Float, Type::String) => true,
@@ -40,6 +44,8 @@ impl Type {
                 let param_names = params.iter().map(|t| t.display_name()).collect::<Vec<_>>();
                 format!("({}) -> {}", param_names.join(", "), return_type.display_name())
             }
+            Type::Void => "void".to_string(),
+            Type::Any => "any".to_string(),
             Type::Unknown => "unknown".to_string(),
         }
     }

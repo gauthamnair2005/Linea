@@ -1,5 +1,276 @@
 
 pub mod linea_runtime {
+
+    #[derive(Debug, Clone, PartialEq)]
+    pub enum Value {
+        Int(i64),
+        Float(f64),
+        String(String),
+        Bool(bool),
+        Array(Vec<Value>),
+        Matrix(Vec<Vec<f64>>),
+        None,
+    }
+
+    impl From<i64> for Value { fn from(v: i64) -> Self { Value::Int(v) } }
+    impl From<f64> for Value { fn from(v: f64) -> Self { Value::Float(v) } }
+    impl From<String> for Value { fn from(v: String) -> Self { Value::String(v) } }
+    impl From<&str> for Value { fn from(v: &str) -> Self { Value::String(v.to_string()) } }
+    impl From<bool> for Value { fn from(v: bool) -> Self { Value::Bool(v) } }
+    impl From<Vec<Value>> for Value { fn from(v: Vec<Value>) -> Self { Value::Array(v) } }
+    impl From<Vec<Vec<f64>>> for Value { fn from(v: Vec<Vec<f64>>) -> Self { Value::Matrix(v) } }
+    impl From<Vec<Vec<String>>> for Value { 
+        fn from(v: Vec<Vec<String>>) -> Self { 
+            let arr = v.into_iter().map(|row| {
+                Value::Array(row.into_iter().map(Value::String).collect())
+            }).collect();
+            Value::Array(arr)
+        } 
+    }
+
+    impl Value {
+        pub fn as_matrix(&self) -> Option<Vec<Vec<f64>>> {
+            match self {
+                Value::Matrix(m) => Some(m.clone()),
+                Value::Array(a) => {
+                     let mut mat = Vec::new();
+                     for row in a {
+                         if let Value::Array(r) = row {
+                             let mut r_vec = Vec::new();
+                             for v in r {
+                                 match v {
+                                     Value::Float(f) => r_vec.push(*f),
+                                     Value::Int(i) => r_vec.push(*i as f64),
+                                     _ => return None,
+                                 }
+                             }
+                             mat.push(r_vec);
+                         } else { return None; }
+                     }
+                     Some(mat)
+                },
+                _ => None,
+            }
+        }
+        
+        pub fn as_float(&self) -> f64 {
+            match self {
+                Value::Float(f) => *f,
+                Value::Int(i) => *i as f64,
+                _ => 0.0,
+            }
+        }
+    }
+
+    pub mod dynamic {
+        use super::*;
+        
+        pub mod compute {
+
+pub fn one_hot(labels: &Vec<f64>, classes: i64) -> Vec<Vec<f64>> {
+    let mut res = Vec::new();
+    let cls = classes as usize;
+    for &l in labels {
+        let mut row = vec![0.0; cls];
+        let idx = l as usize;
+        if idx < cls {
+            row[idx] = 1.0;
+        }
+        res.push(row);
+    }
+    res
+}
+
+pub fn cross_entropy(pred: &Vec<Vec<f64>>, target: &Vec<Vec<f64>>) -> f64 {
+    let rows = pred.len();
+    if rows == 0 { return 0.0; }
+    let mut sum = 0.0;
+    for i in 0..rows {
+        let p_row = &pred[i];
+        let t_row = &target[i];
+        for (j, &p) in p_row.iter().enumerate() {
+            let t = t_row.get(j).cloned().unwrap_or(0.0);
+            sum -= t * (p + 1e-15).ln();
+        }
+    }
+    sum / (rows as f64)
+}
+
+pub fn softmax(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    a.iter().map(|row| {
+        let max_val = row.iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
+        let exps: Vec<f64> = row.iter().map(|x| (x - max_val).exp()).collect();
+        let sum: f64 = exps.iter().sum();
+        exps.iter().map(|x| x / sum).collect()
+    }).collect()
+}
+
+pub fn sqrt(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    a.iter().map(|row| row.iter().map(|x| x.sqrt()).collect()).collect()
+}
+
+pub fn pow(a: &Vec<Vec<f64>>, exp: f64) -> Vec<Vec<f64>> {
+    a.iter().map(|row| row.iter().map(|x| x.powf(exp)).collect()).collect()
+}
+
+pub fn sum_columns(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+     if a.is_empty() { return vec![vec![0.0]]; }
+     let cols = a[0].len();
+     let mut sums = vec![0.0; cols];
+     for row in a {
+         for (j, val) in row.iter().enumerate() {
+             if j < cols { sums[j] += val; }
+         }
+     }
+     vec![sums]
+}
+
+
+            use super::super::*;
+            
+            pub fn matmul(a: Value, b: Value) -> Value {
+                let m_a = a.as_matrix().unwrap_or(vec![]);
+                let m_b = b.as_matrix().unwrap_or(vec![]);
+                Value::Matrix(super::compute::matmul(&m_a, &m_b))
+            }
+            
+            pub fn add(a: Value, b: Value) -> Value {
+                 let m_a = a.as_matrix().unwrap_or(vec![]);
+                 let m_b = b.as_matrix().unwrap_or(vec![]);
+                 Value::Matrix(super::compute::element_wise(&m_a, &m_b, "add"))
+            }
+
+            pub fn sub(a: Value, b: Value) -> Value {
+                 let m_a = a.as_matrix().unwrap_or(vec![]);
+                 let m_b = b.as_matrix().unwrap_or(vec![]);
+                 Value::Matrix(super::compute::element_wise(&m_a, &m_b, "sub"))
+            }
+
+            pub fn mul(a: Value, b: Value) -> Value {
+                 let m_a = a.as_matrix().unwrap_or(vec![]);
+                 let m_b = b.as_matrix().unwrap_or(vec![]);
+                 Value::Matrix(super::compute::element_wise(&m_a, &m_b, "mul"))
+            }
+
+            pub fn div(a: Value, b: Value) -> Value {
+                 let m_a = a.as_matrix().unwrap_or(vec![]);
+                 let m_b = b.as_matrix().unwrap_or(vec![]);
+                 Value::Matrix(super::compute::element_wise(&m_a, &m_b, "div"))
+            }
+            
+            pub fn transpose(a: Value) -> Value {
+                let m = a.as_matrix().unwrap_or(vec![]);
+                Value::Matrix(super::compute::transpose(&m))
+            }
+
+            pub fn sigmoid(a: Value) -> Value {
+                let m = a.as_matrix().unwrap_or(vec![]);
+                Value::Matrix(super::compute::sigmoid(&m))
+            }
+
+            pub fn softmax(a: Value) -> Value {
+                let m = a.as_matrix().unwrap_or(vec![]);
+                // We don't have softmax in compute yet? Checked earlier, it was missing from grep list, but viewed in `match` list.
+                // Assuming it exists or I add it.
+                // Actually, I viewed compute module and softmax WAS NOT THERE.
+                // I need to add it too.
+                Value::Matrix(super::compute::softmax(&m))
+            }
+            
+            pub fn sum_columns(a: Value) -> Value {
+                let m = a.as_matrix().unwrap_or(vec![]);
+                Value::Matrix(super::compute::sum_columns(&m))
+            }
+            
+            pub fn random(rows: Value, cols: Value) -> Value {
+                let r = rows.as_float() as usize;
+                let c = cols.as_float() as usize;
+                Value::Matrix(super::compute::random(r, c))
+            }
+             
+            pub fn pow(a: Value, b: Value) -> Value {
+                let m = a.as_matrix().unwrap_or(vec![]);
+                // pow takes 'any' as second arg (scalar or matrix)
+                // For now assuming scalar float from Value
+                let exp = b.as_float(); 
+                Value::Matrix(super::compute::pow(&m, exp))
+            }
+             
+            pub fn sqrt(a: Value) -> Value {
+                let m = a.as_matrix().unwrap_or(vec![]);
+                Value::Matrix(super::compute::sqrt(&m))
+            }
+            
+            pub fn tanh(a: Value) -> Value {
+                 let m = a.as_matrix().unwrap_or(vec![]);
+                 Value::Matrix(super::compute::tanh(&m))
+            }
+            
+            pub fn relu(a: Value) -> Value {
+                 let m = a.as_matrix().unwrap_or(vec![]);
+                 Value::Matrix(super::compute::relu(&m))
+            }
+        }
+    }
+
+        pub fn element_wise(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>, op: &str) -> Vec<Vec<f64>> {
+             let rows = a.len();
+             if rows == 0 { return vec![]; }
+             let cols = a[0].len();
+             
+             // Simple scalar broadcast support (if b is 1x1)
+             let b_is_scalar = b.len() == 1 && b[0].len() == 1;
+             let val = if b_is_scalar { b[0][0] } else { 0.0 };
+             
+             let mut res = Vec::with_capacity(rows);
+             for i in 0..rows {
+                 let mut row = Vec::with_capacity(cols);
+                 for j in 0..cols {
+                     let x = a[i][j];
+                     let y = if b_is_scalar { val } else { b[i][j] }; // Unsafe if shapes mismatch and not scalar
+                     
+                     let r = match op {
+                         "add" => x + y,
+                         "sub" => x - y,
+                         "mul" => x * y,
+                         "div" => x / y,
+                         _ => 0.0,
+                     };
+                     row.push(r);
+                 }
+                 res.push(row);
+             }
+             res
+        }
+        
+        pub fn softmax(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+            a.iter().map(|row| {
+                let max_val = row.iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
+                let exps: Vec<f64> = row.iter().map(|x| (x - max_val).exp()).collect();
+                let sum: f64 = exps.iter().sum();
+                exps.iter().map(|x| x / sum).collect()
+            }).collect()
+        }
+        
+        pub fn sum_columns(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+             if a.is_empty() { return vec![vec![0.0]]; }
+             let cols = a[0].len();
+             let mut sums = vec![0.0; cols];
+             for row in a {
+                 for (j, val) in row.iter().enumerate() {
+                     sums[j] += val;
+                 }
+             }
+             vec![sums]
+        }
+        
+        pub fn sqrt(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+             a.iter().map(|row| row.iter().map(|x| x.sqrt()).collect()).collect()
+        }
+        
+        pub fn pow(a: &Vec<Vec<f64>>, exp: f64) -> Vec<Vec<f64>> {
+             a.iter().map(|row| row.iter().map(|x| x.powf(exp)).collect()).collect()
+        }
     pub mod csv {
         use std::fs::File;
         use std::io::Cursor;
@@ -754,6 +1025,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         c[i] = a[i] * b[i];
     } else if (u.op == 3u) {
         c[i] = a[i] / b[i];
+    } else if (u.op == 4u) {
+        c[i] = pow(a[i], b[i]);
     }
 }
 "#;
@@ -1006,23 +1279,46 @@ fn matmul_impl(a: &[f32], b: &[f32], M: u32, K: u32, N: u32) -> Option<Vec<f32>>
     })
 }
 
-pub fn element_wise(a: &Vec<f64>, b: &Vec<f64>, op: &str) -> Vec<f64> {
-    let size = a.len();
-    if b.len() != size { return vec![]; }
+pub fn element_wise(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>, op: &str) -> Vec<Vec<f64>> {
+    let rows = a.len();
+    if rows == 0 { return vec![]; }
+    let cols = a[0].len();
+    
+    // Check dimensions match
+    if b.len() != rows || (rows > 0 && b[0].len() != cols) { return vec![]; }
 
-    let a_f32: Vec<f32> = a.iter().map(|&x| x as f32).collect();
-    let b_f32: Vec<f32> = b.iter().map(|&x| x as f32).collect();
+    // Flatten
+    let mut a_flat: Vec<f64> = Vec::with_capacity(rows * cols);
+    for row in a { a_flat.extend(row.iter().copied()); }
+    
+    let mut b_flat: Vec<f64> = Vec::with_capacity(rows * cols);
+    for row in b { b_flat.extend(row.iter().copied()); }
+
+    let size = (rows * cols) as u32;
 
     let op_code = match op {
         "add" => 0,
         "sub" => 1,
         "mul" => 2,
         "div" => 3,
+        "pow" => 4,
         _ => return vec![],
     };
+    
+    let a_f32: Vec<f32> = a_flat.iter().map(|&x| x as f32).collect();
+    let b_f32: Vec<f32> = b_flat.iter().map(|&x| x as f32).collect();
 
-    if let Some(res) = element_wise_impl(&a_f32, &b_f32, size as u32, op_code) {
-        res.into_iter().map(|x| x as f64).collect()
+    if let Some(res) = element_wise_impl(&a_f32, &b_f32, size, op_code) {
+        // Reshape
+        let mut result = Vec::with_capacity(rows);
+        for i in 0..rows {
+            let mut row = Vec::with_capacity(cols);
+            for j in 0..cols {
+                row.push(res[i * cols + j] as f64);
+            }
+            result.push(row);
+        }
+        result
     } else {
         vec![]
     }

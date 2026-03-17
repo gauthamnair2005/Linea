@@ -15,19 +15,32 @@
   <a href="https://github.com/gauthamnair2005/Linea">
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
+  <a href="https://github.com/gauthamnair2005/Linea/releases">
+    <img src="https://img.shields.io/badge/Version-3.4.0-green.svg" alt="Version" />
+  </a>
 </p>
 
 ---
 
-**Linea** is a modern, statically-typed, compiled programming language designed for high-performance systems programming and artificial intelligence. It combines the safety and speed of Rust with the simplicity of Python.
+**Linea** is an enterprise-grade, statically-typed compiled programming language designed for high-performance systems programming and native artificial intelligence development. Engineered for reliability and speed, Linea combines the memory safety of Rust with the expressiveness of Python, delivering a robust platform for modern software engineering.
 
-## 🚀 Key Features
+## 🚀 Key Capabilities
 
-*   **Native Performance**: Compiles directly to machine code via LLVM/Rust backend.
-*   **GPU Accelerated AI**: Built-in support for hardware-accelerated tensor operations using WGPU (Vulkan/Metal/DX12).
-*   **Memory Safety**: Ownership-based memory management ensures zero use-after-free bugs.
-*   **Zero Dependencies**: Produces single, standalone binaries (~1.3MB) that run on Linux.
-*   **Professional Tooling**: Built-in package manager and build system.
+### Native Intelligence
+*   **Hardware Acceleration**: Built-in support for GPU-accelerated tensor operations using WGPU (Vulkan/Metal/DX12), enabling high-performance machine learning inference and training.
+*   **Machine Learning Primitives**: Native implementation of neural network layers, activation functions, and optimizers (SGD, Adam) directly in the core library.
+
+### Systems Performance
+*   **Compiled Efficiency**: Compiles directly to optimized machine code via LLVM/Rust backend.
+*   **Zero-Cost Abstractions**: High-level syntax with low-level performance characteristics.
+*   **Memory Safety**: Ownership-based memory management ensures zero use-after-free bugs without a garbage collector.
+*   **Standalone Binaries**: Produces single, dependency-free executables (~1.3MB) for easy deployment.
+
+### Enterprise Ecosystem
+*   **Data Processing**: Native support for CSV, Excel, and JSON processing.
+*   **Visualization**: Built-in graphics library for data plotting and charting.
+*   **Documentation**: Integrated Markdown rendering and documentation generation.
+*   **Networking**: Robust HTTP client for API integration.
 
 ## 📦 Installation
 
@@ -63,7 +76,7 @@ linea compile hello.ln -o hello
 ```
 
 ### 2. Train a Neural Network
-Linea includes a native Machine Learning library. See `examples/iris_demo.ln` for a full example.
+Linea includes a comprehensive native Machine Learning library. See `examples/iris_demo.ln` for a full example.
 
 ```linea
 import ml
@@ -80,15 +93,21 @@ var model = ml::Linear(4, 3)
 
 ## 📚 Standard Library
 
-The following libraries are included in `libs/`:
+Linea provides a rich standard library for professional development:
 
-*   **`ml`**: Neural network layers (Linear), activations (ReLU, Sigmoid, Tanh, Softmax), losses (MSE, CrossEntropy), and optimizers (SGD, Adam).
-*   **`compute`**: Low-level GPU tensor operations with automatic CPU fallback.
-*   **`datasets`**: Data loading and preprocessing utilities.
-*   **`http`**: Native HTTP client (`get`, `post`, `download`).
-*   **`math`**: Mathematical functions.
-*   **`strings`**: String manipulation utilities.
-*   **`utils`**: General utility functions.
+| Module | Description |
+| :--- | :--- |
+| **`ml`** | Neural network layers, activations, losses, and optimizers |
+| **`compute`** | Hardware-accelerated GPU tensor operations |
+| **`datasets`** | Data loading and preprocessing utilities |
+| **`csv`** | High-performance CSV reading and writing |
+| **`excel`** | Excel file manipulation (read/write) |
+| **`markdown`** | Markdown parsing and HTML generation |
+| **`graphics`** | Data visualization and plotting |
+| **`http`** | HTTP client for REST API integration |
+| **`math`** | Mathematical functions and constants |
+| **`strings`** | String manipulation utilities |
+| **`utils`** | General utility functions |
 
 ## 📂 Project Structure
 
@@ -100,7 +119,7 @@ The following libraries are included in `libs/`:
 
 ## 🤝 Contributing
 
-Linea is open source. Contributions are welcome!
+We welcome contributions from the community. Please read `CONTRIBUTING.md` for guidelines on how to contribute to the Linea project.
 
 ## 📄 License
 

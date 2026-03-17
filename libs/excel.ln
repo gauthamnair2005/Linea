@@ -1,0 +1,14 @@
+# Linea Excel Library
+# Provides native Excel (XLSX) reading and writing
+
+# Read Excel file into a matrix
+# Reads the first sheet by default
+func excel::read(path: string) -> any {
+  return excel::read(path)
+}
+
+# Write matrix to Excel file
+# Creates a new file with data in the first sheet
+func excel::write(path: string, data: any) -> bool {
+  return excel::write(path, data)
+}

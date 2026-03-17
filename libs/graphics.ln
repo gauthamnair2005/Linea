@@ -1,0 +1,33 @@
+# Linea Graphics Library
+# Provides charting and plotting capabilities
+
+# Set the title of the chart
+func graphics::title(title: string) -> bool {
+  return graphics::title(title)
+}
+
+# Plot a line chart
+# x: Array of x values
+# y: Array of y values
+# label: Series label (optional)
+# color: Series color (optional) - "red", "blue", "green", etc.
+func graphics::plot(x: float[], y: float[], label: string, color: string) -> bool {
+  return graphics::plot(x, y, label, color)
+}
+
+# Plot a scatter chart
+func graphics::scatter(x: float[], y: float[], label: string, color: string) -> bool {
+  return graphics::scatter(x, y, label, color)
+}
+
+# Plot a bar chart
+# labels: Array of category labels
+# values: Array of bar heights
+func graphics::bar(labels: string[], values: float[], label: string, color: string) -> bool {
+  return graphics::bar(labels, values, label, color)
+}
+
+# Save the current chart to a file (png, svg, etc. based on extension)
+func graphics::save(filename: string) -> bool {
+  return graphics::save(filename)
+}

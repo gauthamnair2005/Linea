@@ -1,10 +1,10 @@
 import ml
 
-func datasets::load_csv(path: string) -> any {
+func datasets::load_csv(path: string) -> string[][] {
   return csv::read(path)
 }
 
-func datasets::get_column(data: any, col_name: string) -> any {
+func datasets::get_column(data: string[][], col_name: string) -> float[] {
   var col = csv::getColumn(data, col_name)
   var res = [0.0]
   var cnt = len(col)
@@ -24,7 +24,7 @@ func datasets::get_column(data: any, col_name: string) -> any {
   return res
 }
 
-func datasets::one_hot(labels: any, classes: int) -> float[][] {
+func datasets::one_hot(labels: float[], classes: int) -> float[][] {
   return compute::one_hot(labels, classes)
 }
 

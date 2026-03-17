@@ -703,6 +703,51 @@ pub fn element_wise(a: &Vec<f64>, b: &Vec<f64>, op: &str) -> Vec<f64> {
     }
 }
 
+pub fn element_wise_matrix(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>, op: &str) -> Vec<Vec<f64>> {
+    let rows = a.len();
+    if rows == 0 { return vec![]; }
+    let cols = a[0].len();
+    
+    // Check dimensions match
+    if b.len() != rows || (rows > 0 && b[0].len() != cols) { return vec![]; }
+
+    // Flatten
+    let mut a_flat: Vec<f64> = Vec::with_capacity(rows * cols);
+    for row in a { a_flat.extend(row.iter().copied()); }
+    
+    let mut b_flat: Vec<f64> = Vec::with_capacity(rows * cols);
+    for row in b { b_flat.extend(row.iter().copied()); }
+
+    let size = (rows * cols) as u32;
+
+    let op_code = match op {
+        "add" => 0,
+        "sub" => 1,
+        "mul" => 2,
+        "div" => 3,
+        "pow" => 4,
+        _ => return vec![],
+    };
+    
+    let a_f32: Vec<f32> = a_flat.iter().map(|&x| x as f32).collect();
+    let b_f32: Vec<f32> = b_flat.iter().map(|&x| x as f32).collect();
+
+    if let Some(res) = element_wise_impl(&a_f32, &b_f32, size, op_code) {
+        // Reshape
+        let mut result = Vec::with_capacity(rows);
+        for i in 0..rows {
+            let mut row = Vec::with_capacity(cols);
+            for j in 0..cols {
+                row.push(res[i * cols + j] as f64);
+            }
+            result.push(row);
+        }
+        result
+    } else {
+        vec![]
+    }
+}
+
 fn element_wise_impl(a: &[f32], b: &[f32], size: u32, op: u32) -> Option<Vec<f32>> {
     let ctx = ComputeContext::global()?;
     let device = &ctx.device;

@@ -1,45 +1,35 @@
-# Compute Library for Hardware Acceleration
-# Exposes GPU/CPU device information and compute primitives
-
-# Returns the name of the current compute device
-pub fn device() {
-    # Native implementation
-}
-
-# Returns the type of the current compute device
-# "DiscreteGpu", "IntegratedGpu", or "Cpu"
-pub fn device_type() {
-    # Native implementation
-}
-
-# Performs matrix multiplication on the active compute device
-# a: Matrix (MxK)
-# b: Matrix (KxN)
-# Returns: Matrix (MxN)
-pub fn matmul(a, b) {
-    # Native implementation
-}
-
-# Performs element-wise addition on the active compute device
-# a: Matrix
-# b: Matrix
-# Returns: Matrix
-pub fn add(a, b) {
-    # Native implementation
-}
-
-# Performs element-wise subtraction on the active compute device
-# a: Matrix
-# b: Matrix
-# Returns: Matrix
-pub fn sub(a, b) {
-    # Native implementation
-}
-
-# Performs element-wise multiplication (Hadamard product)
-# a: Matrix
-# b: Matrix
-# Returns: Matrix
-pub fn mul(a, b) {
-    # Native implementation
-}
+# Linea Compute Library
+#
+# This module provides hardware-accelerated compute primitives.
+# It is built into the Linea runtime and exposed via the 'compute' namespace.
+#
+# Functions available natively:
+#
+# Device Management:
+# - compute::device() -> string
+# - compute::device_type() -> string
+#
+# Matrix Operations:
+# - compute::matmul(a: float[][], b: float[][]) -> float[][]
+# - compute::add(a: float[][], b: float[][]) -> float[][]
+# - compute::sub(a: float[][], b: float[][]) -> float[][]
+# - compute::mul(a: float[][], b: float[][]) -> float[][]
+# - compute::div(a: float[][], b: float[][]) -> float[][]
+# - compute::transpose(a: float[][]) -> float[][]
+# - compute::sum_columns(a: float[][]) -> float[][]
+# - compute::sum(a: float[][]) -> float
+#
+# Activation Functions:
+# - compute::sigmoid(x: float[][]) -> float[][]
+# - compute::relu(x: float[][]) -> float[][]
+# - compute::tanh(x: float[][]) -> float[][]
+# - compute::softmax(x: float[][]) -> float[][]
+#
+# Element-wise Math:
+# - compute::exp(x: float[][]) -> float[][]
+# - compute::log(x: float[][]) -> float[][]
+# - compute::sqrt(x: float[][]) -> float[][]
+# - compute::pow(x: float[][], y: any) -> float[][]
+#
+# Random:
+# - compute::random(rows: int, cols: int) -> float[][]
