@@ -10,6 +10,7 @@
 - Added explicit requirement that each update must include a SemVer type (`patch`, `minor`, or `major`).
 - Added documentation governance rules requiring relevant website updates, syntax modernization to latest supported forms, and continued wiki expansion.
 - Added rule to commit and push each validated update after it works for at least 95% of in-scope cases.
+- Unified website theming with wiki UI colors across root and `docs/` HTML pages, added the updated SVG logo to all pages, and refreshed README logo presentation.
 
 ---
 

@@ -259,9 +259,57 @@
                 max-width: 300px;
             }
         }
+    
+        .global-linea-logo {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2000;
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: rgba(5, 8, 19, 0.75);
+            border: 1px solid var(--border, #1a2f5f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .global-linea-logo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 212, 255, 0.25);
+        }
+
+        .global-linea-logo img {
+            width: 36px;
+            height: 36px;
+            display: block;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --dark: #0a0e27;
+            --card: #111a33;
+            --accent-dark: #4ea8ff;
+            --primary-color: #00d4ff;
+            --accent-color: #8338ec;
+            --success-color: #4ea8ff;
+            --bg-card: #111a33;
+        }
+
     </style>
 </head>
 <body>
+    <a class="global-linea-logo" href="index.html" aria-label="Linea Home"><img src="../linea-logo.svg" alt="Linea Logo"></a>
     <header>
         <nav>
             <a href="#" class="logo">⚡ Linea</a>

@@ -1,7 +1,7 @@
 # The Linea Programming Language
 
 <p align="center">
-  <img src="linea-logo.svg" alt="Linea Logo" width="120" />
+  <img src="linea-logo.svg" alt="Linea Logo" width="140" />
 </p>
 
 <p align="center">
