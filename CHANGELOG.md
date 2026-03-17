@@ -16,6 +16,7 @@
 - Added a shared `wiki-theme.css` used by all root/docs HTML pages to unify wiki typography and styling, and fixed wiki version-badge text contrast on magenta backgrounds.
 - Standardized author display name as **Gautham Nair** across compiler metadata/CLI, website footers, and repository README.
 - Added native `sql` (SQLite) and `password` modules with prepared-query support, DB password locking/unlocking, hashing/verification, and CLI/GUI password prompts.
+- Refreshed `linea-logo.svg` again with a distinct but related teal-indigo-amber gradient palette for brand variety while preserving the same logo shape.
 
 ---
 
