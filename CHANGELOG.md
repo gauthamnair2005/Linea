@@ -18,6 +18,7 @@
 - Added native `sql` (SQLite) and `password` modules with prepared-query support, DB password locking/unlocking, hashing/verification, and CLI/GUI password prompts.
 - Refreshed `linea-logo.svg` again with a distinct but related teal-indigo-amber gradient palette for brand variety while preserving the same logo shape.
 - Consolidated site structure to keep only root `index.html`, moved all other root HTML pages into `docs/`, and updated links/asset paths accordingly.
+- Completely revamped `linea-logo.svg` with a new unique geometric-orbital design language and fresh multi-tone gradient system.
 
 ---
 
