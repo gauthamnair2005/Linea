@@ -167,14 +167,36 @@ impl Executor {
                 println!("{}", value.to_string());
                 Ok(())
             }
-            Statement::For { var, start, end, body } => {
+            Statement::For { var, start, end, step, body } => {
                 let start_val = self.eval_expression(start)?.to_int()?;
                 let end_val = self.eval_expression(end)?.to_int()?;
                 
-                for i in start_val..=end_val {
-                    self.declare_variable(var.clone(), Value::Int(i));
-                    for stmt in body {
-                        self.execute_statement(stmt)?;
+                if let Some(step_expr) = step {
+                    let step_val = self.eval_expression(step_expr)?.to_int()?;
+                    let mut i = start_val;
+                    if step_val > 0 {
+                        while i <= end_val {
+                            self.declare_variable(var.clone(), Value::Int(i));
+                            for stmt in body {
+                                self.execute_statement(stmt)?;
+                            }
+                            i += step_val;
+                        }
+                    } else if step_val < 0 {
+                        while i >= end_val {
+                            self.declare_variable(var.clone(), Value::Int(i));
+                            for stmt in body {
+                                self.execute_statement(stmt)?;
+                            }
+                            i += step_val;
+                        }
+                    }
+                } else {
+                    for i in start_val..=end_val {
+                        self.declare_variable(var.clone(), Value::Int(i));
+                        for stmt in body {
+                            self.execute_statement(stmt)?;
+                        }
                     }
                 }
                 Ok(())
@@ -2100,6 +2122,14 @@ impl Executor {
                 _ => Err(Error::InvalidOperation("Cannot negate this type".to_string())),
             },
             UnaryOp::Not => Ok(Value::Bool(!val.to_bool())),
+            UnaryOp::AddressOf => {
+                // For now, return the value as-is (pointer semantics simplified for interpreter)
+                Ok(val.clone())
+            }
+            UnaryOp::Dereference => {
+                // For now, return the value as-is (pointer semantics simplified for interpreter)
+                Ok(val.clone())
+            }
         }
     }
 }

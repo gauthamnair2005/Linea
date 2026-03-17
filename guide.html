@@ -282,35 +282,57 @@ first(["a", "b"])    // "a"</pre>
             <h2>4. Control Flow</h2>
             
             <h3>If/Else</h3>
-            <pre>x: i64 = 10
+            <pre>var x @ int = 10
 if x > 5 {
-    print("x is greater than 5")
+    display "x is greater than 5"
 } else if x == 5 {
-    print("x equals 5")
+    display "x equals 5"
 } else {
-    print("x is less than 5")
+    display "x is less than 5"
 }</pre>
 
-            <h3>Loops</h3>
-            <pre>// For loop
-for i in 0..10 {
-    print(i)
+            <h3>Loops (v4.1 Syntax)</h3>
+            <pre>// For loop with range operator ~
+for i from 1~10 {
+    display i
+}
+
+// For loop with step
+for i from 0~20 step 2 {
+    display i
+}
+
+// Reverse iteration
+for i from 10~1 step -1 {
+    display i
 }
 
 // While loop
-count: i64 = 0
+var count @ int = 0
 while count < 5 {
-    print(count)
-    count = count + 1
+    display count
+    var count = count + 1
 }</pre>
 
+            <h3>Pointers (v4.1 New)</h3>
+            <pre>// Address-of operator &
+var x @ int = 42
+var ptr @ int = &x
+
+// Dereference operator *
+var value @ int = *ptr
+
+// Array pointers
+var arr @ [int] = [1, 2, 3, 4, 5]
+var ptr @ int = &arr[0]
+display *(ptr + 1)    // Access second element</pre>
+
             <h3>Pattern Matching</h3>
-            <pre>value: i64 = 42
-result: string = match value {
+            <pre>var value @ int = 42
+var result @ str = match value {
     0 => "zero",
     1 | 2 | 3 => "one to three",
     42 => "the answer",
-    10..50 => "between 10 and 50",
     _ => "something else"
 }</pre>
         </div>

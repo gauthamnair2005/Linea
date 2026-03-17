@@ -145,19 +145,48 @@ impl RustGenerator {
                 }
                 Ok(())
             }
-            Statement::For { var, start, end, body } => {
+            Statement::For { var, start, end, step, body } => {
                 let (start_expr, _) = self.generate_expression(start)?;
                 let (end_expr, _) = self.generate_expression(end)?;
-                self.emit_line(&format!("for {} in {}..={} {{", var, start_expr, end_expr));
-                self.variable_types.insert(var.clone(), "i64".to_string());
-                self.indent_level += 1;
+                
+                // Handle optional step
+                let range_expr = if let Some(step_expr) = step {
+                    let (step_val, _) = self.generate_expression(step_expr)?;
+                    // For now, simple step handling (Rust doesn't have step in ranges)
+                    // We'll use a while loop for non-standard steps
+                    format!("/* step: {} */", step_val)
+                } else {
+                    String::new()
+                };
+                
+                // If there's a step, use while loop; otherwise use for loop
+                if step.is_some() {
+                    self.emit_line(&format!("let mut {} = {};", var, start_expr));
+                    self.variable_types.insert(var.clone(), "i64".to_string());
+                    
+                    let (step_val, _) = self.generate_expression(step.as_ref().unwrap())?;
+                    self.emit_line(&format!("while {} <= {} {{", var, end_expr));
+                    self.indent_level += 1;
+                    
+                    for stmt in body {
+                        self.generate_statement(stmt)?;
+                    }
+                    
+                    self.emit_line(&format!("{} = {} + {};", var, var, step_val));
+                    self.indent_level -= 1;
+                    self.emit_line("}");
+                } else {
+                    self.emit_line(&format!("for {} in {}..={} {}", var, start_expr, end_expr, "{"));
+                    self.variable_types.insert(var.clone(), "i64".to_string());
+                    self.indent_level += 1;
 
-                for stmt in body {
-                    self.generate_statement(stmt)?;
+                    for stmt in body {
+                        self.generate_statement(stmt)?;
+                    }
+
+                    self.indent_level -= 1;
+                    self.emit_line("}");
                 }
-
-                self.indent_level -= 1;
-                self.emit_line("}");
                 Ok(())
             }
             Statement::While { condition, body } => {
@@ -424,6 +453,19 @@ impl RustGenerator {
                 match op {
                     UnaryOp::Negate => Ok((format!("-({})", inner_expr), ty)),
                     UnaryOp::Not => Ok((format!("!({})", inner_expr), "bool".to_string())),
+                    UnaryOp::AddressOf => {
+                        // & operator - create reference
+                        Ok((format!("&{}", inner_expr), format!("&{}", ty)))
+                    }
+                    UnaryOp::Dereference => {
+                        // * operator - dereference pointer
+                        let deref_ty = if ty.starts_with("&") {
+                            ty[1..].to_string()
+                        } else {
+                            ty.clone()
+                        };
+                        Ok((format!("*{}", inner_expr), deref_ty))
+                    }
                 }
             },
             Expression::Array(elements) => {

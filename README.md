@@ -16,7 +16,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.0.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.1.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -90,6 +90,37 @@ var data = datasets::load_csv("examples/iris_dummy.csv")
 var model = ml::Linear(4, 3) 
 
 # Training loop...
+```
+
+### 3. New in v4.1: Range Loops & Pointers
+
+**Range Operator `~` for cleaner loops:**
+```linea
+// Simple range (1 to 10)
+for i from 1~10 {
+    display i
+}
+
+// With custom step
+for i from 0~20 step 2 {
+    display i
+}
+
+// Reverse iteration
+for i from 10~1 step -1 {
+    display i
+}
+```
+
+**Pointer Support for Memory Control:**
+```linea
+var x @ int = 42
+var ptr @ int = &x    // Address-of operator
+
+// Array pointers
+var arr @ [int] = [1, 2, 3, 4, 5]
+var ptr @ int = &arr[0]
+display *(ptr + 1)    // Access second element
 ```
 
 ## 📚 Standard Library

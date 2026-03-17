@@ -101,7 +101,8 @@ impl Lexer {
                     self.advance();
                     Ok(Token::new(TokenType::And, line, column))
                 } else {
-                    Err(Error::Syntax { line, column, message: "Expected '&&'".to_string() })
+                    // Single & for pointers (address-of)
+                    Ok(Token::new(TokenType::Ampersand, line, column))
                 }
             }
             '|' => {
@@ -125,7 +126,7 @@ impl Lexer {
                     Ok(Token::new(TokenType::Colon, line, column))
                 }
             }
-            '~' => { self.advance(); Ok(Token::new(TokenType::Range, line, column)) }
+            '~' => { self.advance(); Ok(Token::new(TokenType::Tilde, line, column)) }
             '(' => { self.advance(); Ok(Token::new(TokenType::LeftParen, line, column)) }
             ')' => { self.advance(); Ok(Token::new(TokenType::RightParen, line, column)) }
             '{' => { self.advance(); Ok(Token::new(TokenType::LeftBrace, line, column)) }

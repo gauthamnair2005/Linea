@@ -113,8 +113,17 @@ impl Parser {
         let var = self.expect_identifier()?;
         self.expect(&TokenType::From)?;
         let start = self.parse_expression()?;
-        self.expect(&TokenType::Range)?;
+        self.expect(&TokenType::Tilde)?;
         let end = self.parse_expression()?;
+        
+        // Optional step modifier
+        let step = if self.current_token().token_type == TokenType::Identifier("step".to_string()) {
+            self.advance();
+            Some(self.parse_expression()?)
+        } else {
+            None
+        };
+        
         self.consume_optional(&TokenType::Semicolon);
         
         let body = if self.current_token().token_type == TokenType::LeftBrace {
@@ -123,7 +132,7 @@ impl Parser {
             vec![self.parse_statement()?]
         };
 
-        Ok(Statement::For { var, start, end, body })
+        Ok(Statement::For { var, start, end, step, body })
     }
 
     fn parse_while(&mut self) -> Result<Statement> {
@@ -364,6 +373,22 @@ impl Parser {
                 let expr = self.parse_unary()?;
                 Ok(Expression::Unary {
                     op: UnaryOp::Not,
+                    expr: Box::new(expr),
+                })
+            }
+            TokenType::Ampersand => {
+                self.advance();
+                let expr = self.parse_unary()?;
+                Ok(Expression::Unary {
+                    op: UnaryOp::AddressOf,
+                    expr: Box::new(expr),
+                })
+            }
+            TokenType::Star => {
+                self.advance();
+                let expr = self.parse_unary()?;
+                Ok(Expression::Unary {
+                    op: UnaryOp::Dereference,
                     expr: Box::new(expr),
                 })
             }

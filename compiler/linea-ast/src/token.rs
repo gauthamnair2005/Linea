@@ -47,6 +47,8 @@ pub enum TokenType {
     FatArrow,
     Range,
     At,
+    Tilde,
+    Ampersand,
 
     // Delimiters
     LeftParen,

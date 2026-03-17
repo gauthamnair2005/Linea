@@ -1,5 +1,70 @@
 # Linea Changelog
 
+## [4.1.0] - 2026-03-17 - BREAKING RELEASE
+
+### ⚠️ Breaking Changes
+
+#### New Range Operator `~`
+- **Old syntax** (v4.0.0): `for i from 0..10` → `for i from 0~10` (v4.1.0)
+- **Removed**: Old `..` range syntax **completely removed**
+- **Step support**: `for i from 1~100 step 5` for custom increments
+- **Reverse ranges**: `for i from 10~1 step -1` for iteration in reverse
+
+#### Backward Compatibility Completely Removed
+- **Old `:` type syntax** NO LONGER works
+- **Only** `@` type operator accepted
+- All code must use v4.0+ syntax
+- No migration path from v3.x - see RELEASE_NOTES_V410.md
+
+### 🎉 Major Features
+
+#### Pointer Support
+- **Address-of operator** (`&`): Get memory address of variable
+  ```linea
+  var x @ int = 42
+  var ptr @ int = &x
+  ```
+- **Dereference operator** (`*`): Access value at pointer
+  ```linea
+  var value @ int = *ptr
+  ```
+- **Pointer arithmetic**: Basic pointer math for arrays
+  ```linea
+  var ptr @ int = &arr[0]
+  display *(ptr + 1)  // Second element
+  ```
+
+#### Enhanced For Loops
+- Range operator `~` for cleaner syntax
+- Step modifier: `for i from start~end step size`
+- Support for positive and negative steps
+- Dynamic range variables
+
+#### Middle-Level Language Position
+- Combines high-level ease with memory control
+- Low-level pointer access
+- Automatic memory safety where possible
+- GPU acceleration maintained
+
+### 📝 Compiler Changes
+- **Lexer**: Added `Tilde` and `Ampersand` tokens
+- **Parser**: Enhanced unary operators for `&` and `*`
+- **AST**: New `Range` expression type, updated `UnaryOp`
+- **Codegen**: Proper Rust reference and dereference emission
+- **Executor**: Pointer semantics in interpretation
+
+### 🔗 Type System
+- Pointer types: `&int`, `&str`, `&[int]`, etc.
+- Pointer operations in expressions
+- Type inference for pointer expressions
+
+### Performance
+- Zero runtime overhead for pointers
+- Compile-time feature
+- Identical performance to v4.0.0
+
+---
+
 ## [4.0.0] - 2025-03-17
 
 ### 🎯 Major Changes

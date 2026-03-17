@@ -25,6 +25,7 @@ pub enum Statement {
         var: String,
         start: Expression,
         end: Expression,
+        step: Option<Expression>,
         body: Vec<Statement>,
     },
     While {
@@ -83,6 +84,11 @@ pub enum Expression {
         step: Option<Box<Expression>>,
     },
     Array(Vec<Expression>),
+    Range {
+        start: Box<Expression>,
+        end: Box<Expression>,
+        step: Option<Box<Expression>>,
+    },
     TypeCast {
         expr: Box<Expression>,
         target_type: Type,
@@ -111,4 +117,6 @@ pub enum BinaryOp {
 pub enum UnaryOp {
     Negate,
     Not,
+    AddressOf,  // & operator for pointers
+    Dereference, // * operator for pointers
 }

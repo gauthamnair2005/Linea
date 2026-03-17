@@ -1,0 +1,21 @@
+// Linea v4.1 - Range Syntax with ~ operator
+// Demonstrates the new for loop syntax: for i from 1~10
+
+// Basic range loop (1 to 10 inclusive)
+for i from 1~10 {
+    display i
+}
+
+display "---"
+
+// Range with custom step (0 to 20 step 2)
+for i from 0~20 step 2 {
+    display i
+}
+
+display "---"
+
+// Reverse range (10 to 1 with step -1)
+for i from 10~1 step -1 {
+    display i
+}
