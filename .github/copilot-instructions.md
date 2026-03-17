@@ -10,5 +10,5 @@
 
 ## Release Versioning Policy
 - For every update, declare the SemVer update type: `patch`, `minor`, or `major`.
-- Record the chosen SemVer type in the relevant `CHANGELOG.md` entry (for example under `[Unreleased]` or the target version heading).
+- Record the chosen SemVer type in the relevant released `CHANGELOG.md` version entry (no unreleased bucket).
 - After an update is validated to work for at least 95% of in-scope cases, commit and push the update to GitHub.

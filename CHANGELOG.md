@@ -1,6 +1,6 @@
 # Linea Changelog
 
-## [Unreleased]
+## [4.2.0] - 2026-03-17
 
 ### SemVer Type
 - `minor`
@@ -19,8 +19,6 @@
 - Refreshed `linea-logo.svg` again with a distinct but related teal-indigo-amber gradient palette for brand variety while preserving the same logo shape.
 - Consolidated site structure to keep only root `index.html`, moved all other root HTML pages into `docs/`, and updated links/asset paths accordingly.
 - Completely revamped `linea-logo.svg` with a new unique geometric-orbital design language and fresh multi-tone gradient system.
-
----
 
 ## [4.1.0] - 2026-03-17 - BREAKING RELEASE
 
