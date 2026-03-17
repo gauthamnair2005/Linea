@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Range Operator - Linea Wiki</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --code-bg: #0f1525;
+        }
+        body {
+            font-family: 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, #1a1a3e 50%, var(--bg-dark) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+        .breadcrumb { display: flex; gap: 0.5rem; font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted); }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        h1 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-muted); }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 2rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 1rem; }
+        h3 { font-size: 1.2rem; color: var(--secondary); margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        p { margin-bottom: 1rem; }
+        code { background: var(--code-bg); padding: 0.2rem 0.4rem; border-radius: 3px; color: var(--primary); }
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; overflow-x: auto; margin: 1.5rem 0; }
+        pre code { padding: 0; background: none; color: var(--text-light); }
+        .keyword { color: var(--secondary); font-weight: bold; }
+        .number { color: #ffd60a; }
+        .comment { color: var(--text-muted); }
+        .example-box { background: rgba(131, 56, 236, 0.1); border-left: 4px solid var(--accent); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+        .example-box h4 { color: var(--accent); margin-bottom: 0.5rem; }
+        .note { background: rgba(0, 212, 255, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 4px; margin: 1.5rem 0; }
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .nav-btn { padding: 0.75rem 1.5rem; background: rgba(131, 56, 236, 0.2); border: 1px solid var(--accent); color: var(--accent); text-decoration: none; border-radius: 6px; }
+        .nav-btn.primary { background: var(--accent); color: white; }
+        ul { margin-left: 2rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / Range Operator
+            </div>
+            <h1>Range Operator: ~</h1>
+            <p class="subtitle">Mastering Linea's tilde operator for clean ranges</p>
+        </header>
+        
+        <main>
+            <h2>Overview</h2>
+            
+            <p>The tilde operator <code>~</code> defines ranges in Linea v4.1. It's used primarily in for loops for clean, readable iteration.</p>
+            
+            <h2>Basic Syntax</h2>
+            
+            <pre><code>start~end
+start~end step increment</code></pre>
+            
+            <h2>Inclusive Ranges</h2>
+            
+            <p>The <code>~</code> operator creates <strong>inclusive</strong> ranges (both endpoints included):</p>
+            
+            <h3>Simple Range</h3>
+            <pre><code><span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">1</span>~<span class="number">5</span> {
+    display i
+}
+<span class="comment">// Output: 1, 2, 3, 4, 5</span></code></pre>
+            
+            <h3>Range from 0</h3>
+            <pre><code><span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~<span class="number">10</span> {
+    display i
+}
+<span class="comment">// Output: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</span></code></pre>
+            
+            <h2>Step Values</h2>
+            
+            <h3>Positive Step (Skip Forward)</h3>
+            <pre><code><span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~<span class="number">20</span> <span class="keyword">step</span> <span class="number">5</span> {
+    display i
+}
+<span class="comment">// Output: 0, 5, 10, 15, 20</span></code></pre>
+            
+            <h3>Negative Step (Backward)</h3>
+            <pre><code><span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">10</span>~<span class="number">1</span> <span class="keyword">step</span> -<span class="number">1</span> {
+    display i
+}
+<span class="comment">// Output: 10, 9, 8, 7, 6, 5, 4, 3, 2, 1</span></code></pre>
+            
+            <h3>Large Steps</h3>
+            <pre><code><span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~<span class="number">100</span> <span class="keyword">step</span> <span class="number">10</span> {
+    display i
+}
+<span class="comment">// Output: 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100</span></code></pre>
+            
+            <h2>Dynamic Ranges</h2>
+            
+            <p>Use variables for start and end points:</p>
+            
+            <pre><code><span class="keyword">var</span> start <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">5</span>
+<span class="keyword">var</span> end <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">15</span>
+<span class="keyword">for</span> i <span class="keyword">from</span> start~end {
+    display i
+}</code></pre>
+            
+            <h2>Array Iteration</h2>
+            
+            <h3>Using Array Length</h3>
+            <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>]
+<span class="keyword">var</span> n <span class="keyword">@</span> int <span class="keyword">=</span> <span class="function">len</span>(arr)
+<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~(n-<span class="number">1</span>) {
+    display arr[i]
+}</code></pre>
+            
+            <h3>Reverse Array Iteration</h3>
+            <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]
+<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">3</span>~<span class="number">0</span> <span class="keyword">step</span> -<span class="number">1</span> {
+    display arr[i]
+}
+<span class="comment">// Output: 4, 3, 2, 1</span></code></pre>
+            
+            <h2>Common Patterns</h2>
+            
+            <div class="example-box">
+                <h4>Fibonacci Sequence</h4>
+                <pre><code><span class="keyword">var</span> a <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">0</span>
+<span class="keyword">var</span> b <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">1</span>
+<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~<span class="number">9</span> {
+    display a
+    <span class="keyword">var</span> temp <span class="keyword">@</span> int <span class="keyword">=</span> a + b
+    a <span class="keyword">=</span> b
+    b <span class="keyword">=</span> temp
+}</code></pre>
+            </div>
+            
+            <div class="example-box">
+                <h4>Times Table</h4>
+                <pre><code><span class="keyword">var</span> n <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">5</span>
+<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">1</span>~<span class="number">10</span> {
+    display n * i
+}</code></pre>
+            </div>
+            
+            <h2>Differences from Other Languages</h2>
+            
+            <table style="width:100%; border-collapse:collapse; margin:1.5rem 0;">
+                <tr style="background: rgba(131,56,236,0.2);">
+                    <th style="padding:0.75rem; text-align:left; border-bottom:1px solid var(--border); color:var(--accent);">Language</th>
+                    <th style="padding:0.75rem; text-align:left; border-bottom:1px solid var(--border); color:var(--accent);">Syntax</th>
+                    <th style="padding:0.75rem; text-align:left; border-bottom:1px solid var(--border); color:var(--accent);">Notes</th>
+                </tr>
+                <tr>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Python</td>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);"><code>range(1, 11)</code></td>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Exclusive end</td>
+                </tr>
+                <tr>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Rust</td>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);"><code>1..=10</code></td>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Inclusive</td>
+                </tr>
+                <tr>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Linea</td>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);"><code>1~10</code></td>
+                    <td style="padding:0.75rem; border-bottom:1px solid var(--border);">Inclusive, clean</td>
+                </tr>
+            </table>
+            
+            <div class="note">
+                <strong>💡 Note:</strong> Linea's range operator is <strong>inclusive</strong> on both ends, making it intuitive for humans (1~10 really means 1 to 10).
+            </div>
+            
+            <h2>Performance Considerations</h2>
+            
+            <ul>
+                <li><strong>Ranges are compiled efficiently:</strong> No runtime overhead</li>
+                <li><strong>Positive steps:</strong> Compiled to Rust's optimized ranges</li>
+                <li><strong>Negative steps:</strong> Use while loops internally</li>
+                <li><strong>Cache locality:</strong> Better performance with sequential access</li>
+            </ul>
+            
+            <div class="nav-buttons">
+                <a href="wiki-index.html" class="nav-btn">← Back to Wiki</a>
+                <a href="wiki-control-loops.html" class="nav-btn primary">See: Loop Structures →</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
