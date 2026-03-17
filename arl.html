@@ -217,12 +217,26 @@
             --bg-card: #111a33;
         }
 
+    
+        .brand-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .brand-inline img,
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+            display: block;
+        }
+
     </style>
 </head>
 <body>
     <a class="global-linea-logo" href="index.html" aria-label="Linea Home"><img src="linea-logo.svg" alt="Linea Logo"></a>
     <header>
-        <a href="index.html">⚡ Linea</a>
+        <a href="index.html" class="brand-inline"><img src="linea-logo.svg" alt="Linea Logo"><span>Linea</span></a>
     </header>
 
     <div class="container">

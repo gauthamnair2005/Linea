@@ -11,6 +11,7 @@
 - Added documentation governance rules requiring relevant website updates, syntax modernization to latest supported forms, and continued wiki expansion.
 - Added rule to commit and push each validated update after it works for at least 95% of in-scope cases.
 - Unified website theming with wiki UI colors across root and `docs/` HTML pages, added the updated SVG logo to all pages, and refreshed README logo presentation.
+- Refined `docs/*` pages with a stronger mixed neon/dark wiki-style theme and replaced all lightning-emoji branding with SVG logo-based branding.
 
 ---
 

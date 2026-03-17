@@ -197,12 +197,87 @@
             --bg-card: #111a33;
         }
 
+    
+        .brand-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .brand-inline img,
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+            display: block;
+        }
+
+    
+        /* mixed-theme overrides */
+        body {
+            background: radial-gradient(circle at 20% 15%, rgba(0, 212, 255, 0.22) 0%, transparent 35%),
+                        radial-gradient(circle at 80% 10%, rgba(255, 0, 110, 0.18) 0%, transparent 35%),
+                        radial-gradient(circle at 50% 90%, rgba(131, 56, 236, 0.22) 0%, transparent 35%),
+                        linear-gradient(135deg, #050813 0%, #101735 45%, #1b1238 100%);
+            color: var(--text-light);
+        }
+
+        header {
+            background: rgba(5, 8, 19, 0.85);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+        }
+
+        .container,
+        .showcase,
+        .feature-card {
+            background: rgba(17, 26, 51, 0.86) !important;
+            border: 1px solid var(--border);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+            color: var(--text-light);
+        }
+
+        .container p,
+        .showcase p,
+        li,
+        td {
+            color: var(--text-light);
+        }
+
+        h1 {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 { color: var(--accent); }
+        h3 { color: var(--primary); }
+
+        .highlight-box,
+        .note,
+        .formula-box {
+            background: rgba(131, 56, 236, 0.12) !important;
+            border-left-color: var(--accent) !important;
+            color: var(--text-light);
+        }
+
+        table,
+        th,
+        td,
+        tr:nth-child(even) {
+            background: rgba(26, 47, 95, 0.24);
+            border-color: var(--border);
+            color: var(--text-light);
+        }
+
+        a { color: var(--primary); }
+
     </style>
 </head>
 <body>
     <a class="global-linea-logo" href="index.html" aria-label="Linea Home"><img src="../linea-logo.svg" alt="Linea Logo"></a>
     <header>
-        <a href="/">⚡ Linea</a>
+        <a href="index.html" class="brand-inline"><img src="../linea-logo.svg" alt="Linea Logo"><span>Linea</span></a>
         <div class="nav-links">
             <a href="/">Home</a>
             <a href="./guide.html">Language Guide</a>
