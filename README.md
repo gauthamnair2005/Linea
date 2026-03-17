@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.5.1-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.5.2-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -160,7 +160,7 @@ Linea provides a rich standard library for professional development:
 | **`strings`** | String manipulation utilities |
 | **`utils`** | General utility functions |
 
-### System Programming Primitives (v4.5.1)
+### System Programming Primitives (v4.5.2)
 
 `system` now includes low-level/mid-level operations:
 

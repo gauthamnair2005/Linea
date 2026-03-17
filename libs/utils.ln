@@ -1,52 +1,43 @@
 # Linea Utility Library
-# Provides utility and helper functions
 
-# Create a header with title
-func printHeader {title}
+func utils::printHeader(title: string) -> bool {
   display "=== " + title + " ==="
-  display ""
-end
+  return true
+}
 
-# Print a separator
-func printSeparator {}
+func utils::printSeparator() -> bool {
   display "---"
-end
+  return true
+}
 
-# Print formatted key-value pair
-func printKeyValue {key, value}
-  display key + ": " + (value)
-end
+func utils::printKeyValue(key: string, value: any) -> bool {
+  display key + ": " + asString(value)
+  return true
+}
 
-# Check if number is prime (simple implementation)
-func isPrime {num}
-  if num < 2
-    return False
-  end
-  
-  var i = 2
-  for i from 2~num
-    if num % i == 0
-      return False
-    end
-  end
-  
-  return True
-end
+func utils::isPrime(num: int) -> bool {
+  if num < 2 {
+    return false
+  }
+  for i from 2~num {
+    if i != num && num % i == 0 {
+      return false
+    }
+  }
+  return true
+}
 
-# Calculate sum of numbers 1 to n
-func sumTo {n}
+func utils::sumTo(n: int) -> int {
   var sum = 0
-  var i = 0
-  for i from 1~n
+  for i from 1~n {
     varUpd sum = sum + i
-  end
+  }
   return sum
-end
+}
 
-# Generate multiplication table
-func multiplicationTable {num}
-  var i = 1
-  for i from 1~10
-    display (num) + " x " + (i) + " = " + (num * i)
-  end
-end
+func utils::multiplicationTable(num: int) -> bool {
+  for i from 1~10 {
+    display asString(num) + " x " + asString(i) + " = " + asString(num * i)
+  }
+  return true
+}

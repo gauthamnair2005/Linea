@@ -1,26 +1,18 @@
-# HTTP Library for Linea
-# Provides networking and HTTP request capabilities
+# Linea HTTP Library
+# Native implementation lives in linea-executor.
 
-# Performs a GET request
-# Returns a Map with keys: "status", "body", "ok"
-pub fn get(url) {
-    # Native implementation
+func http::get(url: string) -> any {
+  return http::get(url)
 }
 
-# Performs a POST request with body (string or JSON)
-pub fn post(url, body) {
-    # Native implementation
+func http::post(url: string, body: string) -> any {
+  return http::post(url, body)
 }
 
-# Downloads a file to the specified path
-pub fn download(url, filepath) {
-    # Native implementation
+func http::request(method: string, url: string, headers: string, body: string) -> any {
+  return http::request(method, url, headers, body)
 }
 
-# Performs a generic request
-# method: "GET", "POST", "PUT", "DELETE"
-# headers: Map of headers
-# body: String
-pub fn request(method, url, headers, body) {
-    # Native implementation
+func http::download(url: string, filepath: string) -> bool {
+  return http::download(url, filepath)
 }

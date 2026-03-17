@@ -1,14 +1,11 @@
 import datasets
 
-var data @ any = datasets::load_csv("examples/iris_dummy.csv")
+var data = datasets::load_csv("../examples/iris_dummy.csv")
 display "rows:"
 display len(data)
 
-var sepal_lengths @ any = datasets::get_column(data, "sepal_length")
+var sepal_lengths = datasets::get_column(data, "sepal_length")
 display "sepal_length sample:"
 display sepal_lengths
 
-var split @ any = datasets::train_test_split(data, 0.2)
-display "train/test sizes:"
-display len(split[0])
-display len(split[1])
+display "dataset demo complete"

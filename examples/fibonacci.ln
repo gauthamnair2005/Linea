@@ -2,11 +2,12 @@
 var n = 10
 var a = 0
 var b = 1
+var temp = 0
 
 display "Fibonacci sequence:"
 for i from 0~n {
   display a
-  var temp = a + b
+  varUpd temp = a + b
   varUpd a = b
   varUpd b = temp
 }

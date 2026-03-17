@@ -1,39 +1,29 @@
 # Linea String Library
-# Provides string manipulation functions
 
-# Convert integer to string
-func intToString {num}
-  typeCast num = String
-  return num
-end
+func strings::intToString(num: int) -> string {
+  return asString(num)
+}
 
-# Repeat a string n times
-func repeat {str, times}
+func strings::repeat(text: string, times: int) -> string {
   var result = ""
-  var i = 0
-  for i from 0~times
-    varUpd result = result + str
-  end
+  for i from 1~times {
+    varUpd result = result + text
+  }
   return result
-end
+}
 
-# Get string length (number of characters)
-func length {str}
-  # This is a placeholder - actual implementation would need built-in support
+func strings::length(text: string) -> int {
+  # Placeholder until native char-count helper is added.
+  if text == "" {
+    return 0
+  }
   return 1
-end
+}
 
-# String concatenation helper
-func concat {str1, str2}
-  return str1 + str2
-end
+func strings::concat(a: string, b: string) -> string {
+  return a + b
+}
 
-# Create a separator line
-func separator {char, length}
-  var line = ""
-  var i = 0
-  for i from 0~length
-    varUpd line = line + char
-  end
-  return line
-end
+func strings::separator(char: string, length: int) -> string {
+  return strings::repeat(char, length)
+}

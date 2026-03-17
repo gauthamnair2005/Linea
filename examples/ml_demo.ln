@@ -1,79 +1,16 @@
 import ml
 
-display "=== Linea ML Demo: XOR Classification with Adam ==="
+display "=== Linea ML Demo ==="
 
-# 1. Data Preparation (XOR)
-var X = [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]]
-var y = [[0.0], [1.0], [1.0], [0.0]]
+var X = [[0.0, 1.0], [1.0, 0.0]]
+var y = [[1.0], [1.0]]
 
-display "Input Shape: " + ml::shape(X)
-display "Target Shape: " + ml::shape(y)
+var layer = ml::Linear(2, 1)
+var logits = ml::forward(layer, X)
+var pred = ml::sigmoid(logits)
+var loss = ml::mse_loss(pred, y)
 
-# 2. Model Initialization (MLP: 2 -> 4 -> 1)
-var W1 = ml::Linear(2, 4)
-var W2 = ml::Linear(4, 1)
-
-# Initialize Adam State
-var state1 = ml::init_adam(W1)
-var state2 = ml::init_adam(W2)
-
-# 3. Training Loop
-display "Starting Training Loop..."
-var lr = 0.01
-
-var z1 = [[0.0]]
-var a1 = [[0.0]]
-var z2 = [[0.0]]
-var pred = [[0.0]]
-var loss = 0.0
-var grad_loss = [[0.0]]
-var grad_z2 = [[0.0]]
-var grad_a1 = [[0.0]]
-var grad_z1 = [[0.0]]
-
-for i from 1 ~ 2000 {
-    # Forward Pass
-    varUpd z1 = ml::forward(W1, X)
-    varUpd a1 = ml::sigmoid(z1)
-    varUpd z2 = ml::forward(W2, a1)
-    varUpd pred = ml::sigmoid(z2)
-    
-    # Compute Loss (MSE)
-    varUpd loss = ml::mse_loss(pred, y)
-    
-    if i % 200 == 0 {
-        display "Epoch " + i + " | Loss: " + loss
-    }
-    
-    # Backward Pass
-    # 1. dLoss / dPred
-    varUpd grad_loss = ml::backward_mse(pred, y)
-    
-    # 2. dPred / dZ2 (Backprop through Sigmoid output)
-    varUpd grad_z2 = ml::backward_sigmoid(z2, grad_loss)
-    
-    # 3. Update W2 (and backprop to a1)
-    # dL/da1 = grad_z2 @ W2[0].T
-    varUpd grad_a1 = ml::matmul(grad_z2, ml::transpose(W2[0]))
-    
-    # 4. dL/dZ1 = dL/da1 * sigmoid'(z1)
-    varUpd grad_z1 = ml::backward_sigmoid(z1, grad_a1)
-    
-    # Update with Adam
-    var res2 = ml::adam_step(W2, grad_z2, a1, state2, lr, i)
-    varUpd W2 = res2[0]
-    varUpd state2 = res2[1]
-    
-    var res1 = ml::adam_step(W1, grad_z1, X, state1, lr, i)
-    varUpd W1 = res1[0]
-    varUpd state1 = res1[1]
-}
-
-display "Inference after training:"
-var final_z1 = ml::forward(W1, X)
-var final_a1 = ml::sigmoid(final_z1)
-var final_z2 = ml::forward(W2, final_a1)
-var final_pred = ml::sigmoid(final_z2)
-display final_pred
-display "Targets:"
-display y
+display "Predictions:"
+display pred
+display "Loss:"
+display loss

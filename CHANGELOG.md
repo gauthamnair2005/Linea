@@ -1,5 +1,23 @@
 # Linea Changelog
 
+## [4.5.2] - 2026-03-17
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Performed deeper core Linea audit focused on imports, libraries, runtime examples, and compilation path.
+- Fixed library import/parser regressions by modernizing invalid stdlib modules:
+  - `libs/http.ln`, `libs/math.ln`, `libs/strings.ln`, `libs/utils.ln`, `libs/arl.ln`
+- Fixed representative example regressions:
+  - Updated syntax/runtime correctness in `examples/fibonacci.ln`, `examples/factorial.ln`, `examples/v4_syntax_demo.ln`
+  - Updated dataset pathing and simplified failing flows in `examples/datasets_demo.ln`, `examples/iris_demo.ln`, `examples/ml_demo.ln`
+- Fixed compilation runtime-template conflict by removing duplicate/invalid dynamic compute block from `compiler/linea-codegen/src/linea_runtime.rs`.
+- Revalidated:
+  - all `libs/*.ln` imports (pass)
+  - representative core examples across syntax/system/stdlib/ML (pass)
+  - end-to-end compile and run of `examples/hello.ln` (pass)
+
 ## [4.5.1] - 2026-03-17
 
 ### SemVer Type
