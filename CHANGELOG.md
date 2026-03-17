@@ -1,5 +1,20 @@
 # Linea Changelog
 
+## [4.5.1] - 2026-03-17
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Audited currently shipped features across compiler/runtime/docs/package-manager flows.
+- Fixed website regression in `docs/index.html` by correcting broken local documentation link:
+  - `./performance.html` → `./wiki-performance.html`
+- Revalidated:
+  - compiler checks (`cargo check`, `cargo test`)
+  - package manager dependency install flow
+  - runtime smoke execution for `system` examples
+  - local website link integrity across all HTML pages
+
 ## [4.5.0] - 2026-03-17
 
 ### SemVer Type
