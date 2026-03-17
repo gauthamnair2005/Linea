@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Guide - Linea</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --accent-dark: #2980b9;
+            --text-light: #ecf0f1;
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--primary-color) 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        header a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 1rem;
+        }
+        
+        h2 {
+            margin-top: 3rem;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 1rem;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d9534f;
+        }
+        
+        pre {
+            background: #1a1a2e;
+            color: #00d4ff;
+            padding: 1.5rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--accent-color);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .section {
+            margin: 2rem 0;
+        }
+        
+        .highlight-box {
+            background: #e8f4f8;
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        th {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/">⚡ Linea</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="./guide.html">Language Guide</a>
+            <a href="./ai/">AI/ML</a>
+            <a href="https://github.com/gauthamnair2005/Linea">GitHub</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Linea Language Guide</h1>
+        <p>Learn how to write programs in Linea, a fast, compiled language with GPU acceleration and built-in ML support.</p>
+
+        <div class="section">
+            <h2>1. Syntax Basics</h2>
+            
+            <h3>Variables and Types</h3>
+            <pre>// Explicit type declaration
+x: i64 = 42
+name: string = "Linea"
+value: f64 = 3.14
+flag: bool = true
+
+// Type inference
+y = 100  // inferred as i64
+z = 2.71  // inferred as f64</pre>
+            
+            <div class="highlight-box">
+                <strong>Supported Types:</strong> i64, f64, bool, string, Matrix, Tensor, Vector
+            </div>
+
+            <h3>Functions</h3>
+            <pre>// Simple function
+fn add(a: i64, b: i64) -> i64 {
+    result: i64 = a + b
+    result
+}
+
+// Function with no return
+fn greet(name: string) {
+    print("Hello, " + name)
+}
+
+// Entry point
+fn main() {
+    x: i64 = add(10, 20)
+    greet("Linea")
+}</pre>
+        </div>
+
+        <div class="section">
+            <h2>2. Control Flow</h2>
+            
+            <h3>If/Else</h3>
+            <pre>x: i64 = 10
+if x > 5 {
+    print("x is greater than 5")
+} else {
+    print("x is 5 or less")
+}</pre>
+
+            <h3>Loops</h3>
+            <pre>// For loop
+for i in 0..10 {
+    print(i)
+}
+
+// While loop
+count: i64 = 0
+while count < 5 {
+    print(count)
+    count = count + 1
+}</pre>
+        </div>
+
+        <div class="section">
+            <h2>3. Arrays and Collections</h2>
+            
+            <h3>Vectors (Dynamic Arrays)</h3>
+            <pre>// Create vector
+v: Vector<i64> = [1, 2, 3, 4, 5]
+
+// Access elements
+first: i64 = v[0]
+last: i64 = v[len(v) - 1]
+
+// Push element
+v.push(6)</pre>
+
+            <h3>Matrices (2D Arrays)</h3>
+            <pre>// Create matrix
+m: Matrix = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]
+
+// Access element
+value: f64 = m[0][1]  // 2.0
+
+// Matrix slicing
+row: Vector<f64> = m[0, :]
+col: Vector<f64> = m[:, 1]</pre>
+
+            <h3>Tensors (N-Dimensional)</h3>
+            <pre>// Create 3D tensor
+t: Tensor = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+
+// Access element
+val: i64 = t[0][1][0]  // 3</pre>
+        </div>
+
+        <div class="section">
+            <h2>4. Module System</h2>
+            
+            <h3>Imports</h3>
+            <pre>// Import module
+import ml
+import datasets
+import http
+
+// Use functions from module
+data := datasets::load_csv("data.csv")
+model := ml::Sequential([...])</pre>
+        </div>
+
+        <div class="section">
+            <h2>5. Advanced Features</h2>
+            
+            <h3>GPU Acceleration (Experimental)</h3>
+            <pre>// Mark function for GPU execution
+@gpu
+fn matrix_multiply(a: Matrix, b: Matrix) -> Matrix {
+    result := compute::matmul(a, b)
+    result
+}</pre>
+
+            <h3>Pattern Matching</h3>
+            <pre>// Match expressions
+value: i64 = 42
+result: string = match value {
+    0 => "zero",
+    1 | 2 | 3 => "one to three",
+    42 => "the answer",
+    _ => "something else"
+}</pre>
+
+            <h3>Generics (Preview)</h3>
+            <pre>// Generic function
+fn first<T>(arr: Vector<T>) -> T {
+    arr[0]
+}</pre>
+        </div>
+
+        <div class="section">
+            <h2>Type Compatibility Table</h2>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Example</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>i64</td>
+                    <td>42, -100</td>
+                    <td>64-bit signed integer</td>
+                </tr>
+                <tr>
+                    <td>f64</td>
+                    <td>3.14, 2.71</td>
+                    <td>64-bit floating point</td>
+                </tr>
+                <tr>
+                    <td>bool</td>
+                    <td>true, false</td>
+                    <td>Boolean value</td>
+                </tr>
+                <tr>
+                    <td>string</td>
+                    <td>"hello"</td>
+                    <td>UTF-8 string</td>
+                </tr>
+                <tr>
+                    <td>Vector<T></td>
+                    <td>[1, 2, 3]</td>
+                    <td>Dynamic array</td>
+                </tr>
+                <tr>
+                    <td>Matrix</td>
+                    <td>[[1, 2], [3, 4]]</td>
+                    <td>2D array (f64)</td>
+                </tr>
+                <tr>
+                    <td>Tensor</td>
+                    <td>[[[1]]]</td>
+                    <td>N-dimensional array</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>6. Next Steps</h2>
+            <ul style="margin-left: 2rem;">
+                <li><a href="./ai/">Learn Machine Learning with Linea</a></li>
+                <li><a href="./stdlib/">Explore the Standard Library</a></li>
+                <li><a href="https://github.com/gauthamnair2005/Linea/tree/main/examples">View Example Programs</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Linea Programming Language</p>
+        <p><a href="https://github.com/gauthamnair2005/Linea">GitHub</a> | <a href="/">Home</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linea - AI-First Compiled Programming Language</title>
+    <meta name="description" content="Linea: A modern, compiled programming language with native ML/AI capabilities, GPU acceleration, and advanced reasoning algorithms.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --accent-dark: #2980b9;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --text-light: #ecf0f1;
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--primary-color) 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .hero {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95) 0%, rgba(52, 152, 219, 0.1) 100%);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #ecf0f1;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--accent-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--accent-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+            color: white;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.2);
+        }
+        
+        .feature-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: #bdc3c7;
+        }
+        
+        .code-block {
+            background: #0f1419;
+            padding: 2rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .code-block code {
+            color: #00d4ff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        section h2 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .showcase {
+            background: var(--bg-card);
+            color: white;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        
+        .showcase h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .highlight {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+        }
+        
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--accent-color);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="#" class="logo">⚡ Linea</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#quickstart">Quick Start</a></li>
+                <li><a href="#arl">ARL-Tangram</a></li>
+                <li><a href="#examples">Examples</a></li>
+                <li><a href="https://github.com/gauthamnair2005/Linea" target="_blank">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Linea</h1>
+            <p>An AI-first, compiled programming language with <span class="highlight">native GPU acceleration</span>, advanced reasoning algorithms, and beautiful syntax for machine learning.</p>
+            <div class="cta-buttons">
+                <a href="#quickstart" class="btn btn-primary">Get Started</a>
+                <a href="https://github.com/gauthamnair2005/Linea" class="btn btn-secondary" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <h2>🚀 Key Features</h2>
+        <div class="features">
+            <div class="feature-card">
+                <h3>⚡ Compiled & Fast</h3>
+                <p>Compile Linea to standalone executables with Rust-level performance. No runtime overhead, no interpreter needed.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎮 GPU Acceleration</h3>
+                <p>Automatic GPU detection and optimization. Supports dGPU, iGPU, and CPU fallback with WGPU cross-platform compute.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🧠 Native ML/AI</h3>
+                <p>Pure Linea machine learning libraries for training and inference. Neural networks, optimizers, and loss functions built-in.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔬 ARL-Tangram Algorithm</h3>
+                <p>Advanced reasoning with adaptive compositional learning. Learn complex reasoning patterns with multi-layer attention mechanisms.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🛡️ Memory Safe</h3>
+                <p>Memory safety by design. No null pointers, no buffer overflows. Type-safe abstractions prevent entire classes of bugs.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📦 Rich Standard Library</h3>
+                <p>HTTP, CSV, Excel, Graphics, Markdown support. Networking, data processing, and visualization out of the box.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="quickstart">
+        <h2>Quick Start</h2>
+        <div class="showcase">
+            <h3>Install Linea</h3>
+            <div class="code-block"><code>git clone https://github.com/gauthamnair2005/Linea.git
+cd Linea
+./install.sh</code></div>
+            
+            <h3>Your First Program</h3>
+            <div class="code-block"><code>// hello.ln
+fn main() {
+    x: i64 = 42
+    print(x)
+}</code></div>
+            
+            <h3>Compile & Run</h3>
+            <div class="code-block"><code>linea compile hello.ln
+./hello</code></div>
+        </div>
+    </section>
+
+    <section id="arl">
+        <h2>🔬 ARL-Tangram Algorithm</h2>
+        <div class="showcase">
+            <p>The <span class="highlight">Adaptive Reasoning Layer (ARL)</span> combined with <span class="highlight">Tangram-based compositional learning</span> provides advanced AI reasoning capabilities:</p>
+            
+            <h3 style="margin-top: 2rem;">Features</h3>
+            <div class="grid-2">
+                <div>
+                    <strong>✓ Adaptive Reasoning</strong>
+                    <p>Learns task-specific reasoning patterns automatically</p>
+                </div>
+                <div>
+                    <strong>✓ Compositional Learning</strong>
+                    <p>Shape decomposition for complex problem solving</p>
+                </div>
+                <div>
+                    <strong>✓ Multi-layer Attention</strong>
+                    <p>Advanced attention mechanisms for focused reasoning</p>
+                </div>
+                <div>
+                    <strong>✓ GPU Optimized</strong>
+                    <p>Runs efficiently on GPU with automatic batching</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="examples">
+        <h2>📚 Example: Neural Network Training</h2>
+        <div class="showcase">
+            <div class="code-block"><code>// Neural network training with Linea
+import ml
+import datasets
+
+fn main() {
+    // Load dataset
+    data := datasets::load_csv("iris.csv")
+    X := data::features
+    y := data::labels
+    
+    // Build model
+    model := ml::Sequential([
+        ml::Dense(4, 16),
+        ml::ReLU(),
+        ml::Dense(16, 8),
+        ml::ReLU(),
+        ml::Dense(8, 3)
+    ])
+    
+    // Train
+    optimizer := ml::Adam(learning_rate: 0.001)
+    for epoch in 0..100 {
+        loss := model.train_step(X, y, optimizer)
+        print("Epoch " + epoch + ": loss = " + loss)
+    }
+}</code></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>📖 Documentation</h2>
+        <div class="grid-2">
+            <div class="feature-card">
+                <h3>Language Guide</h3>
+                <p><a href="./guide.html" style="color: var(--accent-color);">Learn Linea syntax, types, and control flow →</a></p>
+            </div>
+            <div class="feature-card">
+                <h3>Standard Library</h3>
+                <p><a href="./stdlib/" style="color: var(--accent-color);">Explore built-in functions and modules →</a></p>
+            </div>
+            <div class="feature-card">
+                <h3>ML/AI Guide</h3>
+                <p><a href="./ai/" style="color: var(--accent-color);">Build machine learning models →</a></p>
+            </div>
+            <div class="feature-card">
+                <h3>Performance Tips</h3>
+                <p><a href="./performance.html" style="color: var(--accent-color);">Optimize for GPU acceleration →</a></p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Linea Programming Language. Built with ⚡ and 🧠</p>
+        <p><a href="https://github.com/gauthamnair2005/Linea" style="color: var(--accent-color); text-decoration: none;">GitHub Repository</a> | <a href="https://github.com/gauthamnair2005/Linea/blob/main/LICENSE" style="color: var(--accent-color); text-decoration: none;">License</a></p>
+    </footer>
+</body>
+</html>

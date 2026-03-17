@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARL-Tangram Algorithm - Linea</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --accent-dark: #2980b9;
+            --text-light: #ecf0f1;
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--primary-color) 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        header a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 1rem;
+        }
+        
+        h2 {
+            margin-top: 3rem;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 1rem;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d9534f;
+        }
+        
+        pre {
+            background: #1a1a2e;
+            color: #00d4ff;
+            padding: 1.5rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--accent-color);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .section {
+            margin: 2rem 0;
+        }
+        
+        .highlight-box {
+            background: #e8f4f8;
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+        
+        .formula-box {
+            background: #f0f8ff;
+            border-left: 4px solid #27ae60;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/">⚡ Linea</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="./guide.html">Language Guide</a>
+            <a href="./arl.html">ARL-Tangram</a>
+            <a href="https://github.com/gauthamnair2005/Linea">GitHub</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>🔬 ARL-Tangram: Adaptive Reasoning with Compositional Learning</h1>
+        <p>The Adaptive Reasoning Layer (ARL) combined with Tangram-based compositional learning enables sophisticated AI systems to learn complex reasoning patterns and decompose problems into manageable components.</p>
+
+        <div class="section">
+            <h2>Overview</h2>
+            <p>ARL-Tangram is a hybrid AI algorithm that combines:</p>
+            <ul>
+                <li><strong>Adaptive Reasoning Layer (ARL):</strong> Learns task-specific reasoning patterns in real-time</li>
+                <li><strong>Tangram Decomposition:</strong> Breaks complex problems into simple geometric/logical components</li>
+                <li><strong>Compositional Learning:</strong> Learns to combine simple components into complex solutions</li>
+                <li><strong>Multi-Layer Attention:</strong> Focuses computational resources on important reasoning steps</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Architecture</h2>
+            
+            <h3>Layer 1: Input Encoding</h3>
+            <div class="formula-box">
+                E_input = Embedding(x_t)  # Embed raw input to dense representation
+            </div>
+            
+            <h3>Layer 2: Adaptive Reasoning</h3>
+            <div class="formula-box">
+                r_t = AdaptiveReasoningLayer(E_input, attention_mask)
+                # r_t: reasoning representation at time t
+                # Updates based on current task context
+            </div>
+            
+            <h3>Layer 3: Tangram Decomposition</h3>
+            <div class="formula-box">
+                components = TangramDecompose(r_t, num_shapes=K)
+                # Decomposes reasoning into K semantic components
+                # Each component has semantic meaning in task domain
+            </div>
+            
+            <h3>Layer 4: Compositional Attention</h3>
+            <div class="formula-box">
+                α = Attention(components, global_context)
+                # Learns which components to focus on
+                output = Σ(α_i × components_i)  for i in 1..K
+            </div>
+            
+            <h3>Layer 5: Output Generation</h3>
+            <div class="formula-box">
+                y_t = OutputDecoder(output)
+                # Decodes composed representation to final output
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Features</h2>
+            
+            <h3>1. Adaptive Learning Rate</h3>
+            <pre>// Automatic learning rate adjustment based on reasoning quality
+arl_model.adapt_learning_rate(validation_accuracy)
+// Higher accuracy → decrease learning rate (fine-tune)
+// Lower accuracy → increase learning rate (explore more)</pre>
+
+            <h3>2. Component Reuse</h3>
+            <p>Once learned, Tangram components can be reused across different tasks, enabling transfer learning.</p>
+            <pre>// Save learned components
+model.save_components("components.arl")
+
+// Load and reuse in new task
+new_model = arl::Model.from_components("components.arl")
+new_model.fine_tune(new_data, epochs: 10)</pre>
+
+            <h3>3. Interpretability</h3>
+            <p>Unlike black-box neural networks, ARL-Tangram components are semantically meaningful:</p>
+            <pre>// Inspect what the model learned
+components_info = model.explain_components()
+for comp in components_info {
+    print("Component " + comp.id + ": " + comp.semantic_meaning)
+}</pre>
+
+            <h3>4. GPU Optimization</h3>
+            <p>ARL-Tangram automatically utilizes GPU acceleration for parallel attention computation:</p>
+            <pre>// Automatically uses GPU if available
+@gpu
+fn arl_forward_pass(x: Matrix) -> Matrix {
+    // Multi-layer attention runs on GPU
+    // Automatic batching and optimization
+}</pre>
+        </div>
+
+        <div class="section">
+            <h2>Example: Classification Task</h2>
+            
+            <pre>import arl
+import datasets
+
+fn main() {
+    // Load data
+    data := datasets::load_csv("classification_data.csv")
+    X_train := data::features
+    y_train := data::labels
+    
+    // Create ARL-Tangram model
+    model := arl::ARLTangram(
+        input_dim: 50,
+        num_components: 8,
+        attention_heads: 4,
+        hidden_dim: 128
+    )
+    
+    // Train
+    optimizer := ml::Adam(learning_rate: 0.001)
+    for epoch in 0..50 {
+        loss := model.train_step(X_train, y_train, optimizer)
+        
+        // Adaptive learning rate adjustment
+        if epoch % 10 == 0 {
+            val_acc := model.evaluate(X_val, y_val)
+            model.adapt_learning_rate(val_acc)
+        }
+        
+        print("Epoch " + epoch + ": loss = " + loss)
+    }
+    
+    // Inference with interpretation
+    predictions := model.predict(X_test)
+    explanations := model.explain_predictions(X_test)
+    
+    for i in 0..len(predictions) {
+        print("Sample " + i + ": " + predictions[i])
+        print("  Reasoning: " + explanations[i])
+    }
+}</pre>
+        </div>
+
+        <div class="section">
+            <h2>Performance Characteristics</h2>
+            
+            <h3>Advantages</h3>
+            <ul>
+                <li>✅ <strong>Interpretable:</strong> Learn what the model actually does</li>
+                <li>✅ <strong>Faster Convergence:</strong> Structured learning through components</li>
+                <li>✅ <strong>Transfer Learning:</strong> Reuse components across tasks</li>
+                <li>✅ <strong>Scalable:</strong> GPU-accelerated attention mechanisms</li>
+                <li>✅ <strong>Adaptive:</strong> Automatically adjust to task difficulty</li>
+            </ul>
+
+            <h3>Complexity</h3>
+            <ul>
+                <li>Time: O(n × K × h²) per forward pass (n=batch, K=components, h=attention heads)</li>
+                <li>Space: O(n × d) for attention matrices (d=hidden dimension)</li>
+                <li>GPU Memory: ~2-4x dense network of same hidden dimension</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>When to Use ARL-Tangram</h2>
+            
+            <div class="highlight-box">
+                <strong>Best For:</strong>
+                <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+                    <li>Problems requiring interpretable reasoning</li>
+                    <li>Transfer learning across related tasks</li>
+                    <li>Limited labeled data (efficient learning)</li>
+                    <li>Complex reasoning with decomposable structure</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Not Ideal For:</strong>
+                <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+                    <li>Very simple classification tasks (use Dense networks)</li>
+                    <li>Unstructured data (raw images/audio without preprocessing)</li>
+                    <li>Real-time inference on edge devices (slower than simple MLPs)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>References</h2>
+            <ul>
+                <li>Attention Is All You Need (Vaswani et al., 2017)</li>
+                <li>On the Relationship between Self-Attention and Convolutional Layers</li>
+                <li>Interpretable Neural Reasoning for Multi-Relation Question Answering</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Linea Programming Language</p>
+        <p><a href="https://github.com/gauthamnair2005/Linea">GitHub</a> | <a href="/">Home</a></p>
+    </footer>
+</body>
+</html>

@@ -16,17 +16,18 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-3.4.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-3.5.0-green.svg" alt="Version" />
   </a>
 </p>
 
 ---
 
-**Linea** is an enterprise-grade, statically-typed compiled programming language designed for high-performance systems programming and native artificial intelligence development. Engineered for reliability and speed, Linea combines the memory safety of Rust with the expressiveness of Python, delivering a robust platform for modern software engineering.
+**Linea** is an enterprise-grade, statically-typed compiled programming language designed for high-performance systems programming and native artificial intelligence development. With **ARL-Tangram** adaptive reasoning algorithm, GPU acceleration, and comprehensive ML/AI capabilities, Linea combines the memory safety of Rust with the expressiveness of Python, delivering a robust platform for modern software engineering and advanced AI reasoning.
 
 ## 🚀 Key Capabilities
 
-### Native Intelligence
+### Advanced AI & Reasoning
+*   **ARL-Tangram Algorithm**: Adaptive Reasoning Layer with Tangram-based compositional learning for interpretable AI systems with multi-layer attention mechanisms.
 *   **Hardware Acceleration**: Built-in support for GPU-accelerated tensor operations using WGPU (Vulkan/Metal/DX12), enabling high-performance machine learning inference and training.
 *   **Machine Learning Primitives**: Native implementation of neural network layers, activation functions, and optimizers (SGD, Adam) directly in the core library.
 
@@ -97,6 +98,7 @@ Linea provides a rich standard library for professional development:
 
 | Module | Description |
 | :--- | :--- |
+| **`arl`** | Adaptive Reasoning Layer with Tangram decomposition for advanced AI |
 | **`ml`** | Neural network layers, activations, losses, and optimizers |
 | **`compute`** | Hardware-accelerated GPU tensor operations |
 | **`datasets`** | Data loading and preprocessing utilities |

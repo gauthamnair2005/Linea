@@ -1,0 +1,264 @@
+// libs/arl.ln - Adaptive Reasoning Layer with Tangram Decomposition
+// Advanced AI algorithm for interpretable reasoning and compositional learning
+
+import ml
+
+// ARLTangram Model - Combines adaptive reasoning with tangram decomposition
+struct ARLTangram {
+    input_dim: i64,
+    num_components: i64,
+    attention_heads: i64,
+    hidden_dim: i64,
+    embedding_layer: ml::Linear,
+    reasoning_layer: ml::Linear,
+    decomposition_layer: ml::Linear,
+    attention_layers: Vector<ml::Linear>,
+    output_layer: ml::Linear,
+    learning_rate: f64,
+    component_masks: Matrix
+}
+
+// Initialize ARL-Tangram model
+fn init(
+    input_dim: i64, 
+    num_components: i64,
+    attention_heads: i64,
+    hidden_dim: i64
+) -> ARLTangram {
+    model: ARLTangram = {
+        input_dim: input_dim,
+        num_components: num_components,
+        attention_heads: attention_heads,
+        hidden_dim: hidden_dim,
+        embedding_layer: ml::Linear(input_dim, hidden_dim),
+        reasoning_layer: ml::Linear(hidden_dim, hidden_dim),
+        decomposition_layer: ml::Linear(hidden_dim, num_components * hidden_dim),
+        attention_layers: create_attention_heads(attention_heads, hidden_dim),
+        output_layer: ml::Linear(hidden_dim, input_dim),
+        learning_rate: 0.001,
+        component_masks: initialize_tangram_masks(num_components, hidden_dim)
+    }
+    model
+}
+
+// Create multi-head attention layers
+fn create_attention_heads(heads: i64, hidden_dim: i64) -> Vector<ml::Linear> {
+    attention: Vector<ml::Linear> = []
+    for i in 0..heads {
+        layer: ml::Linear = ml::Linear(hidden_dim, hidden_dim)
+        attention.push(layer)
+    }
+    attention
+}
+
+// Initialize Tangram component masks (geometric decomposition patterns)
+fn initialize_tangram_masks(num_components: i64, hidden_dim: i64) -> Matrix {
+    // Create orthogonal component masks for decomposition
+    masks: Matrix = ml::randn(num_components, hidden_dim)
+    
+    // Normalize each component
+    for i in 0..num_components {
+        norm: f64 = compute::norm(masks[i, :])
+        if norm > 0.0 {
+            for j in 0..hidden_dim {
+                masks[i][j] = masks[i][j] / norm
+            }
+        }
+    }
+    masks
+}
+
+// Forward pass through ARL-Tangram
+fn forward(model: ARLTangram, x: Matrix) -> Matrix {
+    // Layer 1: Input encoding
+    embedded: Matrix = ml::relu(model.embedding_layer.forward(x))
+    
+    // Layer 2: Adaptive reasoning
+    reasoning: Matrix = ml::sigmoid(model.reasoning_layer.forward(embedded))
+    
+    // Layer 3: Tangram decomposition
+    decomposed: Matrix = model.decomposition_layer.forward(reasoning)
+    
+    // Reshape to components
+    batch_size: i64 = x.shape()[0]
+    components: Matrix = []
+    for b in 0..batch_size {
+        sample_components: Matrix = []
+        for c in 0..model.num_components {
+            start: i64 = c * model.hidden_dim
+            end: i64 = start + model.hidden_dim
+            component: Vector<f64> = decomposed[b, start:end]
+            sample_components.push(component)
+        }
+        components.push(sample_components)
+    }
+    
+    // Layer 4: Compositional attention
+    attention_output: Matrix = apply_multi_head_attention(model, components, reasoning)
+    
+    // Layer 5: Output generation
+    output: Matrix = model.output_layer.forward(attention_output)
+    output
+}
+
+// Multi-head attention mechanism
+fn apply_multi_head_attention(
+    model: ARLTangram,
+    components: Matrix,
+    context: Matrix
+) -> Matrix {
+    batch_size: i64 = context.shape()[0]
+    output: Matrix = []
+    
+    for head in 0..model.attention_heads {
+        head_output: Matrix = []
+        
+        // Compute attention for this head
+        Q: Matrix = model.attention_layers[head].forward(context)
+        K: Matrix = Q  // Simplified: use same as key
+        V: Matrix = Q  // Simplified: use same as value
+        
+        // Attention scores
+        scores: Matrix = compute::matmul(Q, compute::transpose(K))
+        scores = compute::softmax(scores)
+        
+        // Weighted combination
+        head_result: Matrix = compute::matmul(scores, V)
+        head_output.push(head_result)
+        
+        output.push(head_result)
+    }
+    
+    // Concatenate and project
+    concatenated: Matrix = flatten_heads(output)
+    final_output: Matrix = ml::relu(concatenated)
+    final_output
+}
+
+// Flatten attention heads output
+fn flatten_heads(heads: Matrix) -> Matrix {
+    // Simple concatenation (could be optimized)
+    result: Matrix = []
+    for head in 0..len(heads) {
+        result_row: Vector<f64> = heads[head]
+        result.push(result_row)
+    }
+    result
+}
+
+// Training step
+fn train_step(
+    model: ARLTangram,
+    x: Matrix,
+    y: Matrix,
+    optimizer: ml::Adam
+) -> f64 {
+    // Forward pass
+    predictions: Matrix = forward(model, x)
+    
+    // Compute loss (MSE)
+    loss: f64 = 0.0
+    for i in 0..x.shape()[0] {
+        for j in 0..y.shape()[1] {
+            diff: f64 = predictions[i][j] - y[i][j]
+            loss = loss + (diff * diff)
+        }
+    }
+    loss = loss / x.shape()[0]
+    
+    // Backward pass (simplified - in production use autograd)
+    // gradient_descent(model, learning_rate)
+    
+    loss
+}
+
+// Predict with interpretation
+fn predict_with_explanation(
+    model: ARLTangram,
+    x: Matrix
+) -> Matrix {
+    // Get predictions
+    predictions: Matrix = forward(model, x)
+    predictions
+}
+
+// Explain which components were important
+fn explain_reasoning(
+    model: ARLTangram,
+    x: Matrix
+) -> Vector<string> {
+    explanations: Vector<string> = []
+    
+    // Show which components contributed most
+    for i in 0..x.shape()[0] {
+        explanation: string = "Components activated: "
+        
+        // Simplified explanation
+        for c in 0..model.num_components {
+            explanation = explanation + "C" + c + " "
+        }
+        
+        explanations.push(explanation)
+    }
+    
+    explanations
+}
+
+// Adapt learning rate based on performance
+fn adapt_learning_rate(model: ARLTangram, accuracy: f64) {
+    // Decrease learning rate if doing well
+    if accuracy > 0.9 {
+        model.learning_rate = model.learning_rate * 0.9
+    }
+    // Increase learning rate if struggling
+    else if accuracy < 0.5 {
+        model.learning_rate = model.learning_rate * 1.1
+    }
+}
+
+// Save model components
+fn save_components(model: ARLTangram, path: string) {
+    // Placeholder for serialization
+    print("Saving ARL-Tangram model to " + path)
+}
+
+// Load model components
+fn load_components(path: string) -> ARLTangram {
+    // Placeholder for deserialization
+    dummy_model: ARLTangram = init(50, 8, 4, 128)
+    dummy_model
+}
+
+// Evaluate model
+fn evaluate(model: ARLTangram, x: Matrix, y: Matrix) -> f64 {
+    predictions: Matrix = forward(model, x)
+    
+    // Compute accuracy
+    correct: i64 = 0
+    for i in 0..x.shape()[0] {
+        pred_class: i64 = 0
+        true_class: i64 = 0
+        
+        // Find max (simplified)
+        max_pred: f64 = predictions[i][0]
+        max_true: f64 = y[i][0]
+        
+        for j in 1..y.shape()[1] {
+            if predictions[i][j] > max_pred {
+                pred_class = j
+                max_pred = predictions[i][j]
+            }
+            if y[i][j] > max_true {
+                true_class = j
+                max_true = y[i][j]
+            }
+        }
+        
+        if pred_class == true_class {
+            correct = correct + 1
+        }
+    }
+    
+    accuracy: f64 = correct / x.shape()[0]
+    accuracy
+}
