@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>ML Fundamentals - Linea Wiki</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --code-bg: #0f1525;
+        }
+        body {
+            font-family: 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, #1a1a3e 50%, var(--bg-dark) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+        .breadcrumb { display: flex; gap: 0.5rem; font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted); }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        h1 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-muted); }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 2rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 1rem; }
+        h3 { font-size: 1.2rem; color: var(--secondary); margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        p { margin-bottom: 1rem; }
+        code { background: var(--code-bg); padding: 0.2rem 0.4rem; border-radius: 3px; color: var(--primary); }
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; overflow-x: auto; margin: 1.5rem 0; }
+        pre code { padding: 0; background: none; color: var(--text-light); }
+        .keyword { color: var(--secondary); font-weight: bold; }
+        .number { color: #ffd60a; }
+        .comment { color: var(--text-muted); }
+        .example-box { background: rgba(131, 56, 236, 0.1); border-left: 4px solid var(--accent); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+        .example-box h4 { color: var(--accent); margin-bottom: 0.5rem; }
+        .note { background: rgba(0, 212, 255, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 4px; margin: 1.5rem 0; }
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .nav-btn { padding: 0.75rem 1.5rem; background: rgba(131, 56, 236, 0.2); border: 1px solid var(--accent); color: var(--accent); text-decoration: none; border-radius: 6px; }
+        .nav-btn.primary { background: var(--accent); color: white; }
+        ul { margin-left: 2rem; margin-bottom: 1rem; }
+    
+        .global-linea-logo {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2000;
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: rgba(5, 8, 19, 0.75);
+            border: 1px solid var(--border, #1a2f5f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .global-linea-logo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 212, 255, 0.25);
+        }
+
+        .global-linea-logo img {
+            width: 36px;
+            height: 36px;
+            display: block;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --dark: #0a0e27;
+            --card: #111a33;
+            --accent-dark: #4ea8ff;
+            --primary-color: #00d4ff;
+            --accent-color: #8338ec;
+            --success-color: #4ea8ff;
+            --bg-card: #111a33;
+        }
+
+    
+        /* universal-gradient */
+        body {
+            background: radial-gradient(circle at 18% 12%, rgba(255, 0, 110, 0.16) 0%, transparent 34%),
+                        radial-gradient(circle at 82% 14%, rgba(0, 194, 168, 0.14) 0%, transparent 34%),
+                        radial-gradient(circle at 52% 88%, rgba(131, 56, 236, 0.22) 0%, transparent 36%),
+                        linear-gradient(135deg, #070913 0%, #140f2e 50%, #121a28 100%) !important;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(15, 11, 33, 0.94) 0%, rgba(29, 18, 61, 0.92) 55%, rgba(16, 35, 47, 0.92) 100%) !important;
+        }
+
+    </style>
+</head>
+<body>
+    <a class="global-linea-logo" href="../index.html" aria-label="Linea Home"><img src="../linea-logo.svg" alt="Linea Logo"></a>
+    <div class="container">
+        <header>
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / ML Fundamentals
+            </div>
+            <h1>Machine Learning Fundamentals</h1>
+            <p class="subtitle">Native ML support with built-in GPU acceleration</p>
+        </header>
+        
+        <main>
+            <h2>Overview</h2>
+            
+            <p>Linea is designed from the ground up for machine learning. It provides native support for tensors, matrices, neural networks, and GPU acceleration—no external ML frameworks needed.</p>
+            
+            <h2>Tensors and Matrices</h2>
+            
+            <h3>Creating Matrices</h3>
+            <pre><code><span class="keyword">var</span> mat <span class="keyword">@</span> Matrix <span class="keyword">=</span> [
+    [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>],
+    [<span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>],
+    [<span class="number">7.0</span>, <span class="number">8.0</span>, <span class="number">9.0</span>]
+]</code></pre>
+            
+            <h3>Matrix Operations</h3>
+            <pre><code><span class="keyword">var</span> a <span class="keyword">@</span> Matrix <span class="keyword">=</span> [[<span class="number">1.0</span>, <span class="number">2.0</span>], [<span class="number">3.0</span>, <span class="number">4.0</span>]]
+<span class="keyword">var</span> b <span class="keyword">@</span> Matrix <span class="keyword">=</span> [[<span class="number">5.0</span>, <span class="number">6.0</span>], [<span class="number">7.0</span>, <span class="number">8.0</span>]]
+
+<span class="comment">// Matrix multiplication</span>
+<span class="keyword">var</span> result <span class="keyword">@</span> Matrix <span class="keyword">=</span> <span class="function">matmul</span>(a, b)</code></pre>
+            
+            <h3>Tensor Operations</h3>
+            <pre><code><span class="keyword">var</span> tensor <span class="keyword">@</span> Tensor <span class="keyword">=</span> [
+    [[<span class="number">1.0</span>, <span class="number">2.0</span>], [<span class="number">3.0</span>, <span class="number">4.0</span>]],
+    [[<span class="number">5.0</span>, <span class="number">6.0</span>], [<span class="number">7.0</span>, <span class="number">8.0</span>]]
+]
+
+<span class="comment">// Broadcasting and element-wise operations</span>
+<span class="keyword">var</span> scaled <span class="keyword">@</span> Tensor <span class="keyword">=</span> tensor * <span class="number">2.0</span></code></pre>
+            
+            <h2>Common ML Operations</h2>
+            
+            <h3>Vector Dot Product</h3>
+            <pre><code><span class="keyword">var</span> v1 <span class="keyword">@</span> [float] <span class="keyword">=</span> [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]
+<span class="keyword">var</span> v2 <span class="keyword">@</span> [float] <span class="keyword">=</span> [<span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>]
+<span class="keyword">var</span> dot <span class="keyword">@</span> float <span class="keyword">=</span> <span class="function">dot_product</span>(v1, v2)  <span class="comment">// 32.0</span></code></pre>
+            
+            <h3>Activation Functions</h3>
+            <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> float <span class="keyword">=</span> <span class="number">2.5</span>
+
+<span class="keyword">var</span> relu_out <span class="keyword">@</span> float <span class="keyword">=</span> <span class="function">relu</span>(x)                 <span class="comment">// ReLU activation</span>
+<span class="keyword">var</span> sigmoid_out <span class="keyword">@</span> float <span class="keyword">=</span> <span class="function">sigmoid</span>(x)         <span class="comment">// Sigmoid</span>
+<span class="keyword">var</span> tanh_out <span class="keyword">@</span> float <span class="keyword">=</span> <span class="function">tanh</span>(x)             <span class="comment">// Tanh</span></code></pre>
+            
+            <h3>Softmax</h3>
+            <pre><code><span class="keyword">var</span> logits <span class="keyword">@</span> [float] <span class="keyword">=</span> [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]
+<span class="keyword">var</span> probs <span class="keyword">@</span> [float] <span class="keyword">=</span> <span class="function">softmax</span>(logits)</code></pre>
+            
+            <h2>Loss Functions</h2>
+            
+            <h3>Mean Squared Error (MSE)</h3>
+            <pre><code><span class="keyword">var</span> predicted <span class="keyword">@</span> [float] <span class="keyword">=</span> [<span class="number">1.2</span>, <span class="number">2.1</span>, <span class="number">2.9</span>]
+<span class="keyword">var</span> actual <span class="keyword">@</span> [float] <span class="keyword">=</span> [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]
+<span class="keyword">var</span> loss <span class="keyword">@</span> float <span class="keyword">=</span> <span class="function">mse</span>(predicted, actual)</code></pre>
+            
+            <h3>Cross Entropy</h3>
+            <pre><code><span class="keyword">var</span> predictions <span class="keyword">@</span> [float] <span class="keyword">=</span> [<span class="number">0.1</span>, <span class="number">0.7</span>, <span class="number">0.2</span>]
+<span class="keyword">var</span> targets <span class="keyword">@</span> [float] <span class="keyword"]=</span> [<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>]
+<span class="keyword">var</span> loss <span class="keyword">@</span> float <span class="keyword">=</span> <span class="function">cross_entropy</span>(predictions, targets)</code></pre>
+            
+            <h2>GPU Acceleration</h2>
+            
+            <p>Mark functions for GPU execution with the <code>@gpu</code> decorator:</p>
+            
+            <pre><code>@gpu
+<span class="keyword">fn</span> matrix_multiply(a <span class="keyword">@</span> Matrix, b <span class="keyword">@</span> Matrix) -> Matrix {
+    <span class="keyword">return</span> <span class="function">matmul</span>(a, b)
+}</code></pre>
+            
+            <div class="note">
+                <strong>💡 Tip:</strong> Use @gpu for large matrix operations and neural network layers. Linea automatically handles GPU/CPU selection based on device hierarchy (dGPU > iGPU > CPU).
+            </div>
+            
+            <h2>Common Patterns</h2>
+            
+            <div class="example-box">
+                <h4>Normalize Data</h4>
+                <pre><code><span class="keyword">var</span> data <span class="keyword">@</span> [float] <span class="keyword">=</span> [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>]
+<span class="keyword">var</span> mean <span class="keyword">@</span> float <span class="keyword">=</span> <span class="function">mean</span>(data)
+<span class="keyword">var</span> std <span class="keyword">@</span> float <span class="keyword">=</span> <span class="function">std</span>(data)
+
+<span class="keyword">var</span> normalized <span class="keyword">@</span> [float] <span class="keyword">=</span> (data - mean) / std</code></pre>
+            </div>
+            
+            <h2>Best Practices</h2>
+            
+            <ul>
+                <li><strong>Use matrices for batch operations:</strong> Faster than element-wise loops</li>
+                <li><strong>Mark GPU functions:</strong> Use @gpu for acceleration</li>
+                <li><strong>Normalize inputs:</strong> Better convergence during training</li>
+                <li><strong>Use appropriate dtypes:</strong> float32 for most ML, float64 for precision</li>
+                <li><strong>Profile your code:</strong> Find bottlenecks before optimizing</li>
+            </ul>
+            
+            <div class="nav-buttons">
+                <a href="wiki-index.html" class="nav-btn">← Back to Wiki</a>
+                <a href="wiki-ml-layers.html" class="nav-btn primary">Next: Neural Network Layers →</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

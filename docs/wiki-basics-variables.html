@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Variables and Type Annotations - Linea Wiki</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --code-bg: #0f1525;
+        }
+        
+        body {
+            font-family: 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, #1a1a3e 50%, var(--bg-dark) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: var(--text-muted);
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+        
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            padding: 0;
+            background: none;
+            color: var(--text-light);
+        }
+        
+        .keyword { color: var(--secondary); font-weight: bold; }
+        .string { color: #a8ff60; }
+        .number { color: #ffd60a; }
+        .comment { color: var(--text-muted); }
+        .function { color: var(--primary); }
+        .type { color: var(--accent); }
+        
+        .example-box {
+            background: rgba(131, 56, 236, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .example-box h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(26, 47, 95, 0.2);
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background: rgba(131, 56, 236, 0.2);
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+        
+        .note {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+        
+        .warning {
+            background: rgba(255, 0, 110, 0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(131, 56, 236, 0.2);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(131, 56, 236, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .nav-btn.primary:hover {
+            background: var(--primary);
+        }
+        
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+    
+        .global-linea-logo {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2000;
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: rgba(5, 8, 19, 0.75);
+            border: 1px solid var(--border, #1a2f5f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .global-linea-logo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 212, 255, 0.25);
+        }
+
+        .global-linea-logo img {
+            width: 36px;
+            height: 36px;
+            display: block;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --dark: #0a0e27;
+            --card: #111a33;
+            --accent-dark: #4ea8ff;
+            --primary-color: #00d4ff;
+            --accent-color: #8338ec;
+            --success-color: #4ea8ff;
+            --bg-card: #111a33;
+        }
+
+    
+        /* universal-gradient */
+        body {
+            background: radial-gradient(circle at 18% 12%, rgba(255, 0, 110, 0.16) 0%, transparent 34%),
+                        radial-gradient(circle at 82% 14%, rgba(0, 194, 168, 0.14) 0%, transparent 34%),
+                        radial-gradient(circle at 52% 88%, rgba(131, 56, 236, 0.22) 0%, transparent 36%),
+                        linear-gradient(135deg, #070913 0%, #140f2e 50%, #121a28 100%) !important;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(15, 11, 33, 0.94) 0%, rgba(29, 18, 61, 0.92) 55%, rgba(16, 35, 47, 0.92) 100%) !important;
+        }
+
+    </style>
+</head>
+<body>
+    <a class="global-linea-logo" href="../index.html" aria-label="Linea Home"><img src="../linea-logo.svg" alt="Linea Logo"></a>
+    <div class="container">
+        <header>
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / Variables & Types
+            </div>
+            <h1>Variables and Type Annotations</h1>
+            <p class="subtitle">Master Linea's unique @ type annotation syntax</p>
+        </header>
+        
+        <main>
+            <h2>Overview</h2>
+            <p>Linea uses a clean, modern syntax for variable declarations with the <code>@</code> operator for type annotations. This design makes code more readable and reduces cognitive overhead.</p>
+            
+            <h2>Basic Syntax</h2>
+            
+            <h3>Simple Variable Declaration</h3>
+            <p>The fundamental pattern for variable declaration in Linea:</p>
+            
+            <pre><code><span class="keyword">var</span> name <span class="keyword">@</span> type <span class="keyword">=</span> value</code></pre>
+            
+            <div class="example-box">
+                <h4>Example: Basic Variables</h4>
+                <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">42</span>
+<span class="keyword">var</span> name <span class="keyword">@</span> <span class="type">str</span> <span class="keyword">=</span> <span class="string">"Alice"</span>
+<span class="keyword">var</span> pi <span class="keyword">@</span> <span class="type">float</span> <span class="keyword">=</span> <span class="number">3.14159</span>
+<span class="keyword">var</span> active <span class="keyword">@</span> <span class="type">bool</span> <span class="keyword">=</span> <span class="keyword">true</span></code></pre>
+            </div>
+            
+            <h2>Primitive Types</h2>
+            
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                            <th>Range/Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>int</code></td>
+                            <td>Integer (64-bit signed)</td>
+                            <td><code>42</code>, <code>-100</code></td>
+                            <td>-2^63 to 2^63-1</td>
+                        </tr>
+                        <tr>
+                            <td><code>i32</code></td>
+                            <td>32-bit integer</td>
+                            <td><code>100</code></td>
+                            <td>-2^31 to 2^31-1</td>
+                        </tr>
+                        <tr>
+                            <td><code>i64</code></td>
+                            <td>64-bit integer (explicit)</td>
+                            <td><code>999999</code></td>
+                            <td>-2^63 to 2^63-1</td>
+                        </tr>
+                        <tr>
+                            <td><code>float</code></td>
+                            <td>Floating point (64-bit)</td>
+                            <td><code>3.14</code>, <code>1.5e10</code></td>
+                            <td>IEEE 754 double</td>
+                        </tr>
+                        <tr>
+                            <td><code>f32</code></td>
+                            <td>32-bit float</td>
+                            <td><code>2.5</code></td>
+                            <td>IEEE 754 single</td>
+                        </tr>
+                        <tr>
+                            <td><code>str</code>, <code>string</code></td>
+                            <td>Unicode text string</td>
+                            <td><code>"Hello"</code></td>
+                            <td>Variable length</td>
+                        </tr>
+                        <tr>
+                            <td><code>bool</code></td>
+                            <td>Boolean true/false</td>
+                            <td><code>true</code>, <code>false</code></td>
+                            <td>1 bit</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h2>Composite Types</h2>
+            
+            <h3>Arrays</h3>
+            <p>Arrays are fixed-size, homogeneous collections:</p>
+            
+            <pre><code><span class="keyword">var</span> nums <span class="keyword">@</span> [<span class="type">int</span>] <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+<span class="keyword">var</span> matrix <span class="keyword">@</span> [<span class="type">float</span>] <span class="keyword">=</span> [[<span class="number">1.0</span>, <span class="number">2.0</span>], [<span class="number">3.0</span>, <span class="number">4.0</span>]]
+<span class="keyword">var</span> names <span class="keyword">@</span> [<span class="type">str</span>] <span class="keyword">=</span> [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>]</code></pre>
+            
+            <h3>Vectors (Dynamic Arrays)</h3>
+            <p>Vectors are dynamic arrays that grow as needed:</p>
+            
+            <pre><code><span class="keyword">var</span> dynamic <span class="keyword">@</span> Vector&lt;<span class="type">int</span>&gt; <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</code></pre>
+            
+            <h3>Matrices</h3>
+            <p>Matrices are 2D arrays, ideal for ML operations:</p>
+            
+            <pre><code><span class="keyword">var</span> mat <span class="keyword">@</span> Matrix <span class="keyword">=</span> [[<span class="number">1.0</span>, <span class="number">2.0</span>], [<span class="number">3.0</span>, <span class="number">4.0</span>]]</code></pre>
+            
+            <h2>Type Inference</h2>
+            
+            <p>Linea can infer types from values, but explicit type annotations are recommended for clarity:</p>
+            
+            <div class="example-box">
+                <h4>Type Inference (Not Recommended)</h4>
+                <pre><code><span class="keyword">var</span> x <span class="keyword">=</span> <span class="number">42</span>          <span class="comment">// Inferred as int</span>
+<span class="keyword">var</span> name <span class="keyword">=</span> <span class="string">"Alice"</span>  <span class="comment">// Inferred as str</span></code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>💡 Tip:</strong> Always use explicit type annotations for better code readability and to catch type errors early.
+            </div>
+            
+            <h2>Pointer Types</h2>
+            
+            <p>Linea v4.1 introduces simplified pointer syntax with the <code>ptr</code> datatype:</p>
+            
+            <h3>Ptr Datatype (v4.1+)</h3>
+            <p>The <code>ptr</code> type provides a clean way to work with pointers:</p>
+            
+            <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">42</span>
+<span class="keyword">var</span> ptr_x <span class="keyword">@</span> <span class="type">ptr</span> <span class="keyword">=</span> x  <span class="comment">// Automatically captures address</span></code></pre>
+            
+            <h3>Traditional Pointer Syntax</h3>
+            <p>For advanced use cases, use address-of (&) and dereference (*) operators:</p>
+            
+            <pre><code><span class="keyword">var</span> x <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">99</span>
+<span class="keyword">var</span> ptr <span class="keyword">@</span> &<span class="type">int</span> <span class="keyword">=</span> &x         <span class="comment">// Address-of</span>
+<span class="keyword">var</span> value <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> *ptr       <span class="comment">// Dereference</span></code></pre>
+            
+            <h2>Variable Updates</h2>
+            
+            <p>Update a variable's value with the assignment operator:</p>
+            
+            <pre><code><span class="keyword">var</span> counter <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">0</span>
+counter <span class="keyword">=</span> <span class="number">10</span>        <span class="comment">// Update value</span>
+counter <span class="keyword">=</span> counter <span class="keyword">+</span> <span class="number">1</span>  <span class="comment">// Increment</span></code></pre>
+            
+            <h2>Constants</h2>
+            
+            <p>Define constants using the <code>const</code> keyword:</p>
+            
+            <pre><code><span class="keyword">const</span> PI <span class="keyword">@</span> <span class="type">float</span> <span class="keyword">=</span> <span class="number">3.14159</span>
+<span class="keyword">const</span> MAX_SIZE <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">1000</span></code></pre>
+            
+            <div class="warning">
+                <strong>⚠️ Note:</strong> Constants cannot be reassigned. Attempting to modify a constant will result in a compile error.
+            </div>
+            
+            <h2>Scope and Lifetime</h2>
+            
+            <p>Variables are block-scoped and follow Linea's automatic memory management:</p>
+            
+            <pre><code><span class="keyword">var</span> outer <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">10</span>
+
+{
+    <span class="keyword">var</span> inner <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">20</span>
+    display inner  <span class="comment">// Works: 20</span>
+}
+
+<span class="comment">// inner is no longer in scope here</span></code></pre>
+            
+            <h2>Type Conversion</h2>
+            
+            <p>Convert between compatible types using constructors:</p>
+            
+            <pre><code><span class="keyword">var</span> num_int <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">42</span>
+<span class="keyword">var</span> num_float <span class="keyword">@</span> <span class="type">float</span> <span class="keyword">=</span> <span class="function">float</span>(num_int)  <span class="comment">// Convert to float</span>
+
+<span class="keyword">var</span> text <span class="keyword">@</span> <span class="type">str</span> <span class="keyword">=</span> <span class="function">str</span>(<span class="number">100</span>)  <span class="comment">// Convert int to string</span></code></pre>
+            
+            <h2>Common Patterns</h2>
+            
+            <div class="example-box">
+                <h4>ML Training Variable Setup</h4>
+                <pre><code><span class="keyword">var</span> learning_rate <span class="keyword">@</span> <span class="type">float</span> <span class="keyword">=</span> <span class="number">0.001</span>
+<span class="keyword">var</span> epochs <span class="keyword">@</span> <span class="type">int</span> <span class="keyword">=</span> <span class="number">100</span>
+<span class="keyword">var</span> weights <span class="keyword">@</span> Matrix <span class="keyword">=</span> [[<span class="number">0.1</span>, <span class="number">0.2</span>], [<span class="number">0.3</span>, <span class="number">0.4</span>]]
+<span class="keyword">var</span> trained <span class="keyword">@</span> <span class="type">bool</span> <span class="keyword">=</span> <span class="keyword">false</span></code></pre>
+            </div>
+            
+            <h2>Best Practices</h2>
+            
+            <ul>
+                <li><strong>Always use explicit types:</strong> Makes code self-documenting</li>
+                <li><strong>Use meaningful names:</strong> <code>user_age</code> not <code>ua</code></li>
+                <li><strong>Group related variables:</strong> Define together for clarity</li>
+                <li><strong>Use constants for fixed values:</strong> Reduces bugs and improves maintainability</li>
+                <li><strong>Prefer specific types:</strong> Use <code>int</code> over <code>i64</code> unless you need exact size</li>
+            </ul>
+            
+            <div class="nav-buttons">
+                <a href="wiki-index.html" class="nav-btn">← Back to Wiki</a>
+                <a href="wiki-basics-types.html" class="nav-btn primary">Next: Data Types →</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

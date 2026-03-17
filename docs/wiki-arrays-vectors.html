@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Arrays and Vectors - Linea Wiki</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --code-bg: #0f1525;
+        }
+        body {
+            font-family: 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, #1a1a3e 50%, var(--bg-dark) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+        .breadcrumb { display: flex; gap: 0.5rem; font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted); }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        h1 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-muted); }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 2rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 1rem; }
+        h3 { font-size: 1.2rem; color: var(--secondary); margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        p { margin-bottom: 1rem; }
+        code { background: var(--code-bg); padding: 0.2rem 0.4rem; border-radius: 3px; color: var(--primary); }
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; overflow-x: auto; margin: 1.5rem 0; }
+        pre code { padding: 0; background: none; color: var(--text-light); }
+        .keyword { color: var(--secondary); font-weight: bold; }
+        .number { color: #ffd60a; }
+        .comment { color: var(--text-muted); }
+        .example-box { background: rgba(131, 56, 236, 0.1); border-left: 4px solid var(--accent); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+        .example-box h4 { color: var(--accent); margin-bottom: 0.5rem; }
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .nav-btn { padding: 0.75rem 1.5rem; background: rgba(131, 56, 236, 0.2); border: 1px solid var(--accent); color: var(--accent); text-decoration: none; border-radius: 6px; }
+        .nav-btn.primary { background: var(--accent); color: white; }
+        ul { margin-left: 2rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.5rem; }
+    
+        .global-linea-logo {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2000;
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: rgba(5, 8, 19, 0.75);
+            border: 1px solid var(--border, #1a2f5f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .global-linea-logo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 212, 255, 0.25);
+        }
+
+        .global-linea-logo img {
+            width: 36px;
+            height: 36px;
+            display: block;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --dark: #0a0e27;
+            --card: #111a33;
+            --accent-dark: #4ea8ff;
+            --primary-color: #00d4ff;
+            --accent-color: #8338ec;
+            --success-color: #4ea8ff;
+            --bg-card: #111a33;
+        }
+
+    
+        /* universal-gradient */
+        body {
+            background: radial-gradient(circle at 18% 12%, rgba(255, 0, 110, 0.16) 0%, transparent 34%),
+                        radial-gradient(circle at 82% 14%, rgba(0, 194, 168, 0.14) 0%, transparent 34%),
+                        radial-gradient(circle at 52% 88%, rgba(131, 56, 236, 0.22) 0%, transparent 36%),
+                        linear-gradient(135deg, #070913 0%, #140f2e 50%, #121a28 100%) !important;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(15, 11, 33, 0.94) 0%, rgba(29, 18, 61, 0.92) 55%, rgba(16, 35, 47, 0.92) 100%) !important;
+        }
+
+    </style>
+</head>
+<body>
+    <a class="global-linea-logo" href="../index.html" aria-label="Linea Home"><img src="../linea-logo.svg" alt="Linea Logo"></a>
+    <div class="container">
+        <header>
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / Arrays & Vectors
+            </div>
+            <h1>Arrays and Vectors</h1>
+            <p class="subtitle">Work with fixed and dynamic collections in Linea</p>
+        </header>
+        
+        <main>
+            <h2>Overview</h2>
+            
+            <p>Linea supports two types of collections: <strong>Arrays</strong> (fixed-size) and <strong>Vectors</strong> (dynamic). Both are fundamental to writing Linea programs.</p>
+            
+            <h2>Arrays (Fixed-Size)</h2>
+            
+            <h3>Declaration</h3>
+            <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+<span class="keyword">var</span> names <span class="keyword">@</span> [str] <span class="keyword">=</span> [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>]</code></pre>
+            
+            <h3>Indexing</h3>
+            <p>Access elements using zero-based indices:</p>
+            <pre><code><span class="keyword">var</span> first <span class="keyword">@</span> int <span class="keyword">=</span> arr[<span class="number">0</span>]    <span class="comment">// 1</span>
+<span class="keyword">var</span> second <span class="keyword">@</span> int <span class="keyword">=</span> arr[<span class="number">1</span>]   <span class="comment">// 2</span>
+<span class="keyword">var</span> last <span class="keyword">@</span> int <span class="keyword">=</span> arr[<span class="number">4</span>]     <span class="comment">// 5</span></code></pre>
+            
+            <h3>Modification</h3>
+            <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
+arr[<span class="number">0</span>] <span class="keyword">=</span> <span class="number">10</span>  <span class="comment">// Update first element</span>
+arr[<span class="number">2</span>] <span class="keyword">=</span> <span class="number">30</span>  <span class="comment">// Update last element</span></code></pre>
+            
+            <h3>Length</h3>
+            <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>]
+<span class="keyword">var</span> size <span class="keyword">@</span> int <span class="keyword">=</span> <span class="function">len</span>(arr)  <span class="comment">// 3</span></code></pre>
+            
+            <h2>Vectors (Dynamic Arrays)</h2>
+            
+            <h3>Declaration</h3>
+            <pre><code><span class="keyword">var</span> vec <span class="keyword">@</span> Vector&lt;int&gt; <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</code></pre>
+            
+            <h3>Push Operations</h3>
+            <pre><code><span class="keyword">var</span> vec <span class="keyword">@</span> Vector&lt;int&gt; <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>]
+vec.<span class="function">push</span>(<span class="number">3</span>)  <span class="comment">// Add element</span>
+vec.<span class="function">push</span>(<span class="number">4</span>)</code></pre>
+            
+            <h3>Pop Operations</h3>
+            <pre><code><span class="keyword">var</span> vec <span class="keyword">@</span> Vector&lt;int&gt; <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
+<span class="keyword">var</span> last <span class="keyword">@</span> int <span class="keyword">=</span> vec.<span class="function">pop</span>()  <span class="comment">// Remove and return last element</span></code></pre>
+            
+            <h2>Multi-Dimensional Arrays</h2>
+            
+            <h3>2D Arrays (Matrices)</h3>
+            <pre><code><span class="keyword">var</span> matrix <span class="keyword">@</span> [[int]] <span class="keyword">=</span> [
+    [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],
+    [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],
+    [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]
+]
+
+<span class="keyword">var</span> element <span class="keyword">@</span> int <span class="keyword">=</span> matrix[<span class="number">1</span>][<span class="number">2</span>]  <span class="comment">// 6</span></code></pre>
+            
+            <h3>3D Arrays (Tensors)</h3>
+            <pre><code><span class="keyword">var</span> tensor <span class="keyword">@</span> [[[int]]] <span class="keyword">=</span> [
+    [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]],
+    [[<span class="number">5</span>, <span class="number">6</span>], [<span class="number">7</span>, <span class="number">8</span>]]
+]
+
+<span class="keyword">var</span> val <span class="keyword">@</span> int <span class="keyword">=</span> tensor[<span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>]  <span class="comment">// 6</span></code></pre>
+            
+            <h2>Iteration</h2>
+            
+            <h3>For Loop with Range</h3>
+            <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>]
+<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~<span class="number">2</span> {
+    display arr[i]
+}</code></pre>
+            
+            <h3>Matrix Iteration</h3>
+            <pre><code><span class="keyword">var</span> matrix <span class="keyword">@</span> [[int]] <span class="keyword">=</span> [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]]
+<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~<span class="number">1</span> {
+    <span class="keyword">for</span> j <span class="keyword">from</span> <span class="number">0</span>~<span class="number">1</span> {
+        display matrix[i][j]
+    }
+}</code></pre>
+            
+            <h2>Common Operations</h2>
+            
+            <div class="example-box">
+                <h4>Sum of Array Elements</h4>
+                <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+<span class="keyword">var</span> sum <span class="keyword">@</span> int <span class="keyword">=</span> <span class="number">0</span>
+<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">0</span>~<span class="number">4</span> {
+    sum <span class="keyword">=</span> sum + arr[i]
+}
+display sum  <span class="comment">// 15</span></code></pre>
+            </div>
+            
+            <div class="example-box">
+                <h4>Find Maximum Element</h4>
+                <pre><code><span class="keyword">var</span> arr <span class="keyword">@</span> [int] <span class="keyword">=</span> [<span class="number">3</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">1</span>]
+<span class="keyword">var</span> max <span class="keyword">@</span> int <span class="keyword">=</span> arr[<span class="number">0</span>]
+<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">1</span>~<span class="number">4</span> {
+    <span class="keyword">if</span> arr[i] > max {
+        max <span class="keyword">=</span> arr[i]
+    }
+}
+display max  <span class="comment">// 9</span></code></pre>
+            </div>
+            
+            <h2>Best Practices</h2>
+            
+            <ul>
+                <li><strong>Use arrays for fixed data:</strong> Better performance and memory usage</li>
+                <li><strong>Use vectors for dynamic data:</strong> When size can change</li>
+                <li><strong>Check bounds:</strong> Always verify array indices are valid</li>
+                <li><strong>Use len() function:</strong> Always call len() instead of hardcoding sizes</li>
+                <li><strong>Prefer iteration over indexing:</strong> When possible, use for loops</li>
+            </ul>
+            
+            <div class="nav-buttons">
+                <a href="wiki-index.html" class="nav-btn">← Back to Wiki</a>
+                <a href="wiki-matrices-tensors.html" class="nav-btn primary">Next: Matrices & Tensors →</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

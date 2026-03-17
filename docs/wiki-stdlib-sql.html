@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>SQL/SQLite Library - Linea Wiki</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff006e;
+            --accent: #8338ec;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050813;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #1a2f5f;
+            --code-bg: #0f1525;
+        }
+        body { font-family: 'Monaco', 'Courier New', monospace; color: var(--text-light); line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+        .breadcrumb { color: var(--text-muted); margin-bottom: 1rem; }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        h1 { color: var(--primary); margin-bottom: 0.5rem; }
+        h2 { margin-top: 2rem; color: var(--accent); border-left: 4px solid var(--primary); padding-left: 1rem; }
+        p { margin: 0.8rem 0; }
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; margin: 1rem 0; }
+        .note { background: rgba(0, 212, 255, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 6px; margin: 1rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / SQL</div>
+            <h1>SQL/SQLite Library</h1>
+            <p>Native SQLite support with prepared statements, parameter binding, secure DB locking, and safe defaults.</p>
+        </header>
+        <h2>Core API</h2>
+        <pre>import sql
+
+var db = sql::open("app.db")
+sql::execute(db, "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT)", [])
+sql::execute(db, "INSERT INTO users(name) VALUES (?)", ["Ada"])
+var rows = sql::query(db, "SELECT id, name FROM users WHERE name = ?", ["Ada"])
+display rows
+sql::close(db)</pre>
+        <h2>Security API</h2>
+        <pre>import sql
+import password
+
+var db = sql::open("secure.db")
+var master = password::promptCli("Master password:", "bullet")
+sql::initSecure(db, master)
+
+var entered = password::promptCli("Unlock password:", "mask")
+var unlocked = sql::unlock(db, entered)
+display unlocked</pre>
+        <div class="note">
+            SQL operations use bound parameters (`?`) to prevent injection-prone string concatenation.
+        </div>
+    </div>
+</body>
+</html>
