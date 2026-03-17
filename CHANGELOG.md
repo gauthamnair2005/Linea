@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### SemVer Type
-- `patch`
+- `minor`
 
 ### Changed
 - Documentation policy now enforces a single repository README (`README.md`) and disallows version-specific README files.
@@ -15,6 +15,7 @@
 - Added a universal darker mixed gradient override across all HTML pages for improved contrast/readability and integrated Wiki links directly in home page navbars.
 - Added a shared `wiki-theme.css` used by all root/docs HTML pages to unify wiki typography and styling, and fixed wiki version-badge text contrast on magenta backgrounds.
 - Standardized author display name as **Gautham Nair** across compiler metadata/CLI, website footers, and repository README.
+- Added native `sql` (SQLite) and `password` modules with prepared-query support, DB password locking/unlocking, hashing/verification, and CLI/GUI password prompts.
 
 ---
 

@@ -1,0 +1,26 @@
+# Linea SQL Library (SQLite-backed native module)
+# Native implementation lives in linea-executor.
+
+func sql::open(path: string) -> string {
+  return sql::open(path)
+}
+
+func sql::close(handle: string) -> bool {
+  return sql::close(handle)
+}
+
+func sql::execute(handle: string, query: string, params: any) -> int {
+  return sql::execute(handle, query, params)
+}
+
+func sql::query(handle: string, query: string, params: any) -> any {
+  return sql::query(handle, query, params)
+}
+
+func sql::initSecure(handle: string, password: string) -> bool {
+  return sql::initSecure(handle, password)
+}
+
+func sql::unlock(handle: string, password: string) -> bool {
+  return sql::unlock(handle, password)
+}

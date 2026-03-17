@@ -43,6 +43,8 @@
 
 ### Enterprise Ecosystem
 *   **Data Processing**: Native support for CSV, Excel, and JSON processing.
+*   **SQL/SQLite Module**: Native SQLite support with parameterized queries and secure database locking.
+*   **Password/Security Module**: CLI/GUI password prompts with mask/bullet modes plus hashing/verification helpers.
 *   **Visualization**: Built-in graphics library for data plotting and charting.
 *   **Documentation**: Integrated Markdown rendering and documentation generation.
 *   **Networking**: Robust HTTP client for API integration.

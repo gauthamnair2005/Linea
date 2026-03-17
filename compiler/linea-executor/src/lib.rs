@@ -1,8 +1,12 @@
 use std::collections::HashMap;
+use std::io::{self, Write};
+use std::process::Command;
 use linea_core::{Type, TypeContext, Value, Result, Error};
 use linea_ast::{Program, Statement, Expression, BinaryOp, UnaryOp};
 use linea_ast::lexer::Lexer;
 use linea_ast::parser::Parser;
+use rusqlite::{Connection, OptionalExtension, params, params_from_iter};
+use sha2::{Digest, Sha256};
 
 mod compute;
 
@@ -45,6 +49,10 @@ pub struct Executor {
     scopes: Vec<HashMap<String, Value>>,
     functions: HashMap<String, FunctionDef>,
     chart_config: ChartConfig,
+    db_connections: HashMap<String, Connection>,
+    db_secure: HashMap<String, bool>,
+    db_unlocked: HashMap<String, bool>,
+    db_counter: u64,
 }
 
 impl Executor {
@@ -54,6 +62,10 @@ impl Executor {
             scopes: vec![HashMap::new()],
             functions: HashMap::new(),
             chart_config: ChartConfig::new(),
+            db_connections: HashMap::new(),
+            db_secure: HashMap::new(),
+            db_unlocked: HashMap::new(),
+            db_counter: 0,
         }
     }
 
@@ -129,7 +141,7 @@ impl Executor {
                 } else {
                     // Ignore missing built-in modules for now as they are simulated
                     match module.as_str() {
-                         "math" | "strings" | "csv" | "excel" | "graphics" => {},
+                         "math" | "strings" | "csv" | "excel" | "graphics" | "sql" | "password" => {},
                          _ => return Err(Error::RuntimeError(format!("Module '{}' not found in paths: {:?}", module, paths))),
                     }
                 }
@@ -438,6 +450,120 @@ impl Executor {
             }
             _ => Err(Error::RuntimeError("Unsupported expression".to_string())),
         }
+    }
+
+    fn next_db_handle(&mut self) -> String {
+        self.db_counter += 1;
+        format!("sql_conn_{}", self.db_counter)
+    }
+
+    fn value_to_sql(v: &Value) -> rusqlite::types::Value {
+        match v {
+            Value::Int(i) => rusqlite::types::Value::Integer(*i),
+            Value::Float(f) => rusqlite::types::Value::Real(*f),
+            Value::Bool(b) => rusqlite::types::Value::Integer(if *b { 1 } else { 0 }),
+            Value::String(s) => rusqlite::types::Value::Text(s.clone()),
+            Value::Null => rusqlite::types::Value::Null,
+            _ => rusqlite::types::Value::Text(v.to_string()),
+        }
+    }
+
+    fn extract_sql_params(&mut self, expr: &Expression) -> Result<Vec<rusqlite::types::Value>> {
+        let value = self.eval_expression(expr)?;
+        match value {
+            Value::Array(items) => Ok(items.iter().map(Self::value_to_sql).collect()),
+            Value::Null => Ok(vec![]),
+            other => Ok(vec![Self::value_to_sql(&other)]),
+        }
+    }
+
+    fn ensure_sql_unlocked(&self, handle: &str) -> Result<()> {
+        if self.db_secure.get(handle).copied().unwrap_or(false)
+            && !self.db_unlocked.get(handle).copied().unwrap_or(false)
+        {
+            return Err(Error::RuntimeError(
+                "Database is locked. Call sql::unlock(handle, password) first".to_string(),
+            ));
+        }
+        Ok(())
+    }
+
+    fn hash_secret_with_salt(secret: &str, salt: &str) -> String {
+        let mut hasher = Sha256::new();
+        hasher.update(salt.as_bytes());
+        hasher.update(b":");
+        hasher.update(secret.as_bytes());
+        let digest = hasher.finalize();
+        let hex = digest.iter().map(|b| format!("{:02x}", b)).collect::<String>();
+        format!("sha256${}${}", salt, hex)
+    }
+
+    fn verify_secret(secret: &str, stored: &str) -> bool {
+        let parts: Vec<&str> = stored.split('$').collect();
+        if parts.len() != 3 || parts[0] != "sha256" {
+            return false;
+        }
+        let candidate = Self::hash_secret_with_salt(secret, parts[1]);
+        candidate == stored
+    }
+
+    fn prompt_password_cli(message: &str, bullet: bool) -> Result<String> {
+        use crossterm::event::{read, Event, KeyCode, KeyEventKind};
+        use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+
+        print!("{}", message);
+        io::stdout()
+            .flush()
+            .map_err(|e| Error::RuntimeError(format!("Failed to flush stdout: {}", e)))?;
+
+        enable_raw_mode()
+            .map_err(|e| Error::RuntimeError(format!("Failed to enable raw mode: {}", e)))?;
+
+        let mut secret = String::new();
+        loop {
+            let event = read()
+                .map_err(|e| Error::RuntimeError(format!("Failed to read terminal event: {}", e)))?;
+            if let Event::Key(key) = event {
+                if key.kind != KeyEventKind::Press {
+                    continue;
+                }
+                match key.code {
+                    KeyCode::Enter => break,
+                    KeyCode::Char(c) => {
+                        secret.push(c);
+                        if bullet {
+                            print!("•");
+                            io::stdout().flush().map_err(|e| {
+                                Error::RuntimeError(format!("Failed to flush stdout: {}", e))
+                            })?;
+                        }
+                    }
+                    KeyCode::Backspace => {
+                        if !secret.is_empty() {
+                            secret.pop();
+                            if bullet {
+                                print!("\u{8} \u{8}");
+                                io::stdout().flush().map_err(|e| {
+                                    Error::RuntimeError(format!("Failed to flush stdout: {}", e))
+                                })?;
+                            }
+                        }
+                    }
+                    KeyCode::Esc => {
+                        disable_raw_mode().map_err(|e| {
+                            Error::RuntimeError(format!("Failed to disable raw mode: {}", e))
+                        })?;
+                        println!();
+                        return Err(Error::RuntimeError("Password entry cancelled".to_string()));
+                    }
+                    _ => {}
+                }
+            }
+        }
+        disable_raw_mode()
+            .map_err(|e| Error::RuntimeError(format!("Failed to disable raw mode: {}", e)))?;
+        println!();
+        Ok(secret)
     }
 
     fn eval_function_call(&mut self, func: &Expression, args: &[Expression]) -> Result<Value> {
@@ -1889,6 +2015,245 @@ impl Executor {
                     self.chart_config = ChartConfig::new();
                     
                     Ok(Value::Bool(true))
+                }
+                "sql::open" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("sql::open() expects 1 argument".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::open() expects string path".to_string())),
+                    };
+                    let conn = Connection::open(&path)
+                        .map_err(|e| Error::RuntimeError(format!("Failed to open SQLite DB: {}", e)))?;
+                    let handle = self.next_db_handle();
+                    self.db_connections.insert(handle.clone(), conn);
+                    self.db_secure.insert(handle.clone(), false);
+                    self.db_unlocked.insert(handle.clone(), true);
+                    Ok(Value::String(handle))
+                }
+                "sql::close" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("sql::close() expects 1 argument".to_string()));
+                    }
+                    let handle = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::close() expects string handle".to_string())),
+                    };
+                    let removed = self.db_connections.remove(&handle).is_some();
+                    self.db_secure.remove(&handle);
+                    self.db_unlocked.remove(&handle);
+                    Ok(Value::Bool(removed))
+                }
+                "sql::initSecure" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("sql::initSecure() expects 2 arguments".to_string()));
+                    }
+                    let handle = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::initSecure() expects string handle".to_string())),
+                    };
+                    let password = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::initSecure() expects string password".to_string())),
+                    };
+                    let conn = self.db_connections.get_mut(&handle).ok_or_else(|| {
+                        Error::RuntimeError(format!("Unknown SQL handle: {}", handle))
+                    })?;
+                    conn.execute(
+                        "CREATE TABLE IF NOT EXISTS _linea_auth (id INTEGER PRIMARY KEY CHECK(id=1), hash TEXT NOT NULL)",
+                        [],
+                    )
+                    .map_err(|e| Error::RuntimeError(format!("Failed creating auth table: {}", e)))?;
+                    let salt = format!("{:016x}", rand::random::<u64>());
+                    let stored = Self::hash_secret_with_salt(&password, &salt);
+                    conn.execute(
+                        "INSERT INTO _linea_auth (id, hash) VALUES (1, ?1) ON CONFLICT(id) DO UPDATE SET hash=excluded.hash",
+                        params![stored],
+                    )
+                    .map_err(|e| Error::RuntimeError(format!("Failed storing auth hash: {}", e)))?;
+                    self.db_secure.insert(handle.clone(), true);
+                    self.db_unlocked.insert(handle, false);
+                    Ok(Value::Bool(true))
+                }
+                "sql::unlock" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("sql::unlock() expects 2 arguments".to_string()));
+                    }
+                    let handle = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::unlock() expects string handle".to_string())),
+                    };
+                    let password = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::unlock() expects string password".to_string())),
+                    };
+                    let conn = self.db_connections.get_mut(&handle).ok_or_else(|| {
+                        Error::RuntimeError(format!("Unknown SQL handle: {}", handle))
+                    })?;
+                    let stored: Option<String> = conn
+                        .query_row("SELECT hash FROM _linea_auth WHERE id=1", [], |row| row.get(0))
+                        .optional()
+                        .map_err(|e| Error::RuntimeError(format!("Failed reading auth hash: {}", e)))?;
+                    let ok = stored
+                        .map(|hash| Self::verify_secret(&password, &hash))
+                        .unwrap_or(false);
+                    self.db_unlocked.insert(handle, ok);
+                    Ok(Value::Bool(ok))
+                }
+                "sql::execute" => {
+                    if args.len() < 2 || args.len() > 3 {
+                        return Err(Error::RuntimeError("sql::execute() expects 2 or 3 arguments".to_string()));
+                    }
+                    let handle = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::execute() expects string handle".to_string())),
+                    };
+                    let query = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::execute() expects string query".to_string())),
+                    };
+                    self.ensure_sql_unlocked(&handle)?;
+                    let sql_params = if args.len() == 3 {
+                        self.extract_sql_params(&args[2])?
+                    } else {
+                        vec![]
+                    };
+                    let conn = self.db_connections.get_mut(&handle).ok_or_else(|| {
+                        Error::RuntimeError(format!("Unknown SQL handle: {}", handle))
+                    })?;
+                    let affected = conn
+                        .execute(&query, params_from_iter(sql_params.iter()))
+                        .map_err(|e| Error::RuntimeError(format!("SQL execute failed: {}", e)))?;
+                    Ok(Value::Int(affected as i64))
+                }
+                "sql::query" => {
+                    if args.len() < 2 || args.len() > 3 {
+                        return Err(Error::RuntimeError("sql::query() expects 2 or 3 arguments".to_string()));
+                    }
+                    let handle = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::query() expects string handle".to_string())),
+                    };
+                    let query = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("sql::query() expects string query".to_string())),
+                    };
+                    self.ensure_sql_unlocked(&handle)?;
+                    let sql_params = if args.len() == 3 {
+                        self.extract_sql_params(&args[2])?
+                    } else {
+                        vec![]
+                    };
+                    let conn = self.db_connections.get_mut(&handle).ok_or_else(|| {
+                        Error::RuntimeError(format!("Unknown SQL handle: {}", handle))
+                    })?;
+
+                    let mut stmt = conn
+                        .prepare(&query)
+                        .map_err(|e| Error::RuntimeError(format!("SQL prepare failed: {}", e)))?;
+                    let headers = stmt
+                        .column_names()
+                        .iter()
+                        .map(|name| Value::String((*name).to_string()))
+                        .collect::<Vec<_>>();
+                    let col_count = stmt.column_count();
+                    let mapped = stmt
+                        .query_map(params_from_iter(sql_params.iter()), |row| {
+                            let mut out = Vec::with_capacity(col_count);
+                            for i in 0..col_count {
+                                let cell = row.get_ref(i)?;
+                                let value = match cell {
+                                    rusqlite::types::ValueRef::Null => Value::Null,
+                                    rusqlite::types::ValueRef::Integer(n) => Value::Int(n),
+                                    rusqlite::types::ValueRef::Real(f) => Value::Float(f),
+                                    rusqlite::types::ValueRef::Text(t) => {
+                                        Value::String(String::from_utf8_lossy(t).to_string())
+                                    }
+                                    rusqlite::types::ValueRef::Blob(b) => {
+                                        let hex = b.iter().map(|x| format!("{:02x}", x)).collect::<String>();
+                                        Value::String(hex)
+                                    }
+                                };
+                                out.push(value);
+                            }
+                            Ok(out)
+                        })
+                        .map_err(|e| Error::RuntimeError(format!("SQL query failed: {}", e)))?;
+
+                    let mut rows = vec![headers];
+                    for row in mapped {
+                        rows.push(row.map_err(|e| Error::RuntimeError(format!("SQL row read failed: {}", e)))?);
+                    }
+                    Ok(Value::Matrix(rows))
+                }
+                "password::hash" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("password::hash() expects 1 argument".to_string()));
+                    }
+                    let secret = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("password::hash() expects string secret".to_string())),
+                    };
+                    let salt = format!("{:016x}", rand::random::<u64>());
+                    Ok(Value::String(Self::hash_secret_with_salt(&secret, &salt)))
+                }
+                "password::verify" => {
+                    if args.len() != 2 {
+                        return Err(Error::RuntimeError("password::verify() expects 2 arguments".to_string()));
+                    }
+                    let secret = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("password::verify() expects string secret".to_string())),
+                    };
+                    let stored = match self.eval_expression(&args[1])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("password::verify() expects string hash".to_string())),
+                    };
+                    Ok(Value::Bool(Self::verify_secret(&secret, &stored)))
+                }
+                "password::promptCli" => {
+                    if args.len() < 1 || args.len() > 2 {
+                        return Err(Error::RuntimeError("password::promptCli() expects 1 or 2 arguments".to_string()));
+                    }
+                    let message = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("password::promptCli() expects string prompt".to_string())),
+                    };
+                    let mode = if args.len() == 2 {
+                        match self.eval_expression(&args[1])? {
+                            Value::String(s) => s.to_lowercase(),
+                            _ => return Err(Error::TypeError("password::promptCli() mode must be string".to_string())),
+                        }
+                    } else {
+                        "mask".to_string()
+                    };
+                    let bullet = mode == "bullet";
+                    let prompt = if message.ends_with(' ') { message } else { format!("{} ", message) };
+                    let secret = Self::prompt_password_cli(&prompt, bullet)?;
+                    Ok(Value::String(secret))
+                }
+                "password::promptGui" => {
+                    if args.len() != 1 {
+                        return Err(Error::RuntimeError("password::promptGui() expects 1 argument".to_string()));
+                    }
+                    let title = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("password::promptGui() expects string title".to_string())),
+                    };
+                    let output = Command::new("zenity")
+                        .args(["--password", "--title", &title])
+                        .output();
+                    match output {
+                        Ok(out) if out.status.success() => {
+                            let pw = String::from_utf8_lossy(&out.stdout).trim().to_string();
+                            Ok(Value::String(pw))
+                        }
+                        _ => {
+                            let fallback = Self::prompt_password_cli("Password (CLI fallback): ", true)?;
+                            Ok(Value::String(fallback))
+                        }
+                    }
                 }
                 _ => {
                     if let Some(func_def) = self.functions.get(name).cloned() {
