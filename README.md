@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  Created by <strong>Gautham Nair</strong>
+</p>
+
+<p align="center">
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License" />
   </a>

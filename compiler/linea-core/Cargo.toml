@@ -2,6 +2,7 @@
 name = "linea-core"
 version = "3.1.0"
 edition = "2021"
+authors = ["Gautham Nair"]
 
 [dependencies]
 thiserror = "1"

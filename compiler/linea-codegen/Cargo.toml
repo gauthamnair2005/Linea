@@ -2,6 +2,7 @@
 name = "linea-codegen"
 version = "3.1.0"
 edition = "2021"
+authors = ["Gautham Nair"]
 
 [dependencies]
 linea-ast = { path = "../linea-ast" }

@@ -6,6 +6,7 @@ resolver = "2"
 name = "linea-compiler"
 version = "3.4.0"
 edition = "2021"
+authors = ["Gautham Nair"]
 
 [dependencies]
 linea-core = { path = "./linea-core" }

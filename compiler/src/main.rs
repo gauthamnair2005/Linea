@@ -10,7 +10,7 @@ use linea_codegen::generate_rust_code;
 #[command(name = "linea")]
 #[command(about = "Linea Compiler | High-Performance AI & Data Language", long_about = None)]
 #[command(version = "3.4.0 (Professional Edition)")]
-#[command(author = "Gautham Nair <https://github.com/gauthamnair2005>")]
+#[command(author = "Gautham Nair")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
