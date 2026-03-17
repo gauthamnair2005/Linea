@@ -13,6 +13,7 @@
 - Unified website theming with wiki UI colors across root and `docs/` HTML pages, added the updated SVG logo to all pages, and refreshed README logo presentation.
 - Refined `docs/*` pages with a stronger mixed neon/dark wiki-style theme and replaced all lightning-emoji branding with SVG logo-based branding.
 - Added a universal darker mixed gradient override across all HTML pages for improved contrast/readability and integrated Wiki links directly in home page navbars.
+- Added a shared `wiki-theme.css` used by all root/docs HTML pages to unify wiki typography and styling, and fixed wiki version-badge text contrast on magenta backgrounds.
 
 ---
 
