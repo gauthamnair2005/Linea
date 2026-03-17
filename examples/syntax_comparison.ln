@@ -1,0 +1,44 @@
+// Linea Syntax Comparison: v3.5.0 vs v4.0.0
+
+// ============================================
+// v3.5.0 Syntax (Legacy - Still Supported)
+// ============================================
+
+// var old_count: i64 = 10
+// var old_name: string = "Linea"
+// var old_active: bool = True
+// var old_items: Vector<i64> = [1, 2, 3]
+
+// ============================================
+// v4.0.0 Syntax (Recommended)
+// ============================================
+
+// Simpler type annotations with @
+var count @ int = 10
+var name @ str = "Linea"
+var active @ bool = True
+var items @ [int] = [1, 2, 3]
+
+// Type aliases make code more readable
+var year @ int = 2025
+var rating @ float = 4.5
+var message @ str = "Hello v4!"
+
+// Collections are cleaner
+var scores @ [int] = [95, 87, 92]
+var values @ [float] = [1.5, 2.3, 3.1]
+var labels @ [str] = ["pass", "fail", "pending"]
+
+// Display results
+display count
+display name
+display active
+display items
+
+display year
+display rating
+display message
+
+display scores
+display values
+display labels

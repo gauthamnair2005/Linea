@@ -117,8 +117,16 @@ impl RustGenerator {
                 
                 Ok(())
             }
-            Statement::VarDeclaration { name, expr } => {
-                let (rust_expr, type_name) = self.generate_expression(expr)?;
+            Statement::VarDeclaration { name, type_annotation, expr } => {
+                let (rust_expr, inferred_type) = self.generate_expression(expr)?;
+                
+                // Use provided type annotation or inferred type
+                let type_name = if let Some(annotation) = type_annotation {
+                    self.map_linea_type_to_rust(annotation)
+                } else {
+                    inferred_type
+                };
+                
                 self.variable_types.insert(name.clone(), type_name.clone());
                 self.emit_line(&format!("let mut {} : {} = {};", name, type_name, rust_expr));
                 Ok(())
@@ -613,6 +621,40 @@ impl RustGenerator {
             Type::Void => "()".to_string(),
             Type::Any => "linea_runtime::Value".to_string(), 
             _ => "i64".to_string(),
+        }
+    }
+
+    fn map_linea_type_to_rust(&self, type_str: &str) -> String {
+        // Map Linea type annotations to Rust types
+        // v4.0 syntax: var x @ int = 42
+        match type_str {
+            "int" => "i64".to_string(),
+            "float" | "f32" | "f64" => "f64".to_string(),
+            "str" | "string" => "String".to_string(),
+            "bool" => "bool".to_string(),
+            _ if type_str.starts_with('[') && type_str.ends_with(']') => {
+                // Array type: [int] -> Vec<i64>
+                let inner = &type_str[1..type_str.len()-1];
+                format!("Vec<{}>", self.map_linea_type_to_rust(inner))
+            }
+            _ if type_str.starts_with("Vector") => {
+                // Generic Vector type: Vector<int> -> Vec<i64>
+                if let Some(start) = type_str.find('<') {
+                    if let Some(end) = type_str.rfind('>') {
+                        let inner = &type_str[start+1..end];
+                        format!("Vec<{}>", self.map_linea_type_to_rust(inner))
+                    } else {
+                        "Vec<i64>".to_string()
+                    }
+                } else {
+                    "Vec<i64>".to_string()
+                }
+            }
+            _ if type_str.contains('<') && type_str.contains('>') => {
+                // Generic type with parameters, keep as-is for now
+                type_str.to_string()
+            }
+            _ => type_str.to_string(), // Keep as-is for custom types
         }
     }
 }

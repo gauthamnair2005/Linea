@@ -193,20 +193,57 @@ fn main() {
         <div class="section">
             <h2>2. Variables and Types</h2>
             
-            <h3>Variable Declaration</h3>
-            <pre>// Explicit type
-x: i64 = 42
-name: string = "Linea"
-value: f64 = 3.14
-flag: bool = true
+            <h3>Variable Declaration (v4.0 Syntax)</h3>
+            <pre>// New @ type annotation syntax (v4.0+)
+var x @ int = 42
+var name @ str = "Linea"
+var value @ float = 3.14
+var flag @ bool = True
 
-// Type inference
-y = 100          // i64
-z = 2.71         // f64
-s = "hello"      // string</pre>
+// Collections
+var scores @ [int] = [85, 90, 95]
+var temps @ [float] = [72.5, 75.3]
+
+// Type inference still works
+var implicit = 100          // Inferred as int
+var explicit @ int = 100    // Explicit</pre>
+
+            <h3>Type Alias Reference</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <tr style="background: #f0f0f0;">
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><strong>Linea Type</strong></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><strong>Rust Type</strong></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><strong>Usage</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>int</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>i64</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>var x @ int = 42</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>float</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>f64</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>var pi @ float = 3.14</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>str</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>String</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>var s @ str = "hello"</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>bool</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>bool</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>var b @ bool = True</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>[T]</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>Vec&lt;T&gt;</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>var arr @ [int]</code></td>
+                </tr>
+            </table>
 
             <div class="highlight-box">
-                <strong>Supported Types:</strong> i64, f64, bool, string, Vector, Matrix, Tensor
+                <strong>v4.0 Update:</strong> Linea now uses the @ operator for cleaner type annotations. Old syntax (var x: int) still supported for backward compatibility.
             </div>
         </div>
 

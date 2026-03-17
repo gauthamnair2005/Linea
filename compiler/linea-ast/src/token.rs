@@ -46,6 +46,7 @@ pub enum TokenType {
     Arrow,
     FatArrow,
     Range,
+    At,
 
     // Delimiters
     LeftParen,

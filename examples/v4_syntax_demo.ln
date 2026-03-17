@@ -1,0 +1,30 @@
+// Linea v4.0 - Clean Syntax Demonstration
+// This example showcases the new @ type annotation operator
+
+// Basic variables with v4 syntax
+var count @ int = 42
+var temperature @ float = 98.6
+var username @ str = "Alice"
+var is_active @ bool = True
+
+// Display values
+display count
+display temperature
+display username
+display is_active
+
+// Collections
+var numbers @ [int] = [1, 2, 3, 4, 5]
+var prices @ [float] = [19.99, 29.99, 39.99]
+var names @ [str] = ["Alice", "Bob", "Charlie"]
+
+display numbers
+display prices
+display names
+
+// Arithmetic with new syntax
+var sum @ int = count + 8
+var product @ int = count * 2
+
+display sum
+display product

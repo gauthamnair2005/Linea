@@ -135,7 +135,7 @@ impl Executor {
                 }
                 Ok(())
             }
-            Statement::VarDeclaration { name, expr } => {
+            Statement::VarDeclaration { name, type_annotation: _, expr } => {
                 let value = self.eval_expression(expr)?;
                 let ty = value.to_type();
                 self.type_context.declare(name.clone(), ty)?;

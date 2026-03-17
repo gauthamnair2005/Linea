@@ -77,10 +77,19 @@ impl Parser {
     fn parse_var_declaration(&mut self) -> Result<Statement> {
         self.expect(&TokenType::Var)?;
         let name = self.expect_identifier()?;
+        
+        // Check for @ type annotation (v4.0 syntax: var x @ int = 42)
+        let type_annotation = if self.current_token().token_type == TokenType::At {
+            self.advance();
+            Some(self.parse_type_annotation()?)
+        } else {
+            None
+        };
+        
         self.expect(&TokenType::Equal)?;
         let expr = self.parse_expression()?;
         self.consume_optional(&TokenType::Semicolon);
-        Ok(Statement::VarDeclaration { name, expr })
+        Ok(Statement::VarDeclaration { name, type_annotation, expr })
     }
 
     fn parse_var_update(&mut self) -> Result<Statement> {
@@ -639,5 +648,55 @@ impl Parser {
         } else {
             false
         }
+    }
+
+    fn parse_type_annotation(&mut self) -> Result<String> {
+        // Parse type like: int, float, str, bool, [int], {str: int}
+        let mut type_str = String::new();
+        
+        match &self.current_token().token_type {
+            TokenType::LeftBracket => {
+                // Array type like [int]
+                self.advance();
+                type_str.push('[');
+                type_str.push_str(&self.parse_type_annotation()?);
+                self.expect(&TokenType::RightBracket)?;
+                type_str.push(']');
+            }
+            TokenType::LeftBrace => {
+                // Map type like {str: int}
+                self.advance();
+                type_str.push('{');
+                type_str.push_str(&self.parse_type_annotation()?);
+                self.expect(&TokenType::Colon)?;
+                type_str.push(':');
+                type_str.push_str(&self.parse_type_annotation()?);
+                self.expect(&TokenType::RightBrace)?;
+                type_str.push('}');
+            }
+            TokenType::Identifier(ident) => {
+                // Primitive or generic type
+                type_str.push_str(ident);
+                self.advance();
+                
+                // Check for generic parameters like Vector<int>
+                if self.current_token().token_type == TokenType::Less {
+                    self.advance();
+                    type_str.push('<');
+                    type_str.push_str(&self.parse_type_annotation()?);
+                    self.expect(&TokenType::Greater)?;
+                    type_str.push('>');
+                }
+            }
+            _ => {
+                return Err(Error::Syntax {
+                    line: self.current_token().line,
+                    column: self.current_token().column,
+                    message: "Expected type annotation".to_string(),
+                });
+            }
+        }
+        
+        Ok(type_str)
     }
 }

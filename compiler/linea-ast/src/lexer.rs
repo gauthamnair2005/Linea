@@ -135,9 +135,21 @@ impl Lexer {
             '"' => self.read_string(),
             '\'' => self.read_string(),
             '@' => {
+                // Check if @ is followed by an identifier (decorator) or standalone (type operator)
+                // Peek ahead without advancing
+                let next_pos = self.position + 1;
+                let is_decorator = next_pos < self.input.len() && 
+                    (self.input[next_pos].is_alphabetic() || self.input[next_pos] == '_');
+                
                 self.advance();
-                let ident = self.read_identifier();
-                Ok(Token::new(TokenType::Identifier(format!("@{}", ident)), line, column))
+                if is_decorator {
+                    // It's a decorator like @gpu, @async
+                    let ident = self.read_identifier();
+                    Ok(Token::new(TokenType::Identifier(format!("@{}", ident)), line, column))
+                } else {
+                    // It's the type operator @
+                    Ok(Token::new(TokenType::At, line, column))
+                }
             }
             _ if ch.is_alphabetic() || ch == '_' => {
                 let ident = self.read_identifier();

@@ -1,5 +1,57 @@
 # Linea Changelog
 
+## [4.0.0] - 2025-03-17
+
+### 🎯 Major Changes
+
+#### Simplified `@` Type Annotation Syntax
+
+Linea v4 introduces a cleaner, more concise variable declaration syntax using the `@` operator:
+
+**Before (v3.5.0)**
+```linea
+var x: i64 = 42
+var name: string = "Linea"
+var arr: Vector<i64> = [1, 2, 3]
+```
+
+**After (v4.0.0)**
+```linea
+var x @ int = 42
+var name @ str = "Linea"
+var arr @ [int] = [1, 2, 3]
+```
+
+#### Type Alias System
+- `int` → `i64`
+- `float` → `f64`
+- `str` → `String`
+- `bool` → `bool`
+- `[T]` → `Vec<T>`
+- `Vector<T>` → `Vec<T>`
+
+#### Improved Code Clarity
+- Shorter, more readable variable declarations
+- Type information placed before assignment
+- Consistent with decorator syntax (`@gpu`, `@async`, `@inference`)
+- Backward compatible with old `:` syntax
+
+### Compiler Updates
+- **Enhanced Lexer**: Smart `@` tokenization (decorator vs type operator)
+- **Improved Parser**: New `parse_type_annotation()` method
+- **Better Codegen**: Dedicated `map_linea_type_to_rust()` type mapping
+- **Backward Compatible**: Old syntax still supported
+
+### Performance
+- Zero runtime overhead
+- No binary size impact
+- Identical performance to v3.5.0
+
+### Migration Guide
+See `RELEASE_NOTES_V400.md` for detailed migration instructions and examples.
+
+---
+
 ## [3.5.0] - 2025-03-17
 
 ### 🎉 Major Features

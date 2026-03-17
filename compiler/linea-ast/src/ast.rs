@@ -13,6 +13,7 @@ pub enum Statement {
     },
     VarDeclaration {
         name: String,
+        type_annotation: Option<String>,
         expr: Expression,
     },
     VarUpdate {
