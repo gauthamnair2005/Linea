@@ -1,0 +1,10 @@
+<package>
+  <name>your_lib_name</name>
+  <version>1.0.0</version>
+  <developer>Your Name</developer>
+  <description>Short description of what the module does.</description>
+  <entrypoint>libs/your_lib_name.ln</entrypoint>
+  <dependencies>
+    <dependency name="another_lib" version=">=1.0.0" />
+  </dependencies>
+</package>

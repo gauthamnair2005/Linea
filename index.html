@@ -425,7 +425,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.1.0</span>
+                <span class="version-badge">v4.4.0</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -477,6 +477,10 @@
                 <h3>📦 Rich Libraries</h3>
                 <p>HTTP client, CSV/Excel processing, graphics visualization, markdown support, data preprocessing, and more. Everything you need out of the box.</p>
             </div>
+            <div class="feature-card">
+                <h3>🧩 Third-Party Package Manager</h3>
+                <p>Install custom `.ln` modules from an XML metadata registry with automatic dependency resolution into `libs/`.</p>
+            </div>
         </div>
     </section>
 
@@ -492,30 +496,33 @@ cd Linea
             <h3>2. Create Your First Program</h3>
             <div class="code-block">// hello.ln
 fn main() {
-    x: i64 = 42
-    print("Hello, Linea! Answer: " + x)
+    var x @ int = 42
+    display "Hello, Linea! Answer: " + x
 }</div>
 
             <h3>3. Compile & Run</h3>
             <div class="code-block">linea compile hello.ln
 ./hello</div>
 
-            <h3>4. Train a Neural Network</h3>
+            <h3>4. Install a Third-Party Module</h3>
+            <div class="code-block">python3 package-manager/linea_pkg.py greeter --registry ~/projects/linea-third-party-registry --libs-dir ./libs</div>
+
+            <h3>5. Train a Neural Network</h3>
             <div class="code-block">import ml
 import datasets
 
 fn main() {
-    data := datasets::load_csv("data.csv")
-    model := ml::Sequential([
+    var data = datasets::load_csv("data.csv")
+    var model = ml::Sequential([
         ml::Dense(10, 32),
         ml::ReLU(),
         ml::Dense(32, 2)
     ])
     
-    optimizer := ml::Adam(learning_rate: 0.001)
-    for epoch in 0..50 {
-        loss := model.train_step(data::X, data::y, optimizer)
-        print("Epoch " + epoch + ": " + loss)
+    var optimizer = ml::Adam(learning_rate: 0.001)
+    for epoch from 0~50 {
+        var loss = model.train_step(data::X, data::y, optimizer)
+        display "Epoch " + epoch + ": " + loss
     }
 }</div>
         </div>
@@ -555,7 +562,7 @@ fn main() {
     </section>
 
     <section>
-        <h2>🌟 v4.1.0 Highlights</h2>
+        <h2>🌟 v4.4.0 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -578,7 +585,7 @@ fn main() {
 
         <div class="showcase">
             <h3>🔬 ARL-Tangram Algorithm</h3>
-            <p>Linea v4.1.0 introduces ARL-Tangram: Adaptive Reasoning Layer with Tangram-based compositional learning for interpretable AI.</p>
+            <p>Linea v4.4.0 introduces third-party package management with XML metadata, dependency resolution, and reproducible lockfiles for custom `.ln` libraries.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">

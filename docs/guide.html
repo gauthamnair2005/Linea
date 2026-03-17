@@ -473,11 +473,22 @@ shape: Vector<i64> = t.shape()  // [2, 2, 2]</pre>
 import ml
 import datasets
 import http
+import greeter  // Installed via package-manager/linea_pkg.py
 
 // Use functions
-data := datasets::load_csv("data.csv")
-model := ml::Sequential([...])
-response := http::get("https://api.example.com")</pre>
+var data = datasets::load_csv("data.csv")
+var model = ml::Sequential([...])
+var response = http::get("https://api.example.com")
+greeter::hello("Linea")</pre>
+
+            <h3>Installing Third-Party Modules</h3>
+            <pre># From repository root
+python3 package-manager/linea_pkg.py greeter \
+  --registry ~/projects/linea-third-party-registry \
+  --libs-dir ./libs
+
+# Then in Linea source code
+import greeter</pre>
 
             <h3>Available Modules</h3>
             <table>
@@ -516,6 +527,18 @@ response := http::get("https://api.example.com")</pre>
                 <tr>
                     <td>graphics</td>
                     <td>Data visualization</td>
+                </tr>
+                <tr>
+                    <td>sql</td>
+                    <td>SQLite queries with secure locking support</td>
+                </tr>
+                <tr>
+                    <td>password</td>
+                    <td>Masked password prompts and secure hashing helpers</td>
+                </tr>
+                <tr>
+                    <td>system</td>
+                    <td>System metadata (threads and compiler parallel jobs)</td>
                 </tr>
             </table>
         </div>

@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.1.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.4.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -153,16 +153,39 @@ Linea provides a rich standard library for professional development:
 | **`markdown`** | Markdown parsing and HTML generation |
 | **`graphics`** | Data visualization and plotting |
 | **`http`** | HTTP client for REST API integration |
+| **`sql`** | SQLite access with parameterized queries and secure lock/unlock |
+| **`password`** | Masked CLI/GUI password entry plus hashing/verification helpers |
+| **`system`** | Runtime system introspection (`threads`, `compileJobs`) |
 | **`math`** | Mathematical functions and constants |
 | **`strings`** | String manipulation utilities |
 | **`utils`** | General utility functions |
 
-## 📂 Project Structure
+## 📦 Third-Party Package Manager
 
+Linea now includes a built-in third-party package installer scaffold in `package-manager/`.
+
+Install one or more custom libraries from an XML-driven registry:
+
+```bash
+python3 package-manager/linea_pkg.py greeter --registry ~/projects/linea-third-party-registry --libs-dir ./libs
+```
+
+The installer:
+
+* Reads package metadata from `metadata/<libname>.xml`
+* Resolves and installs transitive dependencies first
+* Copies `.ln` files into your local `libs/` directory
+* Writes `libs/.linea-packages.lock.json` for reproducibility
+
+Use `package-manager/package-template.xml` as the metadata format template for library submissions.
+
+## 📂 Project Structure
+ 
 *   `compiler/`: Rust source code for the Linea compiler.
 *   `libs/`: Standard library source files (`.ln`).
 *   `examples/`: Example programs including ML demos.
 *   `docs/`: Documentation files.
+*   `package-manager/`: XML-driven third-party package installer.
 *   `linea`: Pre-compiled binary.
 
 ## 🤝 Contributing

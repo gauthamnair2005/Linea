@@ -405,7 +405,7 @@
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#quickstart">Quick Start</a></li>
-                <li><a href="../wiki-index.html">Wiki</a></li>
+                <li><a href="./wiki-index.html">Wiki</a></li>
                 <li><a href="#arl">ARL-Tangram</a></li>
                 <li><a href="#examples">Examples</a></li>
                 <li><a href="https://github.com/gauthamnair2005/Linea" target="_blank">GitHub</a></li>
@@ -451,6 +451,10 @@
                 <h3>📦 Rich Standard Library</h3>
                 <p>HTTP, CSV, Excel, Graphics, Markdown support. Networking, data processing, and visualization out of the box.</p>
             </div>
+            <div class="feature-card">
+                <h3>🧩 Third-Party Package Manager</h3>
+                <p>Install external `.ln` modules from an XML registry with automatic dependency installation into your local `libs/` folder.</p>
+            </div>
         </div>
     </section>
 
@@ -465,13 +469,16 @@ cd Linea
             <h3>Your First Program</h3>
             <div class="code-block"><code>// hello.ln
 fn main() {
-    x: i64 = 42
-    print(x)
+    var x @ int = 42
+    display x
 }</code></div>
             
             <h3>Compile & Run</h3>
             <div class="code-block"><code>linea compile hello.ln
 ./hello</code></div>
+
+            <h3>Install Third-Party Library</h3>
+            <div class="code-block"><code>python3 package-manager/linea_pkg.py greeter --registry ~/projects/linea-third-party-registry --libs-dir ./libs</code></div>
         </div>
     </section>
 
@@ -511,24 +518,24 @@ import datasets
 
 fn main() {
     // Load dataset
-    data := datasets::load_csv("iris.csv")
-    X := data::features
-    y := data::labels
-    
+    var data = datasets::load_csv("iris.csv")
+    var X = data::features
+    var y = data::labels
+     
     // Build model
-    model := ml::Sequential([
+    var model = ml::Sequential([
         ml::Dense(4, 16),
         ml::ReLU(),
         ml::Dense(16, 8),
         ml::ReLU(),
         ml::Dense(8, 3)
     ])
-    
+     
     // Train
-    optimizer := ml::Adam(learning_rate: 0.001)
-    for epoch in 0..100 {
-        loss := model.train_step(X, y, optimizer)
-        print("Epoch " + epoch + ": loss = " + loss)
+    var optimizer = ml::Adam(learning_rate: 0.001)
+    for epoch from 0~100 {
+        var loss = model.train_step(X, y, optimizer)
+        display "Epoch " + epoch + ": loss = " + loss
     }
 }</code></div>
         </div>

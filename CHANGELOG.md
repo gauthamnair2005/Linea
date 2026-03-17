@@ -1,5 +1,17 @@
 # Linea Changelog
 
+## [4.4.0] - 2026-03-17
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added a new `package-manager/` folder with a third-party package installer (`linea_pkg.py`) for `.ln` libraries.
+- Added XML-based package metadata template (`package-manager/package-template.xml`) with dependency, developer, description, and entrypoint fields.
+- Implemented dependency-aware install ordering (including transitive dependencies and cycle detection) and lockfile generation at `libs/.linea-packages.lock.json`.
+- Added third-party usage example: `examples/third_party_module_usage.ln`.
+- Added package-manager documentation updates across website + markdown docs and a dedicated wiki page.
+
 ## [4.3.0] - 2026-03-17
 
 ### SemVer Type
