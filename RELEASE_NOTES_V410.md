@@ -76,10 +76,27 @@ for i from 0~20 step 2 {  // 0, 2, 4, 6, ..., 20
 
 Linea v4.1 adds low-level pointer support while maintaining high-level safety:
 
+#### Ptr Datatype (Simplified Syntax)
+
+The `ptr` datatype provides a clean, type-safe way to work with pointers:
+
+```linea
+// Simple pointer syntax
+var x @ int = 42
+var ptr_to_x @ ptr = x    // Automatically captures address
+
+// Multiple pointers
+var y @ int = 100
+var ptr_to_y @ ptr = y
+
+// ptr stores memory addresses safely
+display "Pointers created"
+```
+
 #### Address-Of Operator (`&`)
 ```linea
 var x @ int = 42
-var ptr @ int = &x    // ptr holds address of x
+var ptr @ &int = &x    // Traditional pointer syntax - ptr holds address of x
 ```
 
 #### Dereference Operator (`*`)
@@ -90,20 +107,20 @@ var value @ int = *ptr    // Get value at address
 #### Pointer Arithmetic
 ```linea
 var arr @ [int] = [1, 2, 3, 4, 5]
-var ptr @ int = &arr[0]      // Point to first element
+var ptr @ &int = &arr[0]      // Point to first element
 var second @ int = *(ptr + 1) // Access second element
 ```
 
 #### Pointer Examples
 ```linea
-// Example 1: Basic pointer
+// Example 1: Using ptr datatype
 var x @ int = 99
-var ptr @ int = &x
-display *ptr  // Output: 99
+var ptr @ ptr = x
+display "Address stored in ptr"
 
-// Example 2: Array pointers
+// Example 2: Array pointers with traditional syntax
 var numbers @ [int] = [10, 20, 30]
-var ptr @ int = &numbers[0]
+var ptr @ &int = &numbers[0]
 display *ptr        // 10
 display *(ptr + 1)  // 20
 display *(ptr + 2)  // 30

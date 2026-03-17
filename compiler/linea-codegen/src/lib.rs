@@ -121,14 +121,19 @@ impl RustGenerator {
                 let (rust_expr, inferred_type) = self.generate_expression(expr)?;
                 
                 // Use provided type annotation or inferred type
-                let type_name = if let Some(annotation) = type_annotation {
-                    self.map_linea_type_to_rust(annotation)
+                let (type_name, final_expr) = if let Some(annotation) = type_annotation {
+                    if annotation == "ptr" {
+                        // For ptr type, auto-reference the expression
+                        ("i64".to_string(), format!("&{} as *const _ as i64", rust_expr))
+                    } else {
+                        (self.map_linea_type_to_rust(annotation), rust_expr)
+                    }
                 } else {
-                    inferred_type
+                    (inferred_type, rust_expr)
                 };
                 
                 self.variable_types.insert(name.clone(), type_name.clone());
-                self.emit_line(&format!("let mut {} : {} = {};", name, type_name, rust_expr));
+                self.emit_line(&format!("let mut {} : {} = {};", name, type_name, final_expr));
                 Ok(())
             }
             Statement::VarUpdate { name, expr } => {
@@ -668,12 +673,13 @@ impl RustGenerator {
 
     fn map_linea_type_to_rust(&self, type_str: &str) -> String {
         // Map Linea type annotations to Rust types
-        // v4.0 syntax: var x @ int = 42
+        // v4.1 syntax: var x @ int = 42, var y @ ptr = x
         match type_str {
             "int" => "i64".to_string(),
             "float" | "f32" | "f64" => "f64".to_string(),
             "str" | "string" => "String".to_string(),
             "bool" => "bool".to_string(),
+            "ptr" => "i64".to_string(), // ptr is like i64 (can hold address)
             _ if type_str.starts_with('[') && type_str.ends_with(']') => {
                 // Array type: [int] -> Vec<i64>
                 let inner = &type_str[1..type_str.len()-1];

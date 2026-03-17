@@ -1,0 +1,17 @@
+var x @ int = 42
+var y @ int = 100
+
+var ptr_x @ ptr = x
+var ptr_y @ ptr = y
+
+display "Pointer to x: "
+display ptr_x
+
+display "Pointer to y: "
+display ptr_y
+
+for i from 1~5 {
+    display i
+}
+
+display "ptr type demonstration complete"

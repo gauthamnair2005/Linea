@@ -112,15 +112,23 @@ for i from 10~1 step -1 {
 }
 ```
 
-**Pointer Support for Memory Control:**
+**Pointer Support with `ptr` Datatype:**
 ```linea
+// Simplified pointer syntax with ptr type
 var x @ int = 42
-var ptr @ int = &x    // Address-of operator
+var ptr_to_x @ ptr = x    // Automatically captures address
+
+var y @ int = 100
+var ptr_to_y @ ptr = y    // Type-safe pointer storage
+
+// Traditional address-of and dereference
+var ptr @ &int = &x       // Address-of operator
+var value @ int = *ptr    // Dereference operator
 
 // Array pointers
 var arr @ [int] = [1, 2, 3, 4, 5]
-var ptr @ int = &arr[0]
-display *(ptr + 1)    // Access second element
+var ptr_arr @ ptr = arr[0]
+display *(ptr_arr + 1)    // Access second element
 ```
 
 ## 📚 Standard Library
