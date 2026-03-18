@@ -1,110 +1,266 @@
-/* Shared Liquid-Glass inspired UI theme */
+/* Linea Documentation Design System - Professional Edition */
 :root {
-    --glass-bg: rgba(255, 255, 255, 0.12);
-    --glass-bg-strong: rgba(255, 255, 255, 0.18);
-    --glass-stroke: rgba(255, 255, 255, 0.34);
-    --glass-shadow: 0 14px 40px rgba(7, 10, 22, 0.45);
-    --text-main: #f4f7ff;
-    --text-muted: #cfd8f8;
-    --link: #98d8ff;
-    --accent: #8aa4ff;
+    --bg: #f6f8fb;
+    --surface: #ffffff;
+    --surface-muted: #f2f5fa;
+    --text: #0f172a;
+    --text-muted: #475569;
+    --border: #dbe2ea;
+    --border-strong: #c7d2e0;
+    --primary: #0b57d0;
+    --primary-strong: #0842a1;
+    --success: #0f766e;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    line-height: 1.65 !important;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important;
-    color: var(--text-main) !important;
-    background:
-        radial-gradient(1200px 700px at 10% 10%, rgba(109, 139, 255, 0.26), transparent 60%),
-        radial-gradient(900px 560px at 88% 18%, rgba(120, 225, 255, 0.18), transparent 58%),
-        radial-gradient(980px 580px at 50% 100%, rgba(186, 142, 255, 0.2), transparent 62%),
-        linear-gradient(145deg, #0b1020 0%, #121833 46%, #1b1f3f 100%) !important;
-    background-attachment: fixed !important;
+    min-height: 100vh;
 }
 
-/* Glass surfaces */
-header,
-.container,
-.showcase,
-.feature-card,
-.category,
-.quick-links,
-.nav-btn,
-.btn,
-.code-block,
-pre,
-table,
-.quick-link,
-.wiki-link,
-.global-linea-logo {
-    background: linear-gradient(165deg, var(--glass-bg-strong), var(--glass-bg)) !important;
-    border: 1px solid var(--glass-stroke) !important;
-    box-shadow: var(--glass-shadow) !important;
-    -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
-    backdrop-filter: blur(18px) saturate(135%) !important;
-}
-
-/* Typography + contrast */
 h1, h2, h3, h4, h5, h6 {
-    color: #eef4ff !important;
-    letter-spacing: 0.01em;
+    color: var(--text) !important;
+    letter-spacing: -0.01em;
+    margin-top: 0;
+}
+
+h1 {
+    font-size: clamp(2rem, 3.1vw, 2.8rem) !important;
+    line-height: 1.2 !important;
+}
+
+h2 {
+    font-size: clamp(1.45rem, 2.2vw, 2rem) !important;
+    margin-top: 2.2rem !important;
+    margin-bottom: 0.9rem !important;
+}
+
+h3 {
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem) !important;
 }
 
 p, li, span, .subtitle, .wiki-link-desc {
     color: var(--text-muted) !important;
 }
 
-a, .wiki-link-title {
-    color: var(--link) !important;
+a {
+    color: var(--primary) !important;
+    text-decoration: none;
 }
 
-/* Inputs/links/buttons */
-.btn,
-.nav-btn,
-.quick-link {
-    color: #f5f8ff !important;
-    border-radius: 14px !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+a:hover {
+    color: var(--primary-strong) !important;
+    text-decoration: underline;
 }
 
-.btn:hover,
-.nav-btn:hover,
-.quick-link:hover,
-.feature-card:hover,
-.category:hover {
-    transform: translateY(-2px) !important;
-    border-color: rgba(191, 220, 255, 0.74) !important;
-    box-shadow: 0 18px 44px rgba(7, 10, 22, 0.54) !important;
+header {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-sm) !important;
 }
 
-/* Code blocks read better on glass */
+.container,
+main.container {
+    max-width: 1180px !important;
+    margin: 0 auto !important;
+    padding: 2rem !important;
+}
+
+.hero,
+.showcase,
+.feature-card,
+.category,
+.quick-links,
+.quick-link,
+.wiki-link,
+table,
 pre,
-code,
-.code-block code {
-    color: #eaf2ff !important;
+.code-block,
+.nav-btn,
+.btn,
+.grid-item,
+.highlight-box,
+.formula-box {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.feature-card,
+.category,
+.quick-link,
+.wiki-link,
+.grid-item {
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.feature-card:hover,
+.category:hover,
+.quick-link:hover,
+.wiki-link:hover,
+.grid-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.nav-links a {
+    color: var(--text) !important;
+    font-weight: 500;
+}
+
+.logo,
+.brand-inline {
+    color: var(--text) !important;
+    font-weight: 700;
+}
+
+.version-badge {
+    background: #e8efff !important;
+    color: var(--primary-strong) !important;
+    border: 1px solid #c9dafd !important;
+    border-radius: 999px !important;
+    padding: 0.2rem 0.65rem !important;
+    font-weight: 600;
+    -webkit-text-fill-color: var(--primary-strong) !important;
 }
 
 pre,
 .code-block {
-    border-radius: 16px !important;
+    overflow-x: auto;
+    padding: 1rem 1.1rem !important;
 }
 
-/* Top nav polish */
-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.26) !important;
+pre,
+code,
+.code-block code {
+    font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+    color: #0f172a !important;
+    background: var(--surface-muted) !important;
 }
 
-.nav-links a {
-    color: #e7efff !important;
+code {
+    padding: 0.12rem 0.34rem !important;
+    border-radius: 6px !important;
 }
 
-.nav-links a:hover {
-    color: #a8ddff !important;
+pre code {
+    background: transparent !important;
+    padding: 0 !important;
 }
 
-/* Ensure badge text remains readable even inside gradient headings */
-.version-badge {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-    background-clip: border-box !important;
-    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+section h2 {
+    text-align: left !important;
+}
+
+footer {
+    background: transparent !important;
+    border-top: 1px solid var(--border) !important;
+    color: var(--text-muted) !important;
+}
+
+.global-linea-logo {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border-radius: 12px !important;
+}
+
+.breadcrumb,
+.nav-breadcrumb {
+    color: var(--text-muted) !important;
+}
+
+.stats .stat-box,
+.stat-box {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+.number {
+    color: var(--primary-strong) !important;
+}
+
+@media (max-width: 900px) {
+    .container,
+    main.container {
+        padding: 1.2rem !important;
+    }
+
+    .nav-links {
+        gap: 0.8rem !important;
+    }
+}
+
+/* High-specificity overrides for pages with embedded theme blocks */
+html body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+html body header,
+html body .hero,
+html body .showcase,
+html body .feature-card,
+html body .category,
+html body .quick-links,
+html body .quick-link,
+html body .wiki-link,
+html body .nav-btn,
+html body .btn,
+html body .grid-item,
+html body .highlight-box,
+html body .formula-box,
+html body pre,
+html body table {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+    color: var(--text) !important;
+}
+
+html body h1,
+html body h2,
+html body h3,
+html body h4,
+html body h5,
+html body h6,
+html body strong,
+html body .wiki-link-title {
+    color: var(--text) !important;
+}
+
+html body p,
+html body li,
+html body .subtitle,
+html body .wiki-link-desc {
+    color: var(--text-muted) !important;
+}
+
+html body a,
+html body .nav-links a,
+html body .hero a,
+html body footer a {
+    color: var(--primary) !important;
 }
