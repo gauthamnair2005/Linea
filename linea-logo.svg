@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Linea logo">
-  <defs>
-    <linearGradient id="fractalBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1f6feb"/>
-      <stop offset="100%" stop-color="#0f4fb3"/>
-    </linearGradient>
-  </defs>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Linea fractal logo">
   <rect x="10" y="10" width="76" height="76" rx="14" fill="#ffffff" stroke="#ccd8eb" stroke-width="2"/>
 
-  <!-- Fractal-inspired nested L forms -->
-  <path d="M30 24V68H66" fill="none" stroke="url(#fractalBlue)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M39 33V60H57" fill="none" stroke="#1f6feb" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-  <path d="M46 40V54H52" fill="none" stroke="#0f4fb3" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+  <!-- Fractal flower core -->
+  <circle cx="48" cy="48" r="6.8" fill="#6f42c1"/>
 
-  <circle cx="66" cy="68" r="3.2" fill="#1f6feb"/>
-  <circle cx="57" cy="60" r="2.4" fill="#1f6feb" opacity="0.9"/>
-  <circle cx="52" cy="54" r="1.8" fill="#0f4fb3" opacity="0.95"/>
+  <!-- Primary ring -->
+  <circle cx="48" cy="30" r="5.4" fill="#1f6feb"/>
+  <circle cx="63.6" cy="39" r="5.4" fill="#0ea5e9"/>
+  <circle cx="63.6" cy="57" r="5.4" fill="#14b8a6"/>
+  <circle cx="48" cy="66" r="5.4" fill="#22c55e"/>
+  <circle cx="32.4" cy="57" r="5.4" fill="#f59e0b"/>
+  <circle cx="32.4" cy="39" r="5.4" fill="#ef4444"/>
+
+  <!-- Secondary fractal nodes -->
+  <circle cx="48" cy="22.5" r="3" fill="#60a5fa"/>
+  <circle cx="70.2" cy="35.2" r="3" fill="#38bdf8"/>
+  <circle cx="70.2" cy="60.8" r="3" fill="#2dd4bf"/>
+  <circle cx="48" cy="73.5" r="3" fill="#86efac"/>
+  <circle cx="25.8" cy="60.8" r="3" fill="#fbbf24"/>
+  <circle cx="25.8" cy="35.2" r="3" fill="#f87171"/>
+
+  <!-- Tertiary nodes -->
+  <circle cx="48" cy="18.2" r="1.8" fill="#93c5fd"/>
+  <circle cx="73.9" cy="33.1" r="1.8" fill="#7dd3fc"/>
+  <circle cx="73.9" cy="62.9" r="1.8" fill="#5eead4"/>
+  <circle cx="48" cy="77.8" r="1.8" fill="#bbf7d0"/>
+  <circle cx="22.1" cy="62.9" r="1.8" fill="#fde68a"/>
+  <circle cx="22.1" cy="33.1" r="1.8" fill="#fca5a5"/>
 </svg>
