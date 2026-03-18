@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Blockchain, GPU Tools, and Memory Libraries - Linea Wiki</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary:#00d4ff; --accent:#8338ec; --text-light:#e0e0e0; --text-muted:#a0a0a0; --border:#1a2f5f; --code-bg:#0f1525; }
+        body { font-family:'Monaco','Courier New',monospace; color:var(--text-light); line-height:1.6; }
+        .container { max-width: 980px; margin: 0 auto; padding: 2rem; }
+        header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); }
+        .breadcrumb { color: var(--text-muted); margin-bottom: 0.8rem; }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        h1 { color: var(--primary); margin-bottom: 0.4rem; }
+        h2 { margin-top: 1.6rem; color: var(--accent); border-left: 3px solid var(--primary); padding-left: 0.7rem; }
+        pre { background: var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:1rem; overflow-x:auto; margin: 0.9rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / Blockchain + GPU + Memory</div>
+            <h1>`blockchain`, `gpu_tools`, and `memory`</h1>
+            <p>Proof-of-work + Merkle helpers, GPU vendor/iGPU discovery, and safe low/mid-level memory handles.</p>
+        </header>
+
+        <h2>Blockchain</h2>
+        <pre>import blockchain
+
+var root = blockchain::merkleRoot(["a", "b", "c"])
+var mined = blockchain::mineBlock(1, "0000", root, 3)
+display root
+display mined</pre>
+
+        <h2>GPU Tools</h2>
+        <pre>import gpu_tools
+
+display gpu_tools::adapters()
+display gpu_tools::bestAdapter()
+display gpu_tools::hasIGPU()
+display gpu_tools::vendorName(0x10DE)</pre>
+
+        <h2>Memory</h2>
+        <pre>import memory
+
+var h = memory::alloc(32)
+memory::writeU8(h, 0, 255)
+display memory::readU8(h, 0)
+display memory::stats()
+memory::free(h)</pre>
+    </div>
+</body>
+</html>

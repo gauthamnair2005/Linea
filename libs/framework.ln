@@ -1,0 +1,17 @@
+# Linea Django-like Framework Library
+
+func framework::newProject(name: string) -> bool {
+  return framework::newProject(name)
+}
+
+func framework::addRoute(projectPath: string, path: string, response: string) -> bool {
+  return framework::addRoute(projectPath, path, response)
+}
+
+func framework::routes(projectPath: string) -> any {
+  return framework::routes(projectPath)
+}
+
+func framework::runDevServer(projectPath: string, host: string, port: int, maxRequests: int) -> bool {
+  return framework::runDevServer(projectPath, host, port, maxRequests)
+}

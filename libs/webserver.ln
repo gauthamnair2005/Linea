@@ -1,0 +1,13 @@
+# Linea Web Server Library
+
+func webserver::serveText(host: string, port: int, body: string, maxRequests: int) -> bool {
+  return webserver::serveText(host, port, body, maxRequests)
+}
+
+func webserver::serveJson(host: string, port: int, jsonBody: string, maxRequests: int) -> bool {
+  return webserver::serveJson(host, port, jsonBody, maxRequests)
+}
+
+func webserver::serveStatic(host: string, port: int, filePath: string, maxRequests: int) -> bool {
+  return webserver::serveStatic(host, port, filePath, maxRequests)
+}

@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.9.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.10.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -160,6 +160,11 @@ Linea provides a rich standard library for modern development:
 | **`git`** | Simple git actions (`status`, `branch`, `log`, `add`, `commit`, `push`, etc.) |
 | **`fun`** | Coin flips, dice rolls, random emoji/jokes/colors, and list choice helper |
 | **`uuid`** | UUID v4 generation and short identifier helper |
+| **`webserver`** | Lightweight HTTP serving primitives (text/json/static) |
+| **`framework`** | Django-like project scaffolding, route registration, and dev server |
+| **`blockchain`** | Merkle roots, proof-of-work mining helper, and chain-link validation |
+| **`gpu_tools`** | GPU adapter/vendor detection for NVIDIA, AMD, Intel, and iGPU checks |
+| **`memory`** | Handle-based low/mid-level memory allocation and byte operations |
 | **`system`** | System operations: threads, files, env vars, process exec, time |
 | **`math`** | Mathematical functions and constants |
 | **`strings`** | String manipulation utilities |
@@ -215,6 +220,20 @@ Linea now includes additional quality-of-life libraries:
 Runnable examples:
 * `examples/git_library_demo.ln`
 * `examples/fun_uuid_demo.ln`
+
+### Platform Library Expansion (v4.10.0)
+
+Linea now includes platform-focused runtime libraries:
+
+* `webserver`: serve text/json/static over HTTP
+* `framework`: Django-like scaffolding + route-driven dev server
+* `blockchain`: hashing + Merkle root + simple proof-of-work
+* `gpu_tools`: adapter/vendor detection (`NVIDIA`, `AMD`, `Intel`) + iGPU checks
+* `memory`: low/mid-level handle-based memory APIs (`alloc`, `readU8`, `writeU8`, `copy`, `stats`)
+
+Runnable examples:
+* `examples/web_framework_demo.ln`
+* `examples/blockchain_gpu_memory_demo.ln`
 
 ### Native GUI Toolkit (v4.7.0)
 

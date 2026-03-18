@@ -1,0 +1,33 @@
+# Linea Memory Management Library
+
+func memory::alloc(size: int) -> int {
+  return memory::alloc(size)
+}
+
+func memory::free(handle: int) -> bool {
+  return memory::free(handle)
+}
+
+func memory::len(handle: int) -> int {
+  return memory::len(handle)
+}
+
+func memory::writeU8(handle: int, offset: int, value: int) -> bool {
+  return memory::writeU8(handle, offset, value)
+}
+
+func memory::readU8(handle: int, offset: int) -> int {
+  return memory::readU8(handle, offset)
+}
+
+func memory::fill(handle: int, value: int) -> bool {
+  return memory::fill(handle, value)
+}
+
+func memory::copy(srcHandle: int, dstHandle: int, size: int) -> bool {
+  return memory::copy(srcHandle, dstHandle, size)
+}
+
+func memory::stats() -> any {
+  return memory::stats()
+}

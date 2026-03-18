@@ -991,6 +991,141 @@ impl RustGenerator {
                             if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
                             Ok(("linea_runtime::uuid::short()".to_string(), "String".to_string()))
                         }
+                        "webserver::serveText" => {
+                            if args.len() != 4 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (host_expr, _) = self.generate_expression(&args[0])?;
+                            let (port_expr, _) = self.generate_expression(&args[1])?;
+                            let (body_expr, _) = self.generate_expression(&args[2])?;
+                            let (max_expr, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::webserver::serve_text({}, {}, {}, {})", host_expr, port_expr, body_expr, max_expr), "bool".to_string()))
+                        }
+                        "webserver::serveJson" => {
+                            if args.len() != 4 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (host_expr, _) = self.generate_expression(&args[0])?;
+                            let (port_expr, _) = self.generate_expression(&args[1])?;
+                            let (body_expr, _) = self.generate_expression(&args[2])?;
+                            let (max_expr, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::webserver::serve_json({}, {}, {}, {})", host_expr, port_expr, body_expr, max_expr), "bool".to_string()))
+                        }
+                        "webserver::serveStatic" => {
+                            if args.len() != 4 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (host_expr, _) = self.generate_expression(&args[0])?;
+                            let (port_expr, _) = self.generate_expression(&args[1])?;
+                            let (file_expr, _) = self.generate_expression(&args[2])?;
+                            let (max_expr, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::webserver::serve_static({}, {}, {}, {})", host_expr, port_expr, file_expr, max_expr), "bool".to_string()))
+                        }
+                        "framework::newProject" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (name_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::framework::new_project({})", name_expr), "bool".to_string()))
+                        }
+                        "framework::addRoute" => {
+                            if args.len() != 3 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (project_expr, _) = self.generate_expression(&args[0])?;
+                            let (path_expr, _) = self.generate_expression(&args[1])?;
+                            let (resp_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::framework::add_route({}, {}, {})", project_expr, path_expr, resp_expr), "bool".to_string()))
+                        }
+                        "framework::routes" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (project_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::framework::routes({})", project_expr), "Vec<String>".to_string()))
+                        }
+                        "framework::runDevServer" => {
+                            if args.len() != 4 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (project_expr, _) = self.generate_expression(&args[0])?;
+                            let (host_expr, _) = self.generate_expression(&args[1])?;
+                            let (port_expr, _) = self.generate_expression(&args[2])?;
+                            let (max_expr, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::framework::run_dev_server({}, {}, {}, {})", project_expr, host_expr, port_expr, max_expr), "bool".to_string()))
+                        }
+                        "blockchain::sha256" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (data_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::blockchain::sha256({})", data_expr), "String".to_string()))
+                        }
+                        "blockchain::merkleRoot" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (tx_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::blockchain::merkle_root(&{})", tx_expr), "String".to_string()))
+                        }
+                        "blockchain::mineBlock" => {
+                            if args.len() != 4 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (index_expr, _) = self.generate_expression(&args[0])?;
+                            let (prev_expr, _) = self.generate_expression(&args[1])?;
+                            let (data_expr, _) = self.generate_expression(&args[2])?;
+                            let (diff_expr, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::blockchain::mine_block({}, {}, {}, {})", index_expr, prev_expr, data_expr, diff_expr), "Vec<String>".to_string()))
+                        }
+                        "blockchain::validateLink" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (prev_expr, _) = self.generate_expression(&args[0])?;
+                            let (cur_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::blockchain::validate_link({}, {})", prev_expr, cur_expr), "bool".to_string()))
+                        }
+                        "gpu_tools::adapters" => {
+                            if !args.is_empty() { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            Ok(("linea_runtime::gpu_tools::adapters()".to_string(), "Vec<String>".to_string()))
+                        }
+                        "gpu_tools::hasIGPU" => {
+                            if !args.is_empty() { return Ok(("false".to_string(), "bool".to_string())); }
+                            Ok(("linea_runtime::gpu_tools::has_igpu()".to_string(), "bool".to_string()))
+                        }
+                        "gpu_tools::vendorName" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (id_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::gpu_tools::vendor_name({})", id_expr), "String".to_string()))
+                        }
+                        "gpu_tools::bestAdapter" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::gpu_tools::best_adapter()".to_string(), "String".to_string()))
+                        }
+                        "memory::alloc" => {
+                            if args.len() != 1 { return Ok(("-1".to_string(), "i64".to_string())); }
+                            let (size_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::memory::alloc({})", size_expr), "i64".to_string()))
+                        }
+                        "memory::free" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (h_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::memory::free({})", h_expr), "bool".to_string()))
+                        }
+                        "memory::len" => {
+                            if args.len() != 1 { return Ok(("-1".to_string(), "i64".to_string())); }
+                            let (h_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::memory::len({})", h_expr), "i64".to_string()))
+                        }
+                        "memory::writeU8" => {
+                            if args.len() != 3 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (h_expr, _) = self.generate_expression(&args[0])?;
+                            let (off_expr, _) = self.generate_expression(&args[1])?;
+                            let (val_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::memory::write_u8({}, {}, {})", h_expr, off_expr, val_expr), "bool".to_string()))
+                        }
+                        "memory::readU8" => {
+                            if args.len() != 2 { return Ok(("-1".to_string(), "i64".to_string())); }
+                            let (h_expr, _) = self.generate_expression(&args[0])?;
+                            let (off_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::memory::read_u8({}, {})", h_expr, off_expr), "i64".to_string()))
+                        }
+                        "memory::fill" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (h_expr, _) = self.generate_expression(&args[0])?;
+                            let (val_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::memory::fill({}, {})", h_expr, val_expr), "bool".to_string()))
+                        }
+                        "memory::copy" => {
+                            if args.len() != 3 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (src_expr, _) = self.generate_expression(&args[0])?;
+                            let (dst_expr, _) = self.generate_expression(&args[1])?;
+                            let (size_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::memory::copy({}, {}, {})", src_expr, dst_expr, size_expr), "bool".to_string()))
+                        }
+                        "memory::stats" => {
+                            if !args.is_empty() { return Ok(("vec![]".to_string(), "Vec<i64>".to_string())); }
+                            Ok(("linea_runtime::memory::stats()".to_string(), "Vec<i64>".to_string()))
+                        }
                         // ... Add other intrinsics here ... 
                         // For brevity, skipping exhaustive list, but keeping important ones.
                         // Ideally we should copy all from original file.

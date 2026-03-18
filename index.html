@@ -425,7 +425,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.9.0</span>
+                <span class="version-badge">v4.10.0</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -569,6 +569,8 @@ fn main() {
                     <li>✓ <strong>markdown</strong> - Markdown parsing</li>
                     <li>✓ <strong>hash/security</strong> - Hashing + token/password helpers</li>
                     <li>✓ <strong>fileio/lowlevel</strong> - Explicit files + bit/byte primitives</li>
+                    <li>✓ <strong>webserver/framework</strong> - HTTP + Django-like tooling</li>
+                    <li>✓ <strong>blockchain/gpu_tools/memory</strong> - PoW, GPU vendor tools, memory handles</li>
                     <li>✓ <strong>math</strong> - Mathematical functions</li>
                     <li>✓ <strong>strings</strong> - String manipulation</li>
                     <li>✓ <strong>utils</strong> - General utilities</li>
@@ -578,7 +580,7 @@ fn main() {
     </section>
 
     <section>
-        <h2>🌟 v4.9.0 Highlights</h2>
+        <h2>🌟 v4.10.0 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -600,8 +602,8 @@ fn main() {
         </div>
 
         <div class="showcase">
-            <h3>🔬 Expanded Tooling + Utility Stack</h3>
-            <p>Linea v4.9.0 adds `git`, `fun`, and `uuid` modules while preserving the v4.8 security/systems stack.</p>
+            <h3>🔬 Platform Stack Expansion</h3>
+            <p>Linea v4.10.0 adds web/framework, blockchain, GPU vendor/iGPU tooling, and robust memory management primitives.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">
@@ -624,6 +626,11 @@ fn main() {
                 <li><strong>Git library</strong> - <code>git::status</code>, <code>git::currentBranch</code>, <code>git::log</code>, <code>git::add</code>, <code>git::commit</code></li>
                 <li><strong>Fun library</strong> - <code>fun::coinFlip</code>, <code>fun::rollDice</code>, <code>fun::randomEmoji</code>, <code>fun::choose</code></li>
                 <li><strong>UUID library</strong> - <code>uuid::v4</code> and <code>uuid::short</code></li>
+                <li><strong>Web server</strong> - <code>webserver::serveText</code>, <code>serveJson</code>, <code>serveStatic</code></li>
+                <li><strong>Django-like framework</strong> - <code>framework::newProject</code>, <code>addRoute</code>, <code>runDevServer</code></li>
+                <li><strong>Blockchain toolkit</strong> - <code>blockchain::merkleRoot</code>, <code>mineBlock</code>, <code>validateLink</code></li>
+                <li><strong>GPU vendor tools</strong> - <code>gpu_tools::adapters</code>, <code>bestAdapter</code>, <code>hasIGPU</code></li>
+                <li><strong>Memory manager</strong> - <code>memory::alloc</code>, <code>writeU8</code>, <code>readU8</code>, <code>copy</code>, <code>stats</code></li>
             </ul>
         </div>
     </section>

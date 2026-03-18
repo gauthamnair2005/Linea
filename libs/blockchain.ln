@@ -1,0 +1,17 @@
+# Linea Blockchain Utilities Library
+
+func blockchain::sha256(data: string) -> string {
+  return blockchain::sha256(data)
+}
+
+func blockchain::merkleRoot(transactions: any) -> string {
+  return blockchain::merkleRoot(transactions)
+}
+
+func blockchain::mineBlock(index: int, previousHash: string, data: string, difficulty: int) -> any {
+  return blockchain::mineBlock(index, previousHash, data, difficulty)
+}
+
+func blockchain::validateLink(previousHash: string, currentPreviousHash: string) -> bool {
+  return blockchain::validateLink(previousHash, currentPreviousHash)
+}

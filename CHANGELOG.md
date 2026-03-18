@@ -1,5 +1,28 @@
 # Linea Changelog
 
+## [4.10.0] - 2026-03-18
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added new platform-oriented runtime modules:
+  - `webserver` with lightweight HTTP serving primitives (`serveText`, `serveJson`, `serveStatic`)
+  - `framework` with Django-like scaffolding and route-driven dev server utilities
+  - `blockchain` with SHA-256 utilities, Merkle root generation, simple PoW mining, and chain-link validation
+  - `gpu_tools` with adapter enumeration, NVIDIA/AMD/Intel vendor labeling, and iGPU detection helpers
+  - `memory` with handle-based low/mid-level memory APIs (`alloc`, `free`, `readU8`, `writeU8`, `copy`, `fill`, `stats`)
+- Added generated-build dependency `tiny_http` for HTTP/framework serving support.
+- Added codegen intrinsic mappings and stdlib wrappers:
+  - `libs/webserver.ln`, `libs/framework.ln`, `libs/blockchain.ln`, `libs/gpu_tools.ln`, `libs/memory.ln`
+- Added runnable examples:
+  - `examples/web_framework_demo.ln`
+  - `examples/blockchain_gpu_memory_demo.ln`
+- Added and linked wiki pages:
+  - `docs/wiki-web-framework.html`
+  - `docs/wiki-blockchain-gpu-memory.html`
+- Updated docs/website/version references to `4.10.0`.
+
 ## [4.9.0] - 2026-03-18
 
 ### SemVer Type

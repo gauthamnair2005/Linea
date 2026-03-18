@@ -1,0 +1,17 @@
+# Linea GPU Vendor Tools Library
+
+func gpu_tools::adapters() -> any {
+  return gpu_tools::adapters()
+}
+
+func gpu_tools::hasIGPU() -> bool {
+  return gpu_tools::hasIGPU()
+}
+
+func gpu_tools::vendorName(vendorId: int) -> string {
+  return gpu_tools::vendorName(vendorId)
+}
+
+func gpu_tools::bestAdapter() -> string {
+  return gpu_tools::bestAdapter()
+}

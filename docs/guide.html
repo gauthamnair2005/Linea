@@ -449,6 +449,29 @@ display uuid::short()</pre>
         </div>
 
         <div class="section">
+            <h2>3.5 Web + Framework + Blockchain + GPU + Memory (v4.10.0)</h2>
+
+            <h3>Web + Framework</h3>
+            <pre>import framework
+
+framework::newProject("myapp")
+framework::addRoute("myapp", "/", "Hello from Linea")
+framework::runDevServer("myapp", "127.0.0.1", 8080, 1)</pre>
+
+            <h3>Blockchain + GPU + Memory</h3>
+            <pre>import blockchain
+import gpu_tools
+import memory
+
+display blockchain::merkleRoot(["a", "b", "c"])
+display gpu_tools::bestAdapter()
+var h = memory::alloc(16)
+memory::writeU8(h, 0, 255)
+display memory::readU8(h, 0)
+memory::free(h)</pre>
+        </div>
+
+        <div class="section">
             <h2>4. Control Flow</h2>
             
             <h3>If/Else</h3>

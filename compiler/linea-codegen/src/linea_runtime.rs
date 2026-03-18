@@ -2031,6 +2031,380 @@ pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
         }
     }
 
+    pub mod webserver {
+        use tiny_http::{Header, Response, Server, StatusCode};
+
+        pub fn serve_text(host: String, port: i64, body: String, max_requests: i64) -> bool {
+            let addr = format!("{}:{}", host, port);
+            let server = match Server::http(&addr) {
+                Ok(s) => s,
+                Err(_) => return false,
+            };
+            let n = if max_requests <= 0 { 1 } else { max_requests as usize };
+            for rq in server.incoming_requests().take(n) {
+                let mut response = Response::from_string(body.clone()).with_status_code(StatusCode(200));
+                if let Ok(h) = Header::from_bytes(b"Content-Type", b"text/plain; charset=utf-8") {
+                    response.add_header(h);
+                }
+                let _ = rq.respond(response);
+            }
+            true
+        }
+
+        pub fn serve_json(host: String, port: i64, json_body: String, max_requests: i64) -> bool {
+            let addr = format!("{}:{}", host, port);
+            let server = match Server::http(&addr) {
+                Ok(s) => s,
+                Err(_) => return false,
+            };
+            let n = if max_requests <= 0 { 1 } else { max_requests as usize };
+            for rq in server.incoming_requests().take(n) {
+                let mut response = Response::from_string(json_body.clone()).with_status_code(StatusCode(200));
+                if let Ok(h) = Header::from_bytes(b"Content-Type", b"application/json") {
+                    response.add_header(h);
+                }
+                let _ = rq.respond(response);
+            }
+            true
+        }
+
+        pub fn serve_static(host: String, port: i64, file_path: String, max_requests: i64) -> bool {
+            let content = match std::fs::read(&file_path) {
+                Ok(c) => c,
+                Err(_) => return false,
+            };
+            let addr = format!("{}:{}", host, port);
+            let server = match Server::http(&addr) {
+                Ok(s) => s,
+                Err(_) => return false,
+            };
+            let n = if max_requests <= 0 { 1 } else { max_requests as usize };
+            for rq in server.incoming_requests().take(n) {
+                let response = Response::from_data(content.clone()).with_status_code(StatusCode(200));
+                let _ = rq.respond(response);
+            }
+            true
+        }
+    }
+
+    pub mod framework {
+        use tiny_http::{Header, Response, Server, StatusCode};
+
+        fn routes_path(project_path: &str) -> String {
+            format!("{}/app/routes.txt", project_path)
+        }
+
+        pub fn new_project(name: String) -> bool {
+            let root = std::path::Path::new(&name);
+            if std::fs::create_dir_all(root.join("app")).is_err() {
+                return false;
+            }
+            if std::fs::create_dir_all(root.join("templates")).is_err() {
+                return false;
+            }
+            if std::fs::create_dir_all(root.join("static")).is_err() {
+                return false;
+            }
+            let routes_file = root.join("app/routes.txt");
+            if std::fs::write(&routes_file, "/|Welcome to Linea Framework\n").is_err() {
+                return false;
+            }
+            let settings = "DEBUG=true\nAPP_NAME=LineaApp\n";
+            std::fs::write(root.join("settings.env"), settings).is_ok()
+        }
+
+        pub fn add_route(project_path: String, path: String, response: String) -> bool {
+            let route_line = format!("{}|{}\n", path, response.replace('\n', "\\n"));
+            let route_file = routes_path(&project_path);
+            let mut file = match std::fs::OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(route_file)
+            {
+                Ok(f) => f,
+                Err(_) => return false,
+            };
+            use std::io::Write;
+            file.write_all(route_line.as_bytes()).is_ok()
+        }
+
+        pub fn routes(project_path: String) -> Vec<String> {
+            let route_file = routes_path(&project_path);
+            std::fs::read_to_string(route_file)
+                .map(|s| s.lines().map(|x| x.to_string()).collect())
+                .unwrap_or_default()
+        }
+
+        pub fn run_dev_server(project_path: String, host: String, port: i64, max_requests: i64) -> bool {
+            let route_lines = routes(project_path);
+            let mut table = std::collections::HashMap::new();
+            for line in route_lines {
+                if let Some((p, v)) = line.split_once('|') {
+                    table.insert(p.to_string(), v.replace("\\n", "\n"));
+                }
+            }
+            if !table.contains_key("/") {
+                table.insert("/".to_string(), "Linea Framework Home".to_string());
+            }
+
+            let addr = format!("{}:{}", host, port);
+            let server = match Server::http(&addr) {
+                Ok(s) => s,
+                Err(_) => return false,
+            };
+            let n = if max_requests <= 0 { 1 } else { max_requests as usize };
+            for rq in server.incoming_requests().take(n) {
+                let url = rq.url().to_string();
+                let body = table
+                    .get(&url)
+                    .cloned()
+                    .unwrap_or_else(|| "404 Not Found".to_string());
+                let status = if table.contains_key(&url) { 200 } else { 404 };
+                let mut response = Response::from_string(body).with_status_code(StatusCode(status));
+                if let Ok(h) = Header::from_bytes(b"Content-Type", b"text/plain; charset=utf-8") {
+                    response.add_header(h);
+                }
+                let _ = rq.respond(response);
+            }
+            true
+        }
+    }
+
+    pub mod blockchain {
+        use sha2::{Digest, Sha256};
+        use std::time::{SystemTime, UNIX_EPOCH};
+
+        pub fn sha256(data: String) -> String {
+            let mut hasher = Sha256::new();
+            hasher.update(data.as_bytes());
+            super::hex_encode(&hasher.finalize())
+        }
+
+        pub fn merkle_root(transactions: &Vec<String>) -> String {
+            if transactions.is_empty() {
+                return sha256(String::new());
+            }
+            let mut layer: Vec<String> = transactions.iter().map(|t| sha256(t.clone())).collect();
+            while layer.len() > 1 {
+                let mut next = Vec::new();
+                let mut i = 0usize;
+                while i < layer.len() {
+                    let left = layer[i].clone();
+                    let right = if i + 1 < layer.len() { layer[i + 1].clone() } else { left.clone() };
+                    next.push(sha256(format!("{}{}", left, right)));
+                    i += 2;
+                }
+                layer = next;
+            }
+            layer[0].clone()
+        }
+
+        pub fn mine_block(index: i64, previous_hash: String, data: String, difficulty: i64) -> Vec<String> {
+            let target = "0".repeat(difficulty.max(0) as usize);
+            let ts = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .map(|d| d.as_secs() as i64)
+                .unwrap_or(0);
+            let mut nonce = 0i64;
+            loop {
+                let payload = format!("{}|{}|{}|{}|{}", index, previous_hash, data, ts, nonce);
+                let hash = sha256(payload);
+                if target.is_empty() || hash.starts_with(&target) {
+                    return vec![hash, nonce.to_string(), ts.to_string()];
+                }
+                nonce += 1;
+                if nonce > 2_000_000 {
+                    return vec![String::new(), nonce.to_string(), ts.to_string()];
+                }
+            }
+        }
+
+        pub fn validate_link(previous_hash: String, current_previous_hash: String) -> bool {
+            previous_hash == current_previous_hash
+        }
+    }
+
+    pub mod gpu_tools {
+        use wgpu::{Backends, DeviceType, Instance};
+
+        fn adapters_info() -> Vec<(String, u32, DeviceType)> {
+            let instance = Instance::new(wgpu::InstanceDescriptor {
+                backends: Backends::all(),
+                ..Default::default()
+            });
+            instance
+                .enumerate_adapters(Backends::all())
+                .map(|a| {
+                    let info = a.get_info();
+                    (info.name, info.vendor, info.device_type)
+                })
+                .collect()
+        }
+
+        pub fn adapters() -> Vec<String> {
+            adapters_info()
+                .into_iter()
+                .map(|(name, vendor, ty)| format!("{}|vendor=0x{:04X}|type={:?}", name, vendor, ty))
+                .collect()
+        }
+
+        pub fn has_igpu() -> bool {
+            adapters_info().into_iter().any(|(_, _, ty)| matches!(ty, DeviceType::IntegratedGpu))
+        }
+
+        pub fn vendor_name(vendor_id: i64) -> String {
+            match vendor_id as u32 {
+                0x10DE => "NVIDIA".to_string(),
+                0x8086 => "Intel".to_string(),
+                0x1002 | 0x1022 => "AMD".to_string(),
+                _ => "Unknown".to_string(),
+            }
+        }
+
+        pub fn best_adapter() -> String {
+            let mut best: Option<(String, i32)> = None;
+            for (name, vendor, ty) in adapters_info() {
+                let vendor_score = match vendor {
+                    0x10DE | 0x1002 | 0x1022 | 0x8086 => 5,
+                    _ => 1,
+                };
+                let type_score = match ty {
+                    DeviceType::DiscreteGpu => 50,
+                    DeviceType::IntegratedGpu => 40,
+                    DeviceType::VirtualGpu => 30,
+                    DeviceType::Cpu => 10,
+                    DeviceType::Other => 20,
+                };
+                let score = vendor_score + type_score;
+                match &best {
+                    Some((_, cur)) if *cur >= score => {}
+                    _ => best = Some((name, score)),
+                }
+            }
+            best.map(|(n, _)| n).unwrap_or_default()
+        }
+    }
+
+    pub mod memory {
+        use std::collections::HashMap;
+        use std::sync::atomic::{AtomicI64, Ordering};
+        use std::sync::{Mutex, OnceLock};
+
+        static NEXT_HANDLE: AtomicI64 = AtomicI64::new(1);
+        static BUFFERS: OnceLock<Mutex<HashMap<i64, Vec<u8>>>> = OnceLock::new();
+
+        fn store() -> &'static Mutex<HashMap<i64, Vec<u8>>> {
+            BUFFERS.get_or_init(|| Mutex::new(HashMap::new()))
+        }
+
+        pub fn alloc(size: i64) -> i64 {
+            if size <= 0 {
+                return -1;
+            }
+            let handle = NEXT_HANDLE.fetch_add(1, Ordering::Relaxed);
+            if let Ok(mut s) = store().lock() {
+                s.insert(handle, vec![0u8; size as usize]);
+                return handle;
+            }
+            -1
+        }
+
+        pub fn free(handle: i64) -> bool {
+            store().lock().ok().and_then(|mut s| s.remove(&handle)).is_some()
+        }
+
+        pub fn len(handle: i64) -> i64 {
+            store()
+                .lock()
+                .ok()
+                .and_then(|s| s.get(&handle).map(|b| b.len() as i64))
+                .unwrap_or(-1)
+        }
+
+        pub fn write_u8(handle: i64, offset: i64, value: i64) -> bool {
+            if offset < 0 {
+                return false;
+            }
+            let mut s = match store().lock() {
+                Ok(v) => v,
+                Err(_) => return false,
+            };
+            let buf = match s.get_mut(&handle) {
+                Some(b) => b,
+                None => return false,
+            };
+            let idx = offset as usize;
+            if idx >= buf.len() {
+                return false;
+            }
+            buf[idx] = value.clamp(0, 255) as u8;
+            true
+        }
+
+        pub fn read_u8(handle: i64, offset: i64) -> i64 {
+            if offset < 0 {
+                return -1;
+            }
+            let s = match store().lock() {
+                Ok(v) => v,
+                Err(_) => return -1,
+            };
+            let buf = match s.get(&handle) {
+                Some(b) => b,
+                None => return -1,
+            };
+            let idx = offset as usize;
+            if idx >= buf.len() {
+                return -1;
+            }
+            buf[idx] as i64
+        }
+
+        pub fn fill(handle: i64, value: i64) -> bool {
+            let mut s = match store().lock() {
+                Ok(v) => v,
+                Err(_) => return false,
+            };
+            let buf = match s.get_mut(&handle) {
+                Some(b) => b,
+                None => return false,
+            };
+            buf.fill(value.clamp(0, 255) as u8);
+            true
+        }
+
+        pub fn copy(src_handle: i64, dst_handle: i64, size: i64) -> bool {
+            if size < 0 {
+                return false;
+            }
+            let mut s = match store().lock() {
+                Ok(v) => v,
+                Err(_) => return false,
+            };
+            let src_snapshot = match s.get(&src_handle) {
+                Some(b) => b.clone(),
+                None => return false,
+            };
+            let dst = match s.get_mut(&dst_handle) {
+                Some(b) => b,
+                None => return false,
+            };
+            let n = (size as usize).min(src_snapshot.len()).min(dst.len());
+            dst[..n].copy_from_slice(&src_snapshot[..n]);
+            true
+        }
+
+        pub fn stats() -> Vec<i64> {
+            let s = match store().lock() {
+                Ok(v) => v,
+                Err(_) => return vec![0, 0],
+            };
+            let count = s.len() as i64;
+            let total = s.values().map(|b| b.len() as i64).sum::<i64>();
+            vec![count, total]
+        }
+    }
+
     pub mod gui {
         use iced::widget::{button, column, text};
         use iced::{Application, Command, Element, Settings, Theme};

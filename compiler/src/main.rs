@@ -146,6 +146,7 @@ pollster = "0.3"
 bytemuck = {{ version = "1.14", features = ["derive"] }}
 futures = "0.3"
 iced = "0.13"
+tiny_http = "0.12"
 "#, project_name);
 
                     fs::write(build_dir.join("Cargo.toml"), cargo_toml).expect("Failed to write Cargo.toml");
