@@ -1,0 +1,53 @@
+# Linea Git Library
+
+func git::isRepo(repoPath: string) -> bool {
+  return git::isRepo(repoPath)
+}
+
+func git::status(repoPath: string) -> string {
+  return git::status(repoPath)
+}
+
+func git::currentBranch(repoPath: string) -> string {
+  return git::currentBranch(repoPath)
+}
+
+func git::lastCommit(repoPath: string) -> string {
+  return git::lastCommit(repoPath)
+}
+
+func git::log(repoPath: string, count: int) -> any {
+  return git::log(repoPath, count)
+}
+
+func git::diff(repoPath: string) -> string {
+  return git::diff(repoPath)
+}
+
+func git::add(repoPath: string, spec: string) -> bool {
+  return git::add(repoPath, spec)
+}
+
+func git::commit(repoPath: string, message: string) -> bool {
+  return git::commit(repoPath, message)
+}
+
+func git::push(repoPath: string, remote: string, branch: string) -> bool {
+  return git::push(repoPath, remote, branch)
+}
+
+func git::pull(repoPath: string, remote: string, branch: string) -> bool {
+  return git::pull(repoPath, remote, branch)
+}
+
+func git::checkout(repoPath: string, target: string) -> bool {
+  return git::checkout(repoPath, target)
+}
+
+func git::init(repoPath: string) -> bool {
+  return git::init(repoPath)
+}
+
+func git::clone(url: string, destination: string) -> bool {
+  return git::clone(url, destination)
+}

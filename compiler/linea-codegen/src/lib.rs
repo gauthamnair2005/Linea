@@ -883,6 +883,114 @@ impl RustGenerator {
                             if !args.is_empty() { return Ok(("0".to_string(), "i64".to_string())); }
                             Ok(("linea_runtime::lowlevel::pointer_size()".to_string(), "i64".to_string()))
                         }
+                        "git::isRepo" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::git::is_repo({})", repo_expr), "bool".to_string()))
+                        }
+                        "git::status" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::git::status({})", repo_expr), "String".to_string()))
+                        }
+                        "git::currentBranch" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::git::current_branch({})", repo_expr), "String".to_string()))
+                        }
+                        "git::lastCommit" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::git::last_commit({})", repo_expr), "String".to_string()))
+                        }
+                        "git::log" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            let (count_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::git::log({}, {})", repo_expr, count_expr), "Vec<String>".to_string()))
+                        }
+                        "git::diff" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::git::diff({})", repo_expr), "String".to_string()))
+                        }
+                        "git::add" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            let (spec_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::git::add({}, {})", repo_expr, spec_expr), "bool".to_string()))
+                        }
+                        "git::commit" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            let (msg_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::git::commit({}, {})", repo_expr, msg_expr), "bool".to_string()))
+                        }
+                        "git::push" => {
+                            if args.len() != 3 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            let (remote_expr, _) = self.generate_expression(&args[1])?;
+                            let (branch_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::git::push({}, {}, {})", repo_expr, remote_expr, branch_expr), "bool".to_string()))
+                        }
+                        "git::pull" => {
+                            if args.len() != 3 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            let (remote_expr, _) = self.generate_expression(&args[1])?;
+                            let (branch_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::git::pull({}, {}, {})", repo_expr, remote_expr, branch_expr), "bool".to_string()))
+                        }
+                        "git::checkout" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            let (target_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::git::checkout({}, {})", repo_expr, target_expr), "bool".to_string()))
+                        }
+                        "git::init" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (repo_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::git::init({})", repo_expr), "bool".to_string()))
+                        }
+                        "git::clone" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (url_expr, _) = self.generate_expression(&args[0])?;
+                            let (dest_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::git::clone({}, {})", url_expr, dest_expr), "bool".to_string()))
+                        }
+                        "fun::coinFlip" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::fun::coin_flip()".to_string(), "String".to_string()))
+                        }
+                        "fun::rollDice" => {
+                            if args.len() != 1 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (sides_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fun::roll_dice({})", sides_expr), "i64".to_string()))
+                        }
+                        "fun::randomEmoji" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::fun::random_emoji()".to_string(), "String".to_string()))
+                        }
+                        "fun::randomJoke" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::fun::random_joke()".to_string(), "String".to_string()))
+                        }
+                        "fun::randomColor" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::fun::random_color()".to_string(), "String".to_string()))
+                        }
+                        "fun::choose" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (opts_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fun::choose(&{})", opts_expr), "String".to_string()))
+                        }
+                        "uuid::v4" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::uuid::v4()".to_string(), "String".to_string()))
+                        }
+                        "uuid::short" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::uuid::short()".to_string(), "String".to_string()))
+                        }
                         // ... Add other intrinsics here ... 
                         // For brevity, skipping exhaustive list, but keeping important ones.
                         // Ideally we should copy all from original file.

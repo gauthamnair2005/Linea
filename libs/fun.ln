@@ -1,0 +1,25 @@
+# Linea Fun Library
+
+func fun::coinFlip() -> string {
+  return fun::coinFlip()
+}
+
+func fun::rollDice(sides: int) -> int {
+  return fun::rollDice(sides)
+}
+
+func fun::randomEmoji() -> string {
+  return fun::randomEmoji()
+}
+
+func fun::randomJoke() -> string {
+  return fun::randomJoke()
+}
+
+func fun::randomColor() -> string {
+  return fun::randomColor()
+}
+
+func fun::choose(options: any) -> string {
+  return fun::choose(options)
+}

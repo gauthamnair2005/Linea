@@ -427,6 +427,28 @@ display lowlevel::toBytesLE(1337)</pre>
         </div>
 
         <div class="section">
+            <h2>3.4 Git + Fun + UUID Libraries (v4.9.0)</h2>
+
+            <h3>Git Actions</h3>
+            <pre>import git
+
+display git::isRepo(".")
+display git::currentBranch(".")
+display git::status(".")
+display git::log(".", 5)</pre>
+
+            <h3>Fun + UUID Helpers</h3>
+            <pre>import fun
+import uuid
+
+display fun::coinFlip()
+display fun::rollDice(20)
+display fun::randomEmoji()
+display uuid::v4()
+display uuid::short()</pre>
+        </div>
+
+        <div class="section">
             <h2>4. Control Flow</h2>
             
             <h3>If/Else</h3>

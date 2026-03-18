@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Git Library - Linea Wiki</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary:#00d4ff; --accent:#8338ec; --text-light:#e0e0e0; --text-muted:#a0a0a0; --border:#1a2f5f; --code-bg:#0f1525; }
+        body { font-family:'Monaco','Courier New',monospace; color:var(--text-light); line-height:1.6; }
+        .container { max-width: 980px; margin: 0 auto; padding: 2rem; }
+        header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); }
+        .breadcrumb { color: var(--text-muted); margin-bottom: 0.8rem; }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        h1 { color: var(--primary); margin-bottom: 0.4rem; }
+        h2 { margin-top: 1.6rem; color: var(--accent); border-left: 3px solid var(--primary); padding-left: 0.7rem; }
+        pre { background: var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:1rem; overflow-x:auto; margin: 0.9rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / Git Library</div>
+            <h1>`git` Standard Library</h1>
+            <p>Simple function-first wrappers around common Git actions.</p>
+        </header>
+
+        <h2>Read-Only APIs</h2>
+        <pre>import git
+
+display git::isRepo(".")
+display git::currentBranch(".")
+display git::lastCommit(".")
+display git::status(".")
+display git::log(".", 5)
+display git::diff(".")</pre>
+
+        <h2>Action APIs</h2>
+        <pre>git::add(".", ".")
+git::commit(".", "update docs")
+git::push(".", "origin", "main")
+git::pull(".", "origin", "main")
+git::checkout(".", "feature/new-branch")</pre>
+    </div>
+</body>
+</html>

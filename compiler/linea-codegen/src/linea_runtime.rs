@@ -1866,6 +1866,171 @@ pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
         }
     }
 
+    pub mod git {
+        use std::process::Command;
+
+        fn run_git(repo_path: &str, args: &[&str]) -> Result<String, String> {
+            let output = Command::new("git")
+                .arg("-C")
+                .arg(repo_path)
+                .args(args)
+                .output()
+                .map_err(|e| format!("git invocation failed: {}", e))?;
+
+            if output.status.success() {
+                Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
+            } else {
+                Err(String::from_utf8_lossy(&output.stderr).trim().to_string())
+            }
+        }
+
+        pub fn is_repo(repo_path: String) -> bool {
+            run_git(&repo_path, &["rev-parse", "--is-inside-work-tree"])
+                .map(|s| s == "true")
+                .unwrap_or(false)
+        }
+
+        pub fn status(repo_path: String) -> String {
+            run_git(&repo_path, &["status", "--short", "--branch"]).unwrap_or_default()
+        }
+
+        pub fn current_branch(repo_path: String) -> String {
+            run_git(&repo_path, &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_default()
+        }
+
+        pub fn last_commit(repo_path: String) -> String {
+            run_git(&repo_path, &["log", "-1", "--pretty=%H"]).unwrap_or_default()
+        }
+
+        pub fn log(repo_path: String, count: i64) -> Vec<String> {
+            let n = if count <= 0 { 1 } else { count };
+            let n_str = format!("-{}", n);
+            run_git(&repo_path, &["log", &n_str, "--pretty=%h %s"])
+                .map(|s| s.lines().map(|x| x.to_string()).collect())
+                .unwrap_or_default()
+        }
+
+        pub fn diff(repo_path: String) -> String {
+            run_git(&repo_path, &["diff"]).unwrap_or_default()
+        }
+
+        pub fn add(repo_path: String, spec: String) -> bool {
+            run_git(&repo_path, &["add", &spec]).is_ok()
+        }
+
+        pub fn commit(repo_path: String, message: String) -> bool {
+            run_git(&repo_path, &["commit", "-m", &message]).is_ok()
+        }
+
+        pub fn push(repo_path: String, remote: String, branch: String) -> bool {
+            run_git(&repo_path, &["push", &remote, &branch]).is_ok()
+        }
+
+        pub fn pull(repo_path: String, remote: String, branch: String) -> bool {
+            run_git(&repo_path, &["pull", &remote, &branch]).is_ok()
+        }
+
+        pub fn checkout(repo_path: String, target: String) -> bool {
+            run_git(&repo_path, &["checkout", &target]).is_ok()
+        }
+
+        pub fn init(repo_path: String) -> bool {
+            Command::new("git")
+                .arg("init")
+                .arg(repo_path)
+                .output()
+                .map(|o| o.status.success())
+                .unwrap_or(false)
+        }
+
+        pub fn clone(url: String, destination: String) -> bool {
+            Command::new("git")
+                .arg("clone")
+                .arg(url)
+                .arg(destination)
+                .output()
+                .map(|o| o.status.success())
+                .unwrap_or(false)
+        }
+    }
+
+    pub mod fun {
+        use rand::Rng;
+
+        pub fn coin_flip() -> String {
+            if rand::thread_rng().gen_bool(0.5) {
+                "Heads".to_string()
+            } else {
+                "Tails".to_string()
+            }
+        }
+
+        pub fn roll_dice(sides: i64) -> i64 {
+            let max = if sides < 2 { 6 } else { sides };
+            rand::thread_rng().gen_range(1..=max)
+        }
+
+        pub fn random_emoji() -> String {
+            let emojis = ["🚀", "🎯", "🧠", "🎮", "🌟", "🔥", "✨", "🎲", "🛠️", "📦"];
+            let idx = rand::thread_rng().gen_range(0..emojis.len());
+            emojis[idx].to_string()
+        }
+
+        pub fn random_joke() -> String {
+            let jokes = [
+                "I told my code to be clean. It deleted itself.",
+                "There are 10 kinds of people: those who get binary and those who don't.",
+                "A bug is never alone, it always has stack traces.",
+                "Works on my machine is not a deployment strategy.",
+                "My favorite data structure is coffee."
+            ];
+            let idx = rand::thread_rng().gen_range(0..jokes.len());
+            jokes[idx].to_string()
+        }
+
+        pub fn random_color() -> String {
+            let mut rng = rand::thread_rng();
+            format!("#{:02X}{:02X}{:02X}", rng.gen::<u8>(), rng.gen::<u8>(), rng.gen::<u8>())
+        }
+
+        pub fn choose(options: &Vec<String>) -> String {
+            if options.is_empty() {
+                return String::new();
+            }
+            let idx = rand::thread_rng().gen_range(0..options.len());
+            options[idx].clone()
+        }
+    }
+
+    pub mod uuid {
+        use rand::Rng;
+
+        pub fn v4() -> String {
+            let mut bytes = [0u8; 16];
+            rand::thread_rng().fill(&mut bytes);
+            bytes[6] = (bytes[6] & 0x0f) | 0x40;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            format!(
+                "{:08x}-{:04x}-{:04x}-{:04x}-{:012x}",
+                ((bytes[0] as u32) << 24) | ((bytes[1] as u32) << 16) | ((bytes[2] as u32) << 8) | (bytes[3] as u32),
+                ((bytes[4] as u16) << 8) | (bytes[5] as u16),
+                ((bytes[6] as u16) << 8) | (bytes[7] as u16),
+                ((bytes[8] as u16) << 8) | (bytes[9] as u16),
+                ((bytes[10] as u64) << 40)
+                    | ((bytes[11] as u64) << 32)
+                    | ((bytes[12] as u64) << 24)
+                    | ((bytes[13] as u64) << 16)
+                    | ((bytes[14] as u64) << 8)
+                    | (bytes[15] as u64)
+            )
+        }
+
+        pub fn short() -> String {
+            let full = v4();
+            full.split('-').next().unwrap_or_default().to_string()
+        }
+    }
+
     pub mod gui {
         use iced::widget::{button, column, text};
         use iced::{Application, Command, Element, Settings, Theme};

@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.8.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.9.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -157,6 +157,9 @@ Linea provides a rich standard library for modern development:
 | **`security`** | Tokens/random bytes, password strength scoring, hash/verify helpers |
 | **`fileio`** | Explicit file and directory operations for text/binary workflows |
 | **`lowlevel`** | Bitwise operators and integer-byte conversion utilities |
+| **`git`** | Simple git actions (`status`, `branch`, `log`, `add`, `commit`, `push`, etc.) |
+| **`fun`** | Coin flips, dice rolls, random emoji/jokes/colors, and list choice helper |
+| **`uuid`** | UUID v4 generation and short identifier helper |
 | **`system`** | System operations: threads, files, env vars, process exec, time |
 | **`math`** | Mathematical functions and constants |
 | **`strings`** | String manipulation utilities |
@@ -200,6 +203,18 @@ Linea now includes dedicated modules for hashing/security, explicit file I/O, lo
 * Low-level: `lowlevel::bitAnd`, `bitOr`, `bitXor`, `shl`, `shr`, `toBytesLE`, `fromBytesLE`
 
 Runnable example: `examples/db_fileio_lowlevel_demo.ln` and `examples/hash_security_demo.ln`
+
+### Fun + Git + Utility Expansion (v4.9.0)
+
+Linea now includes additional quality-of-life libraries:
+
+* Git library: `git::status`, `git::currentBranch`, `git::log`, `git::add`, `git::commit`, `git::push`, `git::pull`, `git::checkout`
+* Fun library: `fun::coinFlip`, `fun::rollDice`, `fun::randomEmoji`, `fun::randomJoke`, `fun::choose`
+* UUID library: `uuid::v4`, `uuid::short`
+
+Runnable examples:
+* `examples/git_library_demo.ln`
+* `examples/fun_uuid_demo.ln`
 
 ### Native GUI Toolkit (v4.7.0)
 

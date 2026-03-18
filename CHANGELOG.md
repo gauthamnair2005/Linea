@@ -1,5 +1,28 @@
 # Linea Changelog
 
+## [4.9.0] - 2026-03-18
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added native compiled-runtime support for additional libraries:
+  - `git` for simple git actions (`isRepo`, `status`, `currentBranch`, `lastCommit`, `log`, `diff`, `add`, `commit`, `push`, `pull`, `checkout`, `init`, `clone`)
+  - `fun` for random/fun helpers (`coinFlip`, `rollDice`, `randomEmoji`, `randomJoke`, `randomColor`, `choose`)
+  - `uuid` for ID helpers (`v4`, `short`)
+- Added codegen intrinsic mappings for `git::*`, `fun::*`, and `uuid::*` in compiled mode.
+- Added stdlib wrappers:
+  - `libs/git.ln`
+  - `libs/fun.ln`
+  - `libs/uuid.ln`
+- Added runnable examples:
+  - `examples/git_library_demo.ln`
+  - `examples/fun_uuid_demo.ln`
+- Added and linked new wiki documentation pages:
+  - `docs/wiki-git-library.html`
+  - `docs/wiki-fun-uuid.html`
+- Updated README, guide, stdlib reference, website/wiki indexes, and version references to `4.9.0`.
+
 ## [4.8.0] - 2026-03-18
 
 ### SemVer Type

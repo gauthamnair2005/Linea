@@ -10,3 +10,6 @@
 - `db`: SQLite helpers (`open`, `close`, `execute`, `query`, `initSecure`, `unlock`)
 - `fileio`: explicit text/file/dir operations (`readText`, `writeText`, `appendText`, `listDir`, `sizeBytes`)
 - `lowlevel`: bitwise operators and little-endian byte packing (`toBytesLE`, `fromBytesLE`)
+- `git`: simple Git actions (`status`, `currentBranch`, `log`, `add`, `commit`, `push`, `pull`, `checkout`)
+- `fun`: random/fun helpers (`coinFlip`, `rollDice`, `randomEmoji`, `randomJoke`, `choose`)
+- `uuid`: identifier helpers (`v4`, `short`)

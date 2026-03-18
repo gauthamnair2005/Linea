@@ -1,0 +1,9 @@
+# Linea UUID Library
+
+func uuid::v4() -> string {
+  return uuid::v4()
+}
+
+func uuid::short() -> string {
+  return uuid::short()
+}
