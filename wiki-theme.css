@@ -1,58 +1,46 @@
-/* Linea unified website system */
+/* Linea UI revamp v2: editorial light docs aesthetic */
 :root {
-    --bg: #0b1020;
-    --bg-soft: #111930;
-    --surface: #151f3b;
-    --surface-soft: #1a2748;
-    --text: #e8edf9;
-    --text-dim: #b9c4df;
-    --line: #2a3a66;
-    --line-strong: #35508f;
-    --brand: #7aa7ff;
-    --brand-strong: #9cc0ff;
-    --ok: #5dd39e;
-    --warn: #ffd166;
-    --danger: #ff8080;
-    --primary: #7aa7ff;
-    --accent: #7aa7ff;
-    --accent-color: #7aa7ff;
+    --bg: #f4f7fc;
+    --canvas: #ffffff;
+    --canvas-soft: #f8fbff;
+    --text: #13233f;
+    --text-soft: #4f5f7d;
+    --line: #dbe5f3;
+    --line-strong: #c5d4ea;
+    --brand: #1f6feb;
+    --brand-soft: #eaf2ff;
+    --success: #13795b;
+    --warning: #9a6700;
+    --danger: #b42318;
+    --shadow-xs: 0 1px 2px rgba(12, 34, 66, 0.06);
+    --shadow-sm: 0 8px 20px rgba(12, 34, 66, 0.08);
     --radius-sm: 10px;
     --radius-md: 14px;
-    --radius-lg: 20px;
-    --shadow: 0 20px 45px rgba(2, 8, 28, 0.35);
+    --radius-lg: 18px;
+    --content-width: 1200px;
+    --primary: #1f6feb;
+    --accent: #1f6feb;
+    --accent-color: #1f6feb;
 }
 
 * {
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
 html,
-html body {
+body {
     margin: 0;
     padding: 0;
     min-height: 100%;
-    background: radial-gradient(1200px 500px at 10% -10%, rgba(122, 167, 255, 0.24), transparent 60%),
-                radial-gradient(900px 460px at 90% -6%, rgba(93, 211, 158, 0.15), transparent 60%),
-                linear-gradient(180deg, #070b18 0%, var(--bg) 48%, #08101f 100%) !important;
-    color: var(--text) !important;
-    font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-    line-height: 1.65;
 }
 
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 36px 36px;
-    opacity: 0.24;
-    z-index: -1;
+body {
+    background: radial-gradient(circle at 8% -10%, #dceaff 0%, transparent 45%),
+                radial-gradient(circle at 95% -20%, #eef4ff 0%, transparent 55%),
+                var(--bg) !important;
+    color: var(--text) !important;
+    font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    line-height: 1.68;
 }
 
 img {
@@ -66,28 +54,27 @@ a {
 }
 
 a:hover {
-    color: var(--brand-strong) !important;
     text-decoration: underline;
 }
 
 h1, h2, h3, h4, h5, h6 {
+    color: #0f1f3b !important;
+    letter-spacing: -0.012em;
     margin-top: 0;
-    color: #f8fbff !important;
-    letter-spacing: -0.01em;
 }
 
 h1 {
-    font-size: clamp(2rem, 3.1vw, 3rem) !important;
-    line-height: 1.18 !important;
+    font-size: clamp(1.95rem, 3vw, 2.85rem) !important;
+    line-height: 1.2 !important;
 }
 
 h2 {
-    font-size: clamp(1.45rem, 2.1vw, 2rem) !important;
-    margin: 2rem 0 0.75rem !important;
+    font-size: clamp(1.35rem, 2vw, 1.95rem) !important;
+    margin: 2rem 0 0.8rem !important;
 }
 
 h3 {
-    font-size: clamp(1.05rem, 1.4vw, 1.28rem) !important;
+    font-size: clamp(1.05rem, 1.4vw, 1.3rem) !important;
     margin: 0 0 0.6rem !important;
 }
 
@@ -96,7 +83,31 @@ li,
 span,
 .subtitle,
 .wiki-link-desc {
-    color: var(--text-dim) !important;
+    color: var(--text-soft) !important;
+}
+
+.container,
+main.container {
+    max-width: var(--content-width) !important;
+    margin: 0 auto !important;
+    padding: 1.8rem !important;
+}
+
+body > header,
+body > section,
+body > footer {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
+}
+
+body > header {
+    margin-top: 1.1rem;
+}
+
+body > section {
+    margin-top: 0.9rem;
 }
 
 header nav {
@@ -108,132 +119,151 @@ header nav {
 }
 
 header nav ul {
-    list-style: none;
     display: flex;
     flex-wrap: wrap;
+    list-style: none;
     gap: 0.7rem 1rem;
     margin: 0;
     padding: 0;
 }
 
-header nav ul li {
-    margin: 0;
-    padding: 0;
+.logo,
+.brand-inline {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.55rem;
+    color: #0f2446 !important;
+    font-weight: 700;
+}
+
+.global-linea-logo {
+    position: fixed !important;
+    top: 0.95rem;
+    right: 0.95rem;
+    z-index: 35;
+    padding: 0.5rem !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: var(--shadow-sm) !important;
 }
 
 header,
 .hero,
 .showcase,
-.feature-card,
+.section,
 .quick-links,
+.feature-card,
 .category,
 .wiki-link,
 .quick-link,
-.section,
-.highlight-box,
-.formula-box,
 .grid-item,
 .stat-box,
 .code-block,
 pre,
-table {
-    background: linear-gradient(180deg, rgba(31, 45, 79, 0.85) 0%, rgba(20, 30, 56, 0.86) 100%) !important;
+table,
+.example-box,
+.note,
+.warning,
+.table-wrapper,
+.highlight-box,
+.formula-box {
+    background: var(--canvas) !important;
     border: 1px solid var(--line) !important;
     border-radius: var(--radius-md) !important;
-    box-shadow: var(--shadow) !important;
+    box-shadow: var(--shadow-xs) !important;
 }
 
 header,
 .hero {
-    border-radius: var(--radius-lg) !important;
+    background: linear-gradient(180deg, #ffffff 0%, var(--canvas-soft) 100%) !important;
     border-color: var(--line-strong) !important;
-}
-
-.container,
-main.container {
-    max-width: 1240px !important;
-    margin: 0 auto !important;
-    padding: 2.1rem !important;
-}
-
-body > header,
-body > section,
-body > footer {
-    max-width: 1240px;
-    margin: 1rem auto;
-    padding-left: 2.1rem;
-    padding-right: 2.1rem;
-}
-
-body > header {
-    margin-top: 1.3rem;
-}
-
-section {
-    margin-top: 1.1rem;
-    margin-bottom: 1.1rem;
+    box-shadow: var(--shadow-sm) !important;
 }
 
 header {
-    padding: 1.35rem 1.4rem !important;
-    margin-bottom: 1.15rem !important;
+    padding: 1.2rem 1.25rem !important;
+    margin-bottom: 1rem !important;
 }
 
 .hero,
 .showcase,
 .section,
 .quick-links {
-    padding: 1.4rem 1.45rem !important;
+    padding: 1.2rem 1.25rem !important;
 }
 
 .hero .hero-content {
-    max-width: 900px;
+    max-width: 880px;
+}
+
+.version-badge {
+    display: inline-flex !important;
+    align-items: center;
+    border-radius: 999px !important;
+    border: 1px solid #cbdcff !important;
+    background: #eef4ff !important;
+    color: #1f4ea3 !important;
+    padding: 0.16rem 0.58rem !important;
+    font-size: 0.82rem;
+    font-weight: 600;
 }
 
 .features,
-.grid-2,
 .wiki-grid,
+.grid-2,
 .quick-link-grid,
-[class*="grid"],
 .stats {
     display: grid !important;
-    gap: 1rem !important;
-}
-
-.grid-2 {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 0.9rem !important;
 }
 
 .features,
 .wiki-grid {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)) !important;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
 }
 
 .quick-link-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
 }
 
 .stats {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)) !important;
 }
 
 .feature-card,
 .category,
 .wiki-link,
 .quick-link,
-.grid-item {
-    padding: 1rem !important;
-    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+.grid-item,
+.stat-box {
+    padding: 0.92rem !important;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .feature-card:hover,
 .category:hover,
 .wiki-link:hover,
 .quick-link:hover,
-.grid-item:hover {
-    transform: translateY(-2px);
-    border-color: var(--brand) !important;
-    box-shadow: 0 20px 45px rgba(18, 31, 63, 0.5) !important;
+.grid-item:hover,
+.stat-box:hover {
+    transform: translateY(-1px);
+    border-color: #b8cced !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.category-title,
+.wiki-link-title {
+    color: #11264d !important;
+    font-weight: 650;
+}
+
+.category-title {
+    margin-bottom: 0.62rem;
 }
 
 .nav-links,
@@ -243,101 +273,43 @@ header {
 .nav-breadcrumb {
     display: flex !important;
     flex-wrap: wrap;
-    gap: 0.7rem;
+    gap: 0.65rem;
     align-items: center;
 }
 
-.nav-back {
-    margin-bottom: 1rem;
-}
-
-.nav-btn,
-.btn {
+.btn,
+.nav-btn {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
-    font-weight: 600;
+    gap: 0.34rem;
     padding: 0.54rem 0.9rem !important;
-    background: linear-gradient(180deg, #202f57 0%, #182647 100%) !important;
-    border: 1px solid var(--line-strong) !important;
     border-radius: 999px !important;
-    color: #e9f0ff !important;
+    font-weight: 600;
+    border: 1px solid #c9d9f2 !important;
+    background: #ffffff !important;
+    color: #163058 !important;
 }
 
-.nav-btn.primary,
-.btn-primary {
-    background: linear-gradient(180deg, #4971c7 0%, #3d61b0 100%) !important;
-    border-color: #678de0 !important;
-    color: #fff !important;
+.btn-primary,
+.nav-btn.primary {
+    border-color: #2d74d6 !important;
+    background: #1f6feb !important;
+    color: #ffffff !important;
 }
 
 .btn-secondary {
-    background: linear-gradient(180deg, #22355f 0%, #1a2a4d 100%) !important;
+    background: #eef4ff !important;
 }
 
-.logo,
-.brand-inline {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 0.55rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #f3f7ff !important;
-}
-
-.brand-inline img,
-.logo img,
-.global-linea-logo img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-}
-
-.global-linea-logo {
-    position: fixed !important;
-    top: 1rem;
-    right: 1rem;
-    z-index: 30;
-    padding: 0.5rem !important;
-    border-radius: 999px !important;
-    border: 1px solid var(--line-strong) !important;
-    background: rgba(21, 31, 59, 0.9) !important;
-    box-shadow: var(--shadow) !important;
-}
-
-.version-badge {
-    display: inline-flex !important;
-    align-items: center;
-    padding: 0.18rem 0.58rem !important;
-    margin-left: 0.45rem;
-    border-radius: 999px !important;
-    font-size: 0.82rem;
-    border: 1px solid #678de0 !important;
-    background: rgba(73, 113, 199, 0.24) !important;
-    color: #eaf2ff !important;
-}
-
-.category-title {
-    font-weight: 700;
-    color: #f7faff !important;
-    margin-bottom: 0.7rem;
-}
-
-.wiki-link-title {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-}
-
-pre,
-.code-block {
-    padding: 1rem 1.1rem !important;
+.code-block,
+pre {
+    padding: 0.95rem 1.05rem !important;
     overflow-x: auto;
 }
 
 .code-block {
     white-space: pre-wrap;
-    word-break: break-word;
 }
 
 pre code,
@@ -349,16 +321,23 @@ code {
 pre code,
 .code-block code {
     background: transparent !important;
-    color: #d8e4ff !important;
+    color: #123460 !important;
 }
 
 code {
-    color: #d8e4ff !important;
-    background: rgba(46, 68, 118, 0.5) !important;
-    border: 1px solid rgba(92, 124, 189, 0.55) !important;
+    color: #134078 !important;
+    background: #eaf2ff !important;
+    border: 1px solid #d2e2fb !important;
     border-radius: 7px !important;
-    padding: 0.11rem 0.36rem !important;
+    padding: 0.1rem 0.34rem !important;
 }
+
+.keyword { color: #8a3ffc !important; }
+.type { color: #0059a8 !important; }
+.string { color: #0d7b52 !important; }
+.number { color: #b54708 !important; }
+.comment { color: #73809c !important; font-style: italic; }
+.function { color: #7b2cbf !important; }
 
 table {
     width: 100%;
@@ -369,97 +348,64 @@ table {
 th,
 td {
     border: 1px solid var(--line) !important;
-    padding: 0.72rem !important;
+    padding: 0.67rem !important;
     text-align: left;
 }
 
 th {
-    background: rgba(41, 62, 109, 0.58) !important;
-    color: #f1f6ff !important;
+    background: #edf4ff !important;
+    color: #16345f !important;
+    font-weight: 650;
 }
 
-blockquote {
-    margin: 1rem 0;
-    padding: 0.8rem 1rem;
-    border-left: 4px solid var(--brand);
-    background: rgba(26, 39, 72, 0.8);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-}
-
-.highlight-box {
-    border-left: 4px solid var(--brand) !important;
-}
-
-.example-box,
+.highlight-box,
 .note,
-.warning,
-.table-wrapper {
-    margin: 1rem 0;
-    padding: 0.95rem 1rem;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--line);
-    background: rgba(22, 34, 66, 0.75);
+.warning {
+    border-left-width: 4px !important;
+    border-left-style: solid !important;
 }
 
+.highlight-box,
 .note {
-    border-left: 4px solid var(--brand);
+    border-left-color: var(--brand) !important;
 }
 
 .warning {
-    border-left: 4px solid var(--warn);
-}
-
-.keyword { color: #ffd89b !important; }
-.type { color: #9fd2ff !important; }
-.string { color: #9df2bd !important; }
-.number { color: #ffc48b !important; }
-.comment { color: #96a4ca !important; font-style: italic; }
-.function { color: #d0b5ff !important; }
-
-main {
-    display: block;
-}
-
-main > *:first-child {
-    margin-top: 0;
+    border-left-color: #f7b955 !important;
 }
 
 footer {
-    margin-top: 2rem !important;
-    padding: 1rem 0.4rem 1.4rem !important;
-    border-top: 1px solid var(--line) !important;
+    margin-top: 1.7rem !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1.25rem !important;
     text-align: center;
-    color: var(--text-dim) !important;
+    border-top: 1px solid var(--line) !important;
+    color: var(--text-soft) !important;
 }
 
-ul,
-ol {
-    padding-left: 1.2rem;
-}
-
-@media (max-width: 960px) {
+@media (max-width: 930px) {
     .container,
     main.container {
-        padding: 1.2rem !important;
+        padding: 1.1rem !important;
     }
 
     body > header,
     body > section,
     body > footer {
-        padding-left: 1.2rem;
-        padding-right: 1.2rem;
+        padding-left: 1.1rem;
+        padding-right: 1.1rem;
     }
 
+    header,
     .hero,
     .showcase,
     .section,
-    .quick-links,
-    header {
-        padding: 1rem !important;
+    .quick-links {
+        padding: 0.95rem !important;
     }
 
     .global-linea-logo {
-        top: 0.65rem;
-        right: 0.65rem;
+        top: 0.55rem;
+        right: 0.55rem;
     }
 }
