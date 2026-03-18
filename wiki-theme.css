@@ -255,6 +255,19 @@ header {
     transition: border-color 0.14s ease, background-color 0.14s ease;
 }
 
+.category {
+    display: flex;
+    flex-direction: column;
+    gap: 0.58rem;
+    align-items: stretch;
+}
+
+.wiki-link,
+.quick-link {
+    display: block;
+    width: 100%;
+}
+
 .feature-card:hover,
 .category:hover,
 .wiki-link:hover,
@@ -317,6 +330,10 @@ pre {
     overflow-x: auto;
     background: #f1ebde !important;
     border-color: #d5cab6 !important;
+    font-family: "Source Code Pro", "Fira Code", Consolas, Monaco, monospace !important;
+    font-size: 0.93rem;
+    line-height: 1.56;
+    font-variant-ligatures: none;
 }
 
 .code-block {
