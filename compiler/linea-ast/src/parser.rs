@@ -32,6 +32,7 @@ impl Parser {
             TokenType::While => self.parse_while(),
             TokenType::If => self.parse_if(),
             TokenType::Function => self.parse_function_decl(),
+            TokenType::MacroRules => self.parse_macro_decl(),
             TokenType::Return => self.parse_return(),
             TokenType::Break => {
                 self.advance();
@@ -207,6 +208,44 @@ impl Parser {
         Ok(Statement::Return(expr))
     }
 
+    fn parse_macro_decl(&mut self) -> Result<Statement> {
+        self.expect(&TokenType::MacroRules)?;
+        self.consume_optional(&TokenType::Exclamation);
+        let name = self.expect_identifier()?;
+        self.expect(&TokenType::LeftParen)?;
+
+        let mut params = Vec::new();
+        if self.current_token().token_type != TokenType::RightParen {
+            loop {
+                params.push(self.expect_identifier()?);
+                if !self.consume_optional(&TokenType::Comma) {
+                    break;
+                }
+            }
+        }
+        self.expect(&TokenType::RightParen)?;
+
+        let body = if self.consume_optional(&TokenType::FatArrow) {
+            let expr = self.parse_expression()?;
+            self.consume_optional(&TokenType::Semicolon);
+            expr
+        } else if self.current_token().token_type == TokenType::LeftBrace {
+            self.advance();
+            let expr = self.parse_expression()?;
+            self.expect(&TokenType::RightBrace)?;
+            self.consume_optional(&TokenType::Semicolon);
+            expr
+        } else {
+            return Err(Error::Syntax {
+                line: self.current_token().line,
+                column: self.current_token().column,
+                message: "Expected '=>' or '{ ... }' in macro_rules declaration".to_string(),
+            });
+        };
+
+        Ok(Statement::MacroDecl { name, params, body })
+    }
+
     fn parse_block(&mut self) -> Result<Vec<Statement>> {
         self.expect(&TokenType::LeftBrace)?;
         let mut statements = Vec::new();
@@ -368,7 +407,7 @@ impl Parser {
                     expr: Box::new(expr),
                 })
             }
-            TokenType::Not => {
+            TokenType::Not | TokenType::Exclamation => {
                 self.advance();
                 let expr = self.parse_unary()?;
                 Ok(Expression::Unary {
@@ -417,6 +456,28 @@ impl Parser {
                         func: Box::new(expr),
                         args,
                     };
+                }
+                TokenType::Exclamation => {
+                    if let Expression::Identifier(name) = &expr {
+                        self.advance();
+                        self.expect(&TokenType::LeftParen)?;
+                        let mut args = Vec::new();
+                        if self.current_token().token_type != TokenType::RightParen {
+                            loop {
+                                args.push(self.parse_expression()?);
+                                if !self.consume_optional(&TokenType::Comma) {
+                                    break;
+                                }
+                            }
+                        }
+                        self.expect(&TokenType::RightParen)?;
+                        expr = Expression::MacroCall {
+                            name: name.clone(),
+                            args,
+                        };
+                    } else {
+                        break;
+                    }
                 }
                 TokenType::Dot => {
                     self.advance();
@@ -546,6 +607,29 @@ impl Parser {
                 let expr = self.parse_expression()?;
                 self.expect(&TokenType::RightParen)?;
                 Ok(expr)
+            }
+            TokenType::Pipe => {
+                self.advance();
+                let mut params = Vec::new();
+                if self.current_token().token_type != TokenType::Pipe {
+                    loop {
+                        let param_name = self.expect_identifier()?;
+                        if self.consume_optional(&TokenType::Colon) {
+                            let _ = self.parse_type()?;
+                        }
+                        params.push(param_name);
+                        if !self.consume_optional(&TokenType::Comma) {
+                            break;
+                        }
+                    }
+                }
+                self.expect(&TokenType::Pipe)?;
+                self.expect(&TokenType::FatArrow)?;
+                let body = self.parse_expression()?;
+                Ok(Expression::Lambda {
+                    params,
+                    body: Box::new(body),
+                })
             }
             TokenType::LeftBracket => {
                 self.advance();

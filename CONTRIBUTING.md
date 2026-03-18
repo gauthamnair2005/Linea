@@ -1,6 +1,6 @@
 # Contributing to Linea
 
-Thank you for your interest in contributing to Linea! As a professional systems language for the AI era, we value high-quality contributions that enhance performance, stability, and developer experience.
+Thank you for your interest in contributing to Linea! As a systems language for the AI era, we value high-quality contributions that enhance performance, stability, and developer experience.
 
 ## Getting Started
 

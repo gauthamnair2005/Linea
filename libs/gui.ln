@@ -1,0 +1,9 @@
+# Linea GUI Toolkit (Iced-backed)
+
+func gui::window(title: string, message: string, width: int, height: int) -> bool {
+  return gui::window(title, message, width, height)
+}
+
+func gui::buttonWindow(title: string, message: string, buttonLabel: string, width: int, height: int) -> bool {
+  return gui::buttonWindow(title, message, buttonLabel, width, height)
+}

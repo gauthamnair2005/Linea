@@ -74,7 +74,7 @@ impl Lexer {
                     self.advance();
                     Ok(Token::new(TokenType::NotEqual, line, column))
                 } else {
-                    Ok(Token::new(TokenType::Not, line, column))
+                    Ok(Token::new(TokenType::Exclamation, line, column))
                 }
             }
             '<' => {
@@ -111,7 +111,7 @@ impl Lexer {
                     self.advance();
                     Ok(Token::new(TokenType::Or, line, column))
                 } else {
-                    Err(Error::Syntax { line, column, message: "Expected '||'".to_string() })
+                    Ok(Token::new(TokenType::Pipe, line, column))
                 }
             }
             '.' => { self.advance(); Ok(Token::new(TokenType::Dot, line, column)) }
@@ -163,6 +163,7 @@ impl Lexer {
                     "use" => TokenType::Use,
                     "import" => TokenType::Import,
                     "func" => TokenType::Function,
+                    "macro_rules" => TokenType::MacroRules,
                     "return" => TokenType::Return,
                     "if" => TokenType::If,
                     "else" => TokenType::Else,
@@ -174,6 +175,7 @@ impl Lexer {
                     "False" => TokenType::False,
                     "Yes" => TokenType::Yes,
                     "No" => TokenType::No,
+                    "not" => TokenType::Not,
                     _ => TokenType::Identifier(ident),
                 };
                 Ok(Token::new(token_type, line, column))

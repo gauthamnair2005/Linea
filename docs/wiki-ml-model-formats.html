@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Linea Wiki - ML Model Formats</title>
+</head>
+<body>
+    <main class="container">
+        <h1>ML Model Formats (GGUF/ONNX/PTH/MLX)</h1>
+        <p>Linea v4.6.0 adds model format APIs with first-class GGUF support and metadata-mode loaders for ONNX/PTH/MLX.</p>
+
+        <h2>APIs</h2>
+        <pre><code>import ml
+
+var ok = ml::saveGGUF("examples/demo.gguf", "mini-metadata")
+display ok
+display ml::loadGGUF("examples/demo.gguf")
+
+display ml::loadONNX("model.onnx")
+display ml::loadPTH("weights.pth")
+display ml::loadMLX("model.mlx")</code></pre>
+
+        <h2>Boosted ML Ops</h2>
+        <pre><code>var clipped = ml::clip(x, -1.0, 1.0)
+var normalized = ml::normalizeL2(clipped)
+var dropped = ml::dropout(normalized, 0.1)</code></pre>
+
+        <h2>Runnable Example</h2>
+        <pre><code>examples/ml_model_formats_demo.ln</code></pre>
+
+        <p><a href="./wiki-index.html">← Back to Wiki Index</a></p>
+    </main>
+</body>
+</html>

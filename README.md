@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>The Professional Systems Language for the AI Era</strong>
+  <strong>The Systems Language for the AI Era</strong>
 </p>
 
 <p align="center">
@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.5.6-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.7.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -136,7 +136,7 @@ display ptr_arr
 
 ## 📚 Standard Library
 
-Linea provides a rich standard library for professional development:
+Linea provides a rich standard library for modern development:
 
 | Module | Description |
 | :--- | :--- |
@@ -148,6 +148,7 @@ Linea provides a rich standard library for professional development:
 | **`excel`** | Excel file manipulation (read/write) |
 | **`markdown`** | Markdown parsing and HTML generation |
 | **`graphics`** | Data visualization and plotting |
+| **`gui`** | Native desktop GUI toolkit powered by Rust Iced |
 | **`http`** | HTTP client for REST API integration |
 | **`sql`** | SQLite access with parameterized queries and secure lock/unlock |
 | **`password`** | Masked CLI/GUI password entry plus hashing/verification helpers |
@@ -156,7 +157,7 @@ Linea provides a rich standard library for professional development:
 | **`strings`** | String manipulation utilities |
 | **`utils`** | General utility functions |
 
-### System Programming Primitives (v4.5.6)
+### Systems + Meta Programming Primitives (v4.6.0)
 
 `system` now includes low-level/mid-level operations:
 
@@ -166,6 +167,31 @@ Linea provides a rich standard library for professional development:
 * Time/process: `nowMillis`, `sleepMs`, `exec`
 
 See runnable example: `examples/system_ops_demo.ln`.
+
+### New Language Features (v4.6.0)
+
+* Lambda expressions: `var add = |a, b| => a + b`
+* Rust-style macro definitions and calls:
+  * `macro_rules! square(x) => x * x;`
+  * `display square!(12)`
+* Expanded compute/ML tensor helpers:
+  * `ml::clip`, `ml::normalizeL2`, `ml::dropout`, `ml::oneHot`
+* Model format APIs (GGUF required + ONNX/PTH/MLX metadata loaders):
+  * `ml::loadGGUF`, `ml::saveGGUF`
+  * `ml::loadONNX`, `ml::loadPTH`, `ml::loadMLX`
+
+See runnable examples:
+* `examples/lambda_macro_demo.ln`
+* `examples/ml_model_formats_demo.ln`
+
+### Native GUI Toolkit (v4.7.0)
+
+Linea now includes a first-class `gui` module backed by Rust `iced` for desktop interfaces.
+
+* `gui::window(title, message, width, height)`
+* `gui::buttonWindow(title, message, buttonLabel, width, height)`
+
+Runnable example: `examples/gui_iced_demo.ln`
 
 ## 📦 Third-Party Package Manager
 

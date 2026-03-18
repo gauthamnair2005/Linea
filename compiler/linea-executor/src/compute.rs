@@ -126,6 +126,32 @@ pub fn tanh(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     a.iter().map(|row| row.iter().map(|&x| x.tanh()).collect()).collect()
 }
 
+pub fn clip(a: &Vec<Vec<f64>>, min_val: f64, max_val: f64) -> Vec<Vec<f64>> {
+    a.iter()
+        .map(|row| row.iter().map(|x| x.max(min_val).min(max_val)).collect())
+        .collect()
+}
+
+pub fn normalize_l2(a: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    a.iter()
+        .map(|row| {
+            let norm = row.iter().map(|x| x * x).sum::<f64>().sqrt().max(1e-12);
+            row.iter().map(|x| x / norm).collect()
+        })
+        .collect()
+}
+
+pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
+    let keep = (1.0 - p).clamp(0.0, 1.0).max(1e-12);
+    a.iter()
+        .map(|row| {
+            row.iter()
+                .map(|x| if rand::random::<f64>() < keep { x / keep } else { 0.0 })
+                .collect()
+        })
+        .collect()
+}
+
 static COMPUTE_CONTEXT: OnceLock<Option<ComputeContext>> = OnceLock::new();
 
 pub struct ComputeContext {

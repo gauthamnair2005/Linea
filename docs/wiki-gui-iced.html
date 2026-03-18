@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Linea Wiki - GUI Toolkit (Iced)</title>
+</head>
+<body>
+    <main class="container">
+        <h1>GUI Toolkit with Rust Iced</h1>
+        <p>Linea v4.7.0 introduces a native GUI toolkit module built on Rust <code>iced</code>.</p>
+
+        <h2>APIs</h2>
+        <pre><code>import gui
+
+var ok = gui::window("Title", "Hello GUI", 640, 420)
+display ok
+
+var ok2 = gui::buttonWindow("Title", "Press the button", "Click me", 640, 420)
+display ok2</code></pre>
+
+        <h2>Notes</h2>
+        <p>GUI APIs are designed for compiled mode (`linea compile`). Interpreter mode reports a clear runtime error for GUI calls.</p>
+
+        <h2>Runnable Example</h2>
+        <pre><code>examples/gui_iced_demo.ln</code></pre>
+
+        <p><a href="./wiki-index.html">← Back to Wiki Index</a></p>
+    </main>
+</body>
+</html>

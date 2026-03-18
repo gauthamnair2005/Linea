@@ -1,0 +1,8 @@
+macro_rules! square(x) => x * x;
+
+var add = |a, b| => a + b
+var mul_then_add = |x, y, z| => (x * y) + z
+
+display add(10, 32)
+display mul_then_add(3, 4, 5)
+display square!(12)

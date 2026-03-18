@@ -356,6 +356,50 @@ first(["a", "b"])    // "a"</pre>
         </div>
 
         <div class="section">
+            <h2>3.1 Lambdas, Macros, and Model Formats (v4.6.0)</h2>
+
+            <h3>Lambda Expressions</h3>
+            <pre>var add = |a, b| => a + b
+display add(10, 32)</pre>
+
+            <h3>Rust-Style Macros</h3>
+            <pre>macro_rules! square(x) => x * x;
+display square!(12)</pre>
+
+            <h3>Model Format APIs</h3>
+            <pre>import ml
+
+var ok = ml::saveGGUF("examples/demo.gguf", "mini-metadata")
+display ok
+display ml::loadGGUF("examples/demo.gguf")
+display ml::loadONNX("model.onnx")
+display ml::loadPTH("model.pth")
+display ml::loadMLX("model.mlx")</pre>
+        </div>
+
+        <div class="section">
+            <h2>3.2 GUI Toolkit with Iced (v4.7.0)</h2>
+
+            <h3>Native Windows</h3>
+            <pre>import gui
+
+var ok = gui::window("Linea GUI", "Hello from GUI", 640, 420)
+display ok</pre>
+
+            <h3>Window with Button</h3>
+            <pre>import gui
+
+var ok = gui::buttonWindow(
+  "Linea GUI Toolkit",
+  "Hello from Linea + Rust Iced!",
+  "Click me",
+  640,
+  420
+)
+display ok</pre>
+        </div>
+
+        <div class="section">
             <h2>4. Control Flow</h2>
             
             <h3>If/Else</h3>

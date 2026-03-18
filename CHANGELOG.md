@@ -1,5 +1,45 @@
 # Linea Changelog
 
+## [4.7.0] - 2026-03-18
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added a new `gui` toolkit module backed by Rust `iced` for native desktop UI from Linea.
+- Added GUI APIs:
+  - `gui::window(title, message, width, height)`
+  - `gui::buttonWindow(title, message, buttonLabel, width, height)`
+- Wired compiler/runtime integration:
+  - generated runtime now includes `linea_runtime::gui` with an `iced` app backend
+  - generated Cargo template now includes `iced = "0.12"` dependency
+  - codegen maps `gui::*` calls to runtime GUI backend
+- Added interpreter-mode explicit behavior for `gui::*` calls (clear runtime error directing users to compiled mode).
+- Added runnable GUI example: `examples/gui_iced_demo.ln`.
+- Updated docs, wiki, and version references to `4.7.0`.
+- Removed legacy "Professional Edition" branding from compiler output/version strings and user-facing documentation/resources.
+
+## [4.6.0] - 2026-03-18
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added lambda expression syntax to the language frontend and codegen: `|a, b| => a + b`.
+- Added Rust-style macro declarations and invocations:
+  - Declaration: `macro_rules! name(args) => expr;`
+  - Invocation: `name!(...)`
+- Expanded lower-level/boosted ML primitives in runtime + stdlib surface:
+  - `compute::clip`, `compute::normalize_l2`, `compute::dropout`, `compute::one_hot`, `compute::cross_entropy`
+  - `ml::clip`, `ml::normalizeL2`, `ml::dropout`, `ml::oneHot`
+- Added model format support APIs with GGUF as first-class:
+  - `ml::loadGGUF`, `ml::saveGGUF`
+  - `ml::loadONNX`, `ml::loadPTH`, `ml::loadMLX`
+- Added runnable examples:
+  - `examples/lambda_macro_demo.ln`
+  - `examples/ml_model_formats_demo.ln`
+- Updated website/docs version references to `4.6.0`.
+
 ## [4.5.6] - 2026-03-17
 
 ### SemVer Type
@@ -277,7 +317,7 @@ See `RELEASE_NOTES_V400.md` for detailed migration instructions and examples.
   - Full GPU acceleration support
 - **Example**: `examples/arl_reasoning_demo.ln` demonstrates the algorithm in action
 
-#### Professional Website
+#### Website
 - Complete GitHub Pages site with responsive design
 - **Pages**:
   - `docs/index.html`: Landing page showcasing all features
@@ -355,7 +395,7 @@ See `RELEASE_NOTES_V400.md` for detailed migration instructions and examples.
 
 ### 🎉 Major Features
 
-#### Professional Revamp
+#### Major Revamp
 - Enterprise-grade branding and documentation
 - Structured CLI output for `linea compile` and `linea run`
 - Standardized error messages with context
@@ -385,7 +425,7 @@ See `RELEASE_NOTES_V400.md` for detailed migration instructions and examples.
 ## [3.3.0] - 2025-03-10
 
 ### Features
-- Initial professional ML edition
+- Initial ML edition
 - Native array and matrix types
 - Basic neural network support
 

@@ -8,7 +8,7 @@
     <meta name="description" content="Linea: A modern, compiled programming language with native ML/AI capabilities, GPU acceleration, advanced reasoning algorithms (ARL-Tangram), and comprehensive standard library.">
     <meta name="keywords" content="programming language, compiler, machine learning, GPU, AI, Rust, compiled language, ARL-Tangram">
     <meta property="og:title" content="Linea - AI-First Programming Language">
-    <meta property="og:description" content="The professional compiled language for AI/ML development with native GPU acceleration">
+    <meta property="og:description" content="A compiled language for AI/ML development with native GPU acceleration">
     <meta property="og:image" content="https://raw.githubusercontent.com/gauthamnair2005/Linea/main/linea-logo.svg">
     <style>
         * {
@@ -425,7 +425,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.5.6</span>
+                <span class="version-badge">v4.7.0</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -575,7 +575,7 @@ fn main() {
     </section>
 
     <section>
-        <h2>🌟 v4.5.6 Highlights</h2>
+        <h2>🌟 v4.7.0 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -597,8 +597,8 @@ fn main() {
         </div>
 
         <div class="showcase">
-            <h3>🔬 ARL-Tangram Algorithm</h3>
-            <p>Linea v4.5.6 keeps project and compiler binary versions synchronized so CLI and banner versions always reflect the latest release.</p>
+            <h3>🔬 ARL-Tangram + Native GUI Toolkit</h3>
+            <p>Linea v4.7.0 adds a first-class `gui` module powered by Rust `iced`, alongside existing lambda/macro and ML capabilities.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">
@@ -610,6 +610,10 @@ fn main() {
                 <li><strong>Generics (preview)</strong> - Type-generic functions</li>
                 <li><strong>@async (preview)</strong> - Async/await syntax</li>
                 <li><strong>@inference</strong> - GPU mode without gradients</li>
+                <li><strong>Lambdas</strong> - Inline closures: <code>|a, b| =&gt; a + b</code></li>
+                <li><strong>Macros</strong> - Rust-like declarations and invocations: <code>macro_rules! square(x) =&gt; x * x; square!(3)</code></li>
+                <li><strong>Model formats</strong> - <code>ml::loadGGUF</code>, <code>ml::loadONNX</code>, <code>ml::loadPTH</code>, <code>ml::loadMLX</code></li>
+                <li><strong>GUI toolkit</strong> - <code>gui::window</code> and <code>gui::buttonWindow</code> powered by Rust <code>iced</code></li>
             </ul>
         </div>
     </section>

@@ -277,3 +277,43 @@ func ml::adam_step(layer: any, grad_output: float[][], input: float[][], state: 
   }
   return [layer, state]
 }
+
+# --- Boosted Tensor Operations ---
+
+func ml::clip(x: float[][], min_val: float, max_val: float) -> float[][] {
+  return compute::clip(x, min_val, max_val)
+}
+
+func ml::normalizeL2(x: float[][]) -> float[][] {
+  return compute::normalize_l2(x)
+}
+
+func ml::dropout(x: float[][], probability: float) -> float[][] {
+  return compute::dropout(x, probability)
+}
+
+func ml::oneHot(labels: float[], classes: int) -> float[][] {
+  return compute::one_hot(labels, classes)
+}
+
+# --- Model Format APIs ---
+
+func ml::loadGGUF(path: string) -> any {
+  return ml::loadGGUF(path)
+}
+
+func ml::loadONNX(path: string) -> any {
+  return ml::loadONNX(path)
+}
+
+func ml::loadPTH(path: string) -> any {
+  return ml::loadPTH(path)
+}
+
+func ml::loadMLX(path: string) -> any {
+  return ml::loadMLX(path)
+}
+
+func ml::saveGGUF(path: string, payload: any) -> bool {
+  return ml::saveGGUF(path, payload)
+}

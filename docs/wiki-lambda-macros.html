@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Linea Wiki - Lambdas and Macros</title>
+</head>
+<body>
+    <main class="container">
+        <h1>Lambda Expressions and Rust-Style Macros</h1>
+        <p>This page documents Linea v4.6.0 lambda and macro primitives.</p>
+
+        <h2>Lambdas</h2>
+        <pre><code>var add = |a, b| => a + b
+display add(10, 32)</code></pre>
+        <p>Lambdas are expression-level closures and can be assigned to variables and invoked with standard call syntax.</p>
+
+        <h2>Macros (`macro_rules!`)</h2>
+        <pre><code>macro_rules! square(x) => x * x;
+display square!(12)</code></pre>
+        <p>Macros are declared with <code>macro_rules!</code> and invoked with <code>name!(...)</code> similar to Rust.</p>
+
+        <h2>Runnable Example</h2>
+        <pre><code>examples/lambda_macro_demo.ln</code></pre>
+
+        <p><a href="./wiki-index.html">← Back to Wiki Index</a></p>
+    </main>
+</body>
+</html>

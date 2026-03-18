@@ -1,0 +1,17 @@
+import ml
+
+var x = [[-2.0, 0.2, 1.5], [5.0, -1.3, 0.0]]
+var clipped = ml::clip(x, -1.0, 1.0)
+var normalized = ml::normalizeL2(clipped)
+var dropped = ml::dropout(normalized, 0.1)
+
+display clipped
+display dropped
+
+var saved = ml::saveGGUF("examples/demo.gguf", "mini-metadata")
+display saved
+
+display ml::loadGGUF("examples/demo.gguf")
+display ml::loadONNX("examples/missing_model.onnx")
+display ml::loadPTH("examples/missing_model.pth")
+display ml::loadMLX("examples/missing_model.mlx")

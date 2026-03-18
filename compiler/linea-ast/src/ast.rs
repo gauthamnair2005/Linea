@@ -43,6 +43,11 @@ pub enum Statement {
         return_type: Type,
         body: Vec<Statement>,
     },
+    MacroDecl {
+        name: String,
+        params: Vec<String>,
+        body: Expression,
+    },
     Return(Option<Expression>),
     Expression(Expression),
     Break,
@@ -67,6 +72,14 @@ pub enum Expression {
     },
     Call {
         func: Box<Expression>,
+        args: Vec<Expression>,
+    },
+    Lambda {
+        params: Vec<String>,
+        body: Box<Expression>,
+    },
+    MacroCall {
+        name: String,
         args: Vec<Expression>,
     },
     MemberAccess {

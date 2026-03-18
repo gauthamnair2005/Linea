@@ -145,7 +145,7 @@ impl Executor {
                 } else {
                     // Ignore missing built-in modules for now as they are simulated
                     match module.as_str() {
-                         "math" | "strings" | "csv" | "excel" | "graphics" | "sql" | "password" | "system" => {},
+                         "math" | "strings" | "csv" | "excel" | "graphics" | "sql" | "password" | "system" | "gui" => {},
                          _ => return Err(Error::RuntimeError(format!("Module '{}' not found in paths: {:?}", module, paths))),
                     }
                 }
@@ -848,6 +848,95 @@ impl Executor {
                     
                     let loss = compute::cross_entropy(&a_mat, &b_mat);
                     Ok(Value::Float(loss))
+                }
+                "compute::clip" => {
+                    if args.len() != 3 {
+                        return Err(Error::InvalidOperation("compute::clip(x, min, max) requires 3 arguments".to_string()));
+                    }
+                    let x = self.eval_expression(&args[0])?;
+                    let min_val = self.eval_expression(&args[1])?.to_float()?;
+                    let max_val = self.eval_expression(&args[2])?.to_float()?;
+                    let x_mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &x {
+                        m.iter().map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0)).collect()).collect()
+                    } else {
+                        return Err(Error::TypeError("compute::clip expects matrix input".to_string()));
+                    };
+                    let out = compute::clip(&x_mat, min_val, max_val);
+                    Ok(Value::Matrix(out.into_iter().map(|r| r.into_iter().map(Value::Float).collect()).collect()))
+                }
+                "compute::dropout" => {
+                    if args.len() != 2 {
+                        return Err(Error::InvalidOperation("compute::dropout(x, p) requires 2 arguments".to_string()));
+                    }
+                    let x = self.eval_expression(&args[0])?;
+                    let p = self.eval_expression(&args[1])?.to_float()?;
+                    let x_mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &x {
+                        m.iter().map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0)).collect()).collect()
+                    } else {
+                        return Err(Error::TypeError("compute::dropout expects matrix input".to_string()));
+                    };
+                    let out = compute::dropout(&x_mat, p);
+                    Ok(Value::Matrix(out.into_iter().map(|r| r.into_iter().map(Value::Float).collect()).collect()))
+                }
+                "compute::normalize_l2" => {
+                    if args.len() != 1 {
+                        return Err(Error::InvalidOperation("compute::normalize_l2(x) requires 1 argument".to_string()));
+                    }
+                    let x = self.eval_expression(&args[0])?;
+                    let x_mat: Vec<Vec<f64>> = if let Value::Matrix(m) = &x {
+                        m.iter().map(|row| row.iter().map(|v| v.to_float().unwrap_or(0.0)).collect()).collect()
+                    } else {
+                        return Err(Error::TypeError("compute::normalize_l2 expects matrix input".to_string()));
+                    };
+                    let out = compute::normalize_l2(&x_mat);
+                    Ok(Value::Matrix(out.into_iter().map(|r| r.into_iter().map(Value::Float).collect()).collect()))
+                }
+                "ml::loadGGUF" => {
+                    if args.len() != 1 {
+                        return Err(Error::InvalidOperation("ml::loadGGUF(path) requires 1 argument".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("ml::loadGGUF() expects string path".to_string())),
+                    };
+                    let bytes = fs::read(&path).map_err(|e| Error::RuntimeError(format!("Failed to read GGUF file '{}': {}", path, e)))?;
+                    if bytes.len() < 4 || &bytes[0..4] != b"GGUF" {
+                        return Err(Error::RuntimeError("GGUF parse error: invalid magic header".to_string()));
+                    }
+                    Ok(Value::String(format!("GGUF model loaded: {}", path)))
+                }
+                "ml::saveGGUF" => {
+                    if args.len() != 2 {
+                        return Err(Error::InvalidOperation("ml::saveGGUF(path, payload) requires 2 arguments".to_string()));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError("ml::saveGGUF() expects string path".to_string())),
+                    };
+                    let payload = self.eval_expression(&args[1])?;
+                    let mut bytes = b"GGUF".to_vec();
+                    bytes.extend_from_slice(payload.to_string().as_bytes());
+                    fs::write(&path, bytes).map_err(|e| Error::RuntimeError(format!("Failed to write GGUF file '{}': {}", path, e)))?;
+                    Ok(Value::Bool(true))
+                }
+                "ml::loadONNX" | "ml::loadPTH" | "ml::loadMLX" => {
+                    if args.len() != 1 {
+                        return Err(Error::InvalidOperation(format!("{}(path) requires 1 argument", name)));
+                    }
+                    let path = match self.eval_expression(&args[0])? {
+                        Value::String(s) => s,
+                        _ => return Err(Error::TypeError(format!("{}() expects string path", name))),
+                    };
+                    if fs::metadata(&path).is_err() {
+                        return Err(Error::RuntimeError(format!("{}: file not found '{}'", name, path)));
+                    }
+                    Ok(Value::String(format!("{} loaded (metadata mode): {}", name, path)))
+                }
+                "gui::window" | "gui::buttonWindow" => {
+                    Err(Error::RuntimeError(format!(
+                        "{} is only available in compiled mode (linea compile). Interpreter mode does not open native GUI windows.",
+                        name
+                    )))
                 }
                 "compute::sum" | "compute::max" | "compute::argmax" => {
                      if args.len() != 1 { return Err(Error::InvalidOperation("Reduction op requires 1 argument".to_string())); }

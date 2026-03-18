@@ -15,7 +15,7 @@ fn detected_parallel_jobs() -> usize {
 #[derive(Parser)]
 #[command(name = "linea")]
 #[command(about = "Linea Compiler | High-Performance AI & Data Language", long_about = None)]
-#[command(version = concat!(env!("CARGO_PKG_VERSION"), " (Professional Edition)"))]
+#[command(version = env!("CARGO_PKG_VERSION"))]
 #[command(author = "Gautham Nair")]
 struct Cli {
     #[command(subcommand)]
@@ -82,7 +82,7 @@ fn main() {
 
 fn print_header(action: &str, file: &std::path::Path) {
     println!(
-        "Linea Compiler v{} | Professional Edition",
+        "Linea Compiler v{}",
         env!("CARGO_PKG_VERSION")
     );
     println!("Action: {} | Target: {}", action, file.display());
@@ -142,6 +142,7 @@ wgpu = "0.20"
 pollster = "0.3"
 bytemuck = {{ version = "1.14", features = ["derive"] }}
 futures = "0.3"
+iced = "0.13"
 "#, project_name);
 
                     fs::write(build_dir.join("Cargo.toml"), cargo_toml).expect("Failed to write Cargo.toml");

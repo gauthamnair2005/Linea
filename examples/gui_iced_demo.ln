@@ -1,0 +1,13 @@
+import gui
+
+display "Launching GUI window..."
+
+var ok = gui::buttonWindow(
+  "Linea GUI Toolkit",
+  "Hello from Linea + Rust Iced!",
+  "Click me",
+  640,
+  420
+)
+
+display ok

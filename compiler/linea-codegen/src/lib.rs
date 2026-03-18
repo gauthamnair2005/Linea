@@ -117,6 +117,38 @@ impl RustGenerator {
                 
                 Ok(())
             }
+            Statement::MacroDecl { name, params, body } => {
+                let old_vars = self.variable_types.clone();
+                for param in params {
+                    self.variable_types.insert(param.clone(), "f64".to_string());
+                }
+                let (body_expr, _) = self.generate_expression(body)?;
+                self.variable_types = old_vars;
+
+                let matcher = if params.is_empty() {
+                    "()".to_string()
+                } else {
+                    params
+                        .iter()
+                        .map(|p| format!("${}:expr", p))
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                };
+                let replacement = if params.is_empty() {
+                    body_expr
+                } else {
+                    let mut expr = body_expr;
+                    for p in params {
+                        expr = expr.replace(p, &format!("${}", p));
+                    }
+                    expr
+                };
+                self.emit_global(&format!(
+                    "macro_rules! {} {{ ({}) => {{ {} }}; }}",
+                    name, matcher, replacement
+                ));
+                Ok(())
+            }
             Statement::VarDeclaration { name, type_annotation, expr } => {
                 let (rust_expr, inferred_type) = self.generate_expression(expr)?;
                 
@@ -551,6 +583,79 @@ impl RustGenerator {
                             let (b_expr, _) = self.generate_expression(&args[1])?;
                             Ok((format!("linea_runtime::compute::matmul(&{}, &{})", a_expr, b_expr), "Vec<Vec<f64>>".to_string()))
                         }
+                        "compute::clip" => {
+                            if args.len() != 3 { return Ok(("vec![]".to_string(), "Vec<Vec<f64>>".to_string())); }
+                            let (x_expr, _) = self.generate_expression(&args[0])?;
+                            let (min_expr, _) = self.generate_expression(&args[1])?;
+                            let (max_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::compute::clip(&{}, {}, {})", x_expr, min_expr, max_expr), "Vec<Vec<f64>>".to_string()))
+                        }
+                        "compute::normalize_l2" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<Vec<f64>>".to_string())); }
+                            let (x_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::compute::normalize_l2(&{})", x_expr), "Vec<Vec<f64>>".to_string()))
+                        }
+                        "compute::dropout" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<Vec<f64>>".to_string())); }
+                            let (x_expr, _) = self.generate_expression(&args[0])?;
+                            let (p_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::compute::dropout(&{}, {})", x_expr, p_expr), "Vec<Vec<f64>>".to_string()))
+                        }
+                        "compute::one_hot" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<Vec<f64>>".to_string())); }
+                            let (labels_expr, _) = self.generate_expression(&args[0])?;
+                            let (classes_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::compute::one_hot(&{}, {} as usize)", labels_expr, classes_expr), "Vec<Vec<f64>>".to_string()))
+                        }
+                        "compute::cross_entropy" => {
+                            if args.len() != 2 { return Ok(("0.0".to_string(), "f64".to_string())); }
+                            let (pred_expr, _) = self.generate_expression(&args[0])?;
+                            let (target_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::compute::cross_entropy(&{}, &{})", pred_expr, target_expr), "f64".to_string()))
+                        }
+                        "ml::loadGGUF" => {
+                            if args.len() != 1 { return Ok(("linea_runtime::Value::None".to_string(), "linea_runtime::Value".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::mlio::load_gguf({})", path_expr), "linea_runtime::Value".to_string()))
+                        }
+                        "ml::loadONNX" => {
+                            if args.len() != 1 { return Ok(("linea_runtime::Value::None".to_string(), "linea_runtime::Value".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::mlio::load_onnx({})", path_expr), "linea_runtime::Value".to_string()))
+                        }
+                        "ml::loadPTH" => {
+                            if args.len() != 1 { return Ok(("linea_runtime::Value::None".to_string(), "linea_runtime::Value".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::mlio::load_pth({})", path_expr), "linea_runtime::Value".to_string()))
+                        }
+                        "ml::loadMLX" => {
+                            if args.len() != 1 { return Ok(("linea_runtime::Value::None".to_string(), "linea_runtime::Value".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::mlio::load_mlx({})", path_expr), "linea_runtime::Value".to_string()))
+                        }
+                        "ml::saveGGUF" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            let (payload_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::mlio::save_gguf({}, {})", path_expr, payload_expr), "bool".to_string()))
+                        }
+                        "gui::window" => {
+                            if args.len() != 4 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (title_expr, _) = self.generate_expression(&args[0])?;
+                            let (message_expr, _) = self.generate_expression(&args[1])?;
+                            let (width_expr, _) = self.generate_expression(&args[2])?;
+                            let (height_expr, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::gui::window({}, {}, {} as u32, {} as u32)", title_expr, message_expr, width_expr, height_expr), "bool".to_string()))
+                        }
+                        "gui::buttonWindow" => {
+                            if args.len() != 5 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (title_expr, _) = self.generate_expression(&args[0])?;
+                            let (message_expr, _) = self.generate_expression(&args[1])?;
+                            let (button_expr, _) = self.generate_expression(&args[2])?;
+                            let (width_expr, _) = self.generate_expression(&args[3])?;
+                            let (height_expr, _) = self.generate_expression(&args[4])?;
+                            Ok((format!("linea_runtime::gui::button_window({}, {}, {}, {} as u32, {} as u32)", title_expr, message_expr, button_expr, width_expr, height_expr), "bool".to_string()))
+                        }
                         // ... Add other intrinsics here ... 
                         // For brevity, skipping exhaustive list, but keeping important ones.
                         // Ideally we should copy all from original file.
@@ -627,14 +732,43 @@ impl RustGenerator {
                                          }
                                      }
                                 } else {
-                                    Ok(("0".to_string(), "i64".to_string()))
+                                    let (func_expr, _) = self.generate_expression(func)?;
+                                    let mut arg_strs = Vec::new();
+                                    for arg in args {
+                                        let (s, _) = self.generate_expression(arg)?;
+                                        arg_strs.push(s);
+                                    }
+                                    Ok((format!("({})({})", func_expr, arg_strs.join(", ")), "i64".to_string()))
                                 }
                             }
                         }
                     }
                 } else {
-                     Ok(("0".to_string(), "i64".to_string()))
+                     let (func_expr, _) = self.generate_expression(func)?;
+                     let mut arg_strs = Vec::new();
+                     for arg in args {
+                         let (s, _) = self.generate_expression(arg)?;
+                         arg_strs.push(s);
+                     }
+                     Ok((format!("({})({})", func_expr, arg_strs.join(", ")), "i64".to_string()))
                 }
+            }
+            Expression::Lambda { params, body } => {
+                let old_vars = self.variable_types.clone();
+                for param in params {
+                    self.variable_types.insert(param.clone(), "i64".to_string());
+                }
+                let (body_expr, body_ty) = self.generate_expression(body)?;
+                self.variable_types = old_vars;
+                Ok((format!("|{}| {{ {} }}", params.join(", "), body_expr), body_ty))
+            }
+            Expression::MacroCall { name, args } => {
+                let mut arg_strs = Vec::new();
+                for arg in args {
+                    let (s, _) = self.generate_expression(arg)?;
+                    arg_strs.push(s);
+                }
+                Ok((format!("{}!({})", name, arg_strs.join(", ")), "i64".to_string()))
             }
              Expression::TypeCast { expr, target_type } => {
                 let (inner_expr, inner_ty) = self.generate_expression(expr)?;
@@ -706,4 +840,3 @@ impl RustGenerator {
         }
     }
 }
-
