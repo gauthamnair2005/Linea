@@ -26,12 +26,14 @@ impl Parser {
         match &self.current_token().token_type {
             TokenType::Import => self.parse_import(),
             TokenType::Var => self.parse_var_declaration(),
+            TokenType::Obj => self.parse_obj_declaration(),
             TokenType::VarUpdate => self.parse_var_update(),
             TokenType::Display => self.parse_display(),
             TokenType::For => self.parse_for(),
             TokenType::While => self.parse_while(),
             TokenType::If => self.parse_if(),
             TokenType::Function => self.parse_function_decl(),
+            TokenType::Class => self.parse_class_decl(),
             TokenType::MacroRules => self.parse_macro_decl(),
             TokenType::Return => self.parse_return(),
             TokenType::Break => {
@@ -44,6 +46,11 @@ impl Parser {
             }
             _ => {
                 let expr = self.parse_expression()?;
+                if self.consume_optional(&TokenType::Equal) {
+                    let value = self.parse_expression()?;
+                    self.consume_optional(&TokenType::Semicolon);
+                    return Ok(Statement::Assignment { target: expr, expr: value });
+                }
                 self.consume_optional(&TokenType::Semicolon);
                 Ok(Statement::Expression(expr))
             }
@@ -91,6 +98,22 @@ impl Parser {
         let expr = self.parse_expression()?;
         self.consume_optional(&TokenType::Semicolon);
         Ok(Statement::VarDeclaration { name, type_annotation, expr })
+    }
+
+    fn parse_obj_declaration(&mut self) -> Result<Statement> {
+        self.expect(&TokenType::Obj)?;
+        let name = self.expect_identifier()?;
+        self.expect(&TokenType::At)?;
+        let class_name = self.expect_identifier()?;
+        if Self::is_builtin_type_name(&class_name) {
+            return Err(Error::TypeError(
+                "Objects can only be created from classes. Built-in datatypes can only be used with 'var' declarations.".to_string(),
+            ));
+        }
+        self.expect(&TokenType::Equal)?;
+        let constructor = self.parse_expression()?;
+        self.consume_optional(&TokenType::Semicolon);
+        Ok(Statement::ObjDeclaration { name, class_name, constructor })
     }
 
     fn parse_var_update(&mut self) -> Result<Statement> {
@@ -194,6 +217,36 @@ impl Parser {
         let body = self.parse_block()?;
 
         Ok(Statement::FunctionDecl { name, params, return_type, body })
+    }
+
+    fn parse_class_decl(&mut self) -> Result<Statement> {
+        self.expect(&TokenType::Class)?;
+        let name = self.expect_identifier()?;
+        let super_class = if self.consume_optional(&TokenType::From) {
+            Some(self.expect_identifier()?)
+        } else {
+            None
+        };
+
+        self.expect(&TokenType::LeftBrace)?;
+        let mut body = Vec::new();
+        while self.current_token().token_type != TokenType::RightBrace && !self.is_at_end() {
+            body.push(self.parse_class_member_statement()?);
+        }
+        self.expect(&TokenType::RightBrace)?;
+        Ok(Statement::ClassDecl { name, super_class, body })
+    }
+
+    fn parse_class_member_statement(&mut self) -> Result<Statement> {
+        match self.current_token().token_type {
+            TokenType::Var => self.parse_var_declaration(),
+            TokenType::Function => self.parse_function_decl(),
+            _ => Err(Error::Syntax {
+                line: self.current_token().line,
+                column: self.current_token().column,
+                message: "Class bodies can only contain field declarations (var) and methods (func)".to_string(),
+            }),
+        }
     }
 
     fn parse_return(&mut self) -> Result<Statement> {
@@ -602,6 +655,14 @@ impl Parser {
                 }
                 Ok(Expression::Identifier(name))
             }
+            TokenType::This => {
+                self.advance();
+                Ok(Expression::Identifier("this".to_string()))
+            }
+            TokenType::Super => {
+                self.advance();
+                Ok(Expression::Identifier("super".to_string()))
+            }
             TokenType::LeftParen => {
                 self.advance();
                 let expr = self.parse_expression()?;
@@ -668,6 +729,7 @@ impl Parser {
         let base_type = match type_name.as_str() {
             "int" => Type::Int,
             "float" => Type::Float,
+            "str" => Type::String,
             "string" => Type::String,
             "bool" => Type::Bool,
             "any" => Type::Unknown,
@@ -807,5 +869,26 @@ impl Parser {
         }
         
         Ok(type_str)
+    }
+
+    fn is_builtin_type_name(name: &str) -> bool {
+        matches!(
+            name,
+            "int"
+                | "float"
+                | "str"
+                | "string"
+                | "bool"
+                | "ptr"
+                | "i32"
+                | "i64"
+                | "f32"
+                | "f64"
+                | "any"
+        ) || name.starts_with('[')
+            || name.starts_with('{')
+            || name.starts_with("Vector")
+            || name.starts_with("Matrix")
+            || name.starts_with("Tensor")
     }
 }

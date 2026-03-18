@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.10.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.11.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -133,6 +133,44 @@ var arr @ [int] = [1, 2, 3, 4, 5]
 var ptr_arr @ ptr = arr[0]
 display ptr_arr
 ```
+
+### 4. Easy OOPS (v4.11.0)
+
+Linea now supports class/object OOPS with a beginner-friendly object declaration syntax.
+
+```linea
+class User {
+    var name @ str = "guest"
+    var age @ int = 0
+
+    func Constructor(name: string, age: int) -> any {
+        this.name = name
+        this.age = age
+        return this
+    }
+
+    func hello() -> string {
+        return "Hello " + this.name
+    }
+
+    func birthday() -> int {
+        this.age = this.age + 1
+        return this.age
+    }
+}
+
+obj u @ User = Constructor("Ada", 42)
+display u.hello()
+```
+
+Type-safety rules are explicit:
+
+* `var` is for built-in datatypes/collections (`int`, `str`, `[int]`, matrices, etc.).
+* `obj` is for class instances only.
+* `var x @ ClassName = ...` is a compile error.
+* `obj x @ int = ...` is a compile error.
+
+Runnable example: `examples/oops_easy_demo.ln`.
 
 ## 📚 Standard Library
 

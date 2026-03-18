@@ -1,5 +1,27 @@
 # Linea Changelog
 
+## [4.11.0] - 2026-03-18
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added OOPS language support with explicit class/object modeling:
+  - `class` declarations with fields (`var`) and methods (`func`)
+  - `obj` declarations for object creation: `obj x @ ClassName = Constructor(...)`
+  - constructor convention via `Constructor(...)` mapped to generated class `new(...)`
+  - `this` and `super` identifiers for easy method-side object access
+  - direct assignment support to variables/fields/indexes (for example, `this.name = name`)
+- Added strict class-vs-datatype declaration validation:
+  - class types cannot be declared with `var`
+  - built-in datatypes cannot be declared with `obj`
+  - clear type errors are emitted for both misuse cases.
+- Added OOPS runnable example:
+  - `examples/oops_easy_demo.ln`
+- Added wiki documentation page:
+  - `docs/wiki-oops.html`
+- Updated website/docs/version references to `4.11.0`.
+
 ## [4.10.0] - 2026-03-18
 
 ### SemVer Type

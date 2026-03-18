@@ -16,6 +16,8 @@ struct RustGenerator {
     variable_types: HashMap<String, String>,
     function_signatures: HashMap<String, String>, // func_name -> return_type
     imported_modules: HashSet<String>,
+    class_names: HashSet<String>,
+    current_self_alias: Option<String>,
 }
 
 impl RustGenerator {
@@ -27,12 +29,19 @@ impl RustGenerator {
             variable_types: HashMap::new(),
             function_signatures: HashMap::new(),
             imported_modules: HashSet::new(),
+            class_names: HashSet::new(),
+            current_self_alias: None,
         }
     }
 
     fn generate(&mut self, program: &Program) -> Result<String> {
         // First pass: scan for imports and compile modules
         // Actually, imports are statements, so generate_statement will handle them.
+        for statement in &program.statements {
+            if let Statement::ClassDecl { name, .. } = statement {
+                self.class_names.insert(name.clone());
+            }
+        }
         
         self.emit_line("fn main() {");
         self.indent_level += 1;
@@ -73,6 +82,7 @@ impl RustGenerator {
                 self.emit_line(&format!("// Import module: {} (items: {})", module, items.join(", ")));
                 Ok(())
             }
+            Statement::ClassDecl { name, super_class, body } => self.generate_class_decl(name, super_class.as_deref(), body),
             Statement::FunctionDecl { name, params, return_type, body } => {
                 // Generate Rust function
                 // Mangle name if necessary? No, local functions are fine.
@@ -154,6 +164,11 @@ impl RustGenerator {
                 
                 // Use provided type annotation or inferred type
                 let (type_name, final_expr) = if let Some(annotation) = type_annotation {
+                    if self.class_names.contains(annotation) {
+                        return Err(linea_core::Error::TypeError(
+                            "Variables can only be created with built-in datatypes (or arrays/matrices). Objects must be created with 'obj' from a class.".to_string(),
+                        ));
+                    }
                     if annotation == "ptr" {
                         // For ptr type, auto-reference the expression
                         ("i64".to_string(), format!("&{} as *const _ as i64", rust_expr))
@@ -168,9 +183,33 @@ impl RustGenerator {
                 self.emit_line(&format!("let mut {} : {} = {};", name, type_name, final_expr));
                 Ok(())
             }
+            Statement::ObjDeclaration { name, class_name, constructor } => {
+                if Self::is_builtin_type_name(class_name) {
+                    return Err(linea_core::Error::TypeError(
+                        "Objects can only be created from classes. Datatypes can only be used with 'var' declarations.".to_string(),
+                    ));
+                }
+                if !self.class_names.contains(class_name) {
+                    return Err(linea_core::Error::TypeError(format!(
+                        "Unknown class '{}'. Declare the class before creating objects.",
+                        class_name
+                    )));
+                }
+
+                let constructor_code = self.generate_constructor_call(class_name, constructor)?;
+                self.variable_types.insert(name.clone(), class_name.clone());
+                self.emit_line(&format!("let mut {} : {} = {};", name, class_name, constructor_code));
+                Ok(())
+            }
             Statement::VarUpdate { name, expr } => {
                 let (rust_expr, _) = self.generate_expression(expr)?;
                 self.emit_line(&format!("{} = {};", name, rust_expr));
+                Ok(())
+            }
+            Statement::Assignment { target, expr } => {
+                let lhs = self.generate_lvalue(target)?;
+                let (rhs, _) = self.generate_expression(expr)?;
+                self.emit_line(&format!("{} = {};", lhs, rhs));
                 Ok(())
             }
             Statement::Display(expr) => {
@@ -280,6 +319,188 @@ impl RustGenerator {
                 Ok(())
             }
             _ => Ok(()),
+        }
+    }
+
+    fn generate_class_decl(&mut self, name: &str, _super_class: Option<&str>, body: &[Statement]) -> Result<()> {
+        let mut fields: Vec<(String, String, String)> = Vec::new();
+        let mut constructor: Option<(Vec<(String, Type)>, Vec<Statement>)> = None;
+        let mut methods: Vec<(String, Vec<(String, Type)>, Type, Vec<Statement>)> = Vec::new();
+
+        for stmt in body {
+            match stmt {
+                Statement::VarDeclaration { name: field_name, type_annotation, expr } => {
+                    let field_ty = type_annotation
+                        .as_ref()
+                        .map(|t| self.map_linea_type_to_rust(t))
+                        .unwrap_or_else(|| "i64".to_string());
+                    let (field_expr, _) = self.generate_expression(expr)?;
+                    fields.push((field_name.clone(), field_ty, field_expr));
+                }
+                Statement::FunctionDecl { name: method_name, params, return_type, body } => {
+                    if method_name == "Constructor" {
+                        constructor = Some((params.clone(), body.clone()));
+                    } else {
+                        methods.push((method_name.clone(), params.clone(), return_type.clone(), body.clone()));
+                    }
+                }
+                _ => {}
+            }
+        }
+
+        if fields.is_empty() {
+            self.emit_global(&format!("pub struct {} {{ pub __linea_unit: i64 }}", name));
+        } else {
+            let field_lines = fields
+                .iter()
+                .map(|(field, ty, _)| format!("    pub {}: {},", field, ty))
+                .collect::<Vec<_>>()
+                .join("\n");
+            self.emit_global(&format!("pub struct {} {{\n{}\n}}", name, field_lines));
+        }
+
+        self.emit_global(&format!("impl {} {{", name));
+
+        if let Some((ctor_params, ctor_body)) = constructor {
+            let ctor_params_str = ctor_params
+                .iter()
+                .map(|(param_name, param_type)| format!("{}: {}", param_name, self.type_to_rust_type(param_type)))
+                .collect::<Vec<_>>()
+                .join(", ");
+
+            self.emit_global(&format!("    pub fn new({}) -> Self {{", ctor_params_str));
+
+            let default_init = if fields.is_empty() {
+                "__linea_unit: 0".to_string()
+            } else {
+                fields
+                    .iter()
+                    .map(|(field, _, init_expr)| format!("{}: {}", field, init_expr))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            };
+            self.emit_global(&format!("        let mut self_obj = Self {{ {} }};", default_init));
+
+            let old_main = std::mem::take(&mut self.main_code);
+            let old_indent = self.indent_level;
+            let old_alias = self.current_self_alias.clone();
+            let old_vars = self.variable_types.clone();
+            self.main_code = String::new();
+            self.indent_level = 2;
+            self.current_self_alias = Some("self_obj".to_string());
+
+            for (param_name, param_type) in &ctor_params {
+                self.variable_types.insert(param_name.clone(), self.type_to_rust_type(param_type));
+            }
+
+            for stmt in &ctor_body {
+                if let Statement::Return(_) = stmt {
+                    continue;
+                }
+                self.generate_statement(stmt)?;
+            }
+
+            let ctor_body_code = std::mem::take(&mut self.main_code);
+            self.main_code = old_main;
+            self.indent_level = old_indent;
+            self.current_self_alias = old_alias;
+            self.variable_types = old_vars;
+            self.global_code.push_str(&ctor_body_code);
+
+            self.emit_global("        self_obj");
+            self.emit_global("    }");
+        } else {
+            self.emit_global("    pub fn new() -> Self {");
+            let default_init = if fields.is_empty() {
+                "__linea_unit: 0".to_string()
+            } else {
+                fields
+                    .iter()
+                    .map(|(field, _, init_expr)| format!("{}: {}", field, init_expr))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            };
+            self.emit_global(&format!("        Self {{ {} }}", default_init));
+            self.emit_global("    }");
+        }
+
+        for (method_name, params, return_type, method_body) in methods {
+            let params_str = params
+                .iter()
+                .map(|(param_name, param_type)| format!("{}: {}", param_name, self.type_to_rust_type(param_type)))
+                .collect::<Vec<_>>()
+                .join(", ");
+            let full_params = if params_str.is_empty() {
+                "&mut self".to_string()
+            } else {
+                format!("&mut self, {}", params_str)
+            };
+            let ret_ty = self.type_to_rust_type(&return_type);
+            self.emit_global(&format!("    pub fn {}({}) -> {} {{", method_name, full_params, ret_ty));
+
+            let old_main = std::mem::take(&mut self.main_code);
+            let old_indent = self.indent_level;
+            let old_alias = self.current_self_alias.clone();
+            let old_vars = self.variable_types.clone();
+            self.main_code = String::new();
+            self.indent_level = 2;
+            self.current_self_alias = Some("self".to_string());
+
+            for (param_name, param_type) in &params {
+                self.variable_types.insert(param_name.clone(), self.type_to_rust_type(param_type));
+            }
+
+            for stmt in &method_body {
+                self.generate_statement(stmt)?;
+            }
+
+            let method_code = std::mem::take(&mut self.main_code);
+            self.main_code = old_main;
+            self.indent_level = old_indent;
+            self.current_self_alias = old_alias;
+            self.variable_types = old_vars;
+            self.global_code.push_str(&method_code);
+            self.emit_global("    }");
+        }
+
+        self.emit_global("}");
+        Ok(())
+    }
+
+    fn generate_constructor_call(&mut self, class_name: &str, constructor: &Expression) -> Result<String> {
+        if let Expression::Call { func, args } = constructor {
+            if let Expression::Identifier(fn_name) = &**func {
+                if fn_name == "Constructor" {
+                    let mut arg_codes = Vec::new();
+                    for arg in args {
+                        let (code, _) = self.generate_expression(arg)?;
+                        arg_codes.push(code);
+                    }
+                    return Ok(format!("{}::new({})", class_name, arg_codes.join(", ")));
+                }
+            }
+        }
+
+        Err(linea_core::Error::TypeError(
+            "Object declarations must use Constructor(...). Example: obj p @ Person = Constructor(\"Ada\")".to_string(),
+        ))
+    }
+
+    fn generate_lvalue(&mut self, expr: &Expression) -> Result<String> {
+        match expr {
+            Expression::Identifier(name) => Ok(self.resolve_identifier(name)),
+            Expression::MemberAccess { object, member } => {
+                let (obj_code, _) = self.generate_expression(object)?;
+                Ok(format!("{}.{}", obj_code, member))
+            }
+            Expression::Index { expr, index } => {
+                let (arr, _) = self.generate_expression(expr)?;
+                let (idx, _) = self.generate_expression(index)?;
+                Ok(format!("{}[{} as usize]", arr, idx))
+            }
+            _ => Err(linea_core::Error::TypeError(
+                "Invalid assignment target. Use a variable, object field, or index.".to_string(),
+            )),
         }
     }
 
@@ -396,8 +617,9 @@ impl RustGenerator {
             Expression::String(s) => Ok((format!("{:?}.to_string()", s), "String".to_string())),
             Expression::Bool(b) => Ok((b.to_string(), "bool".to_string())),
             Expression::Identifier(name) => {
+                let resolved = self.resolve_identifier(name);
                 let ty = self.variable_types.get(name).cloned().unwrap_or_else(|| "i64".to_string());
-                Ok((name.clone(), ty))
+                Ok((resolved, ty))
             },
             Expression::Binary { left, op, right } => {
                 let (left_expr, left_ty) = self.generate_expression(left)?;
@@ -552,13 +774,13 @@ impl RustGenerator {
                 };
                 Ok((format!("{}[{}..{}].to_vec()", expr_code, start_code, end_code), format!("Vec<{}>", elem_type)))
             },
+            Expression::MemberAccess { object, member } => {
+                let (object_expr, _) = self.generate_expression(object)?;
+                Ok((format!("{}.{}", object_expr, member), "i64".to_string()))
+            }
             Expression::Call { func, args } => {
                 let func_name = if let Expression::Identifier(name) = &**func {
                     Some(name.clone())
-                } else if let Expression::MemberAccess { object, member } = &**func {
-                    if let Expression::Identifier(obj_name) = &**object {
-                         Some(format!("{}::{}", obj_name, member))
-                    } else { None }
                 } else { None };
 
                 if let Some(name) = func_name {
@@ -1214,13 +1436,23 @@ impl RustGenerator {
                         }
                     }
                 } else {
-                     let (func_expr, _) = self.generate_expression(func)?;
-                     let mut arg_strs = Vec::new();
-                     for arg in args {
-                         let (s, _) = self.generate_expression(arg)?;
-                         arg_strs.push(s);
-                     }
-                     Ok((format!("({})({})", func_expr, arg_strs.join(", ")), "i64".to_string()))
+                    if let Expression::MemberAccess { object, member } = &**func {
+                        let (obj_expr, _) = self.generate_expression(object)?;
+                        let mut arg_strs = Vec::new();
+                        for arg in args {
+                            let (s, _) = self.generate_expression(arg)?;
+                            arg_strs.push(s);
+                        }
+                        Ok((format!("{}.{}({})", obj_expr, member, arg_strs.join(", ")), "i64".to_string()))
+                    } else {
+                        let (func_expr, _) = self.generate_expression(func)?;
+                        let mut arg_strs = Vec::new();
+                        for arg in args {
+                            let (s, _) = self.generate_expression(arg)?;
+                            arg_strs.push(s);
+                        }
+                        Ok((format!("({})({})", func_expr, arg_strs.join(", ")), "i64".to_string()))
+                    }
                 }
             }
             Expression::Lambda { params, body } => {
@@ -1262,6 +1494,16 @@ impl RustGenerator {
         Ok((format!("({}.{}({} as u32))", left, func_name, right), ty.to_string()))
     }
 
+    fn resolve_identifier(&self, name: &str) -> String {
+        if matches!(name, "this" | "self" | "super") {
+            if let Some(alias) = &self.current_self_alias {
+                return alias.clone();
+            }
+            return "self".to_string();
+        }
+        name.to_string()
+    }
+
     fn type_to_rust_type(&self, ty: &Type) -> String {
         match ty {
             Type::Int => "i64".to_string(),
@@ -1271,6 +1513,7 @@ impl RustGenerator {
             Type::Array(inner) => format!("Vec<{}>", self.type_to_rust_type(inner)),
             Type::Void => "()".to_string(),
             Type::Any => "linea_runtime::Value".to_string(), 
+            Type::Unknown => "linea_runtime::Value".to_string(),
             _ => "i64".to_string(),
         }
     }
@@ -1284,6 +1527,7 @@ impl RustGenerator {
             "str" | "string" => "String".to_string(),
             "bool" => "bool".to_string(),
             "ptr" => "i64".to_string(), // ptr is like i64 (can hold address)
+            "any" => "linea_runtime::Value".to_string(),
             _ if type_str.starts_with('[') && type_str.ends_with(']') => {
                 // Array type: [int] -> Vec<i64>
                 let inner = &type_str[1..type_str.len()-1];
@@ -1308,5 +1552,26 @@ impl RustGenerator {
             }
             _ => type_str.to_string(), // Keep as-is for custom types
         }
+    }
+
+    fn is_builtin_type_name(type_name: &str) -> bool {
+        matches!(
+            type_name,
+            "int"
+                | "float"
+                | "str"
+                | "string"
+                | "bool"
+                | "ptr"
+                | "i32"
+                | "i64"
+                | "f32"
+                | "f64"
+                | "any"
+        ) || type_name.starts_with('[')
+            || type_name.starts_with('{')
+            || type_name.starts_with("Vector")
+            || type_name.starts_with("Matrix")
+            || type_name.starts_with("Tensor")
     }
 }

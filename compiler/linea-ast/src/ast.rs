@@ -16,8 +16,17 @@ pub enum Statement {
         type_annotation: Option<String>,
         expr: Expression,
     },
+    ObjDeclaration {
+        name: String,
+        class_name: String,
+        constructor: Expression,
+    },
     VarUpdate {
         name: String,
+        expr: Expression,
+    },
+    Assignment {
+        target: Expression,
         expr: Expression,
     },
     Display(Expression),
@@ -41,6 +50,11 @@ pub enum Statement {
         name: String,
         params: Vec<(String, Type)>,
         return_type: Type,
+        body: Vec<Statement>,
+    },
+    ClassDecl {
+        name: String,
+        super_class: Option<String>,
         body: Vec<Statement>,
     },
     MacroDecl {

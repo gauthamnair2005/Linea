@@ -246,6 +246,49 @@ memory::free(h)</pre>
         </div>
 
         <div class="section">
+            <h2>3.6 Easy OOPS with <code>class</code> + <code>obj</code> (v4.11.0)</h2>
+
+            <h3>Class, Constructor, Object</h3>
+            <pre>class Person {
+    var name @ str = "unknown"
+    var age @ int = 0
+
+    func Constructor(name: string, age: int) -> any {
+        this.name = name
+        this.age = age
+        return this
+    }
+
+    func describe() -> string {
+        return "Person(" + this.name + ", age=" + this.age + ")"
+    }
+}
+
+obj p @ Person = Constructor("Ada", 42)
+display p.describe()</pre>
+
+            <h3><code>this</code>, <code>super</code>, and assignment</h3>
+            <pre>func birthday() -> int {
+    this.age = this.age + 1
+    return this.age
+}
+
+func superDescribe() -> string {
+    return "super view => " + super.describe()
+}</pre>
+
+            <div class="highlight-box">
+                <strong>OOPS Type Rules:</strong>
+                <ul>
+                    <li><code>var</code> can only be used with built-in datatypes/collections.</li>
+                    <li><code>obj</code> can only be used with classes.</li>
+                    <li><code>var x @ ClassName = ...</code> produces a type error.</li>
+                    <li><code>obj x @ int = ...</code> produces a type error.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
             <h2>4. Control Flow</h2>
             
             <h3>If/Else</h3>

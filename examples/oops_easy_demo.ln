@@ -1,0 +1,28 @@
+class Person {
+    var name @ str = "unknown"
+    var age @ int = 0
+
+    func Constructor(name: string, age: int) -> any {
+        this.name = name
+        this.age = age
+        return this
+    }
+
+    func birthday() -> int {
+        this.age = this.age + 1
+        return this.age
+    }
+
+    func describe() -> string {
+        return "Person(" + this.name + ", age=" + this.age + ")"
+    }
+
+    func superDescribe() -> string {
+        return "super view => " + super.describe()
+    }
+}
+
+obj user @ Person = Constructor("Ada", 42)
+display user.describe()
+user.birthday()
+display user.superDescribe()

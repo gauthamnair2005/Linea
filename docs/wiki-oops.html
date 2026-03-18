@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>OOPS with class/obj - Linea Wiki</title>
+</head>
+<body>
+    <a class="global-linea-logo" href="../index.html" aria-label="Linea Home"><img src="../linea-logo.svg" alt="Linea Logo"></a>
+    <div class="container">
+        <header>
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / OOPS
+            </div>
+            <h1>Easy OOPS: Classes and Objects</h1>
+            <p class="subtitle">Simple class/object syntax with explicit `var` vs `obj` safety rules.</p>
+        </header>
+
+        <main>
+            <h2>Core Syntax</h2>
+            <pre><code>class Person {
+    var name @ str = "unknown"
+    var age @ int = 0
+
+    func Constructor(name: string, age: int) -> any {
+        this.name = name
+        this.age = age
+        return this
+    }
+
+    func describe() -> string {
+        return "Person(" + this.name + ", age=" + this.age + ")"
+    }
+}
+
+obj user @ Person = Constructor("Ada", 42)
+display user.describe()</code></pre>
+
+            <h2>`this`, `super`, and object updates</h2>
+            <pre><code>func birthday() -> int {
+    this.age = this.age + 1
+    return this.age
+}
+
+func superDescribe() -> string {
+    return "super view => " + super.describe()
+}</code></pre>
+
+            <h2>Type Rules (strict by design)</h2>
+            <div class="note">
+                <strong>Rule 1:</strong> Use <code>var</code> only for built-in datatypes and collections.
+            </div>
+            <div class="note">
+                <strong>Rule 2:</strong> Use <code>obj</code> only for class instances.
+            </div>
+
+            <h3>Expected compile-time errors</h3>
+            <pre><code>// Invalid: class type with var
+var x @ Person = Constructor("Ada", 42)
+// Error: Variables can only be created with built-in datatypes (or arrays/matrices).
+//        Objects must be created with 'obj' from a class.
+
+// Invalid: datatype with obj
+obj x @ int = 12
+// Error: Objects can only be created from classes.
+//        Datatypes can only be used with 'var' declarations.</code></pre>
+
+            <div class="nav-buttons">
+                <a href="wiki-index.html" class="nav-btn">← Back to Wiki</a>
+                <a href="../examples/oops_easy_demo.ln" class="nav-btn primary">Open OOPS Example</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
