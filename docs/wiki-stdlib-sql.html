@@ -35,7 +35,7 @@
         <header>
             <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / SQL</div>
             <h1>SQL/SQLite Library</h1>
-            <p>Native SQLite support with prepared statements, parameter binding, secure DB locking, and safe defaults.</p>
+            <p>Native SQLite support with prepared statements, parameter binding, secure DB locking, and safe defaults. The `db` module is a naming alias over the same runtime.</p>
         </header>
         <h2>Core API</h2>
         <pre>import sql
@@ -46,6 +46,14 @@ sql::execute(db, "INSERT INTO users(name) VALUES (?)", ["Ada"])
 var rows = sql::query(db, "SELECT id, name FROM users WHERE name = ?", ["Ada"])
 display rows
 sql::close(db)</pre>
+        <h2>`db` Alias API</h2>
+        <pre>import db
+
+var h = db::open("app.db")
+db::execute(h, "CREATE TABLE IF NOT EXISTS logs(id INTEGER PRIMARY KEY, msg TEXT)", [])
+var rows = db::query(h, "SELECT id, msg FROM logs", [])
+display rows
+db::close(h)</pre>
         <h2>Security API</h2>
         <pre>import sql
 import password

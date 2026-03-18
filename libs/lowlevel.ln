@@ -1,0 +1,37 @@
+# Linea Low-Level Library
+
+func lowlevel::bitAnd(a: int, b: int) -> int {
+  return lowlevel::bitAnd(a, b)
+}
+
+func lowlevel::bitOr(a: int, b: int) -> int {
+  return lowlevel::bitOr(a, b)
+}
+
+func lowlevel::bitXor(a: int, b: int) -> int {
+  return lowlevel::bitXor(a, b)
+}
+
+func lowlevel::bitNot(a: int) -> int {
+  return lowlevel::bitNot(a)
+}
+
+func lowlevel::shl(a: int, bits: int) -> int {
+  return lowlevel::shl(a, bits)
+}
+
+func lowlevel::shr(a: int, bits: int) -> int {
+  return lowlevel::shr(a, bits)
+}
+
+func lowlevel::toBytesLE(v: int) -> any {
+  return lowlevel::toBytesLE(v)
+}
+
+func lowlevel::fromBytesLE(bytes: any) -> int {
+  return lowlevel::fromBytesLE(bytes)
+}
+
+func lowlevel::pointerSize() -> int {
+  return lowlevel::pointerSize()
+}

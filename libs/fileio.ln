@@ -1,0 +1,53 @@
+# Linea File I/O Library
+
+func fileio::readText(path: string) -> string {
+  return fileio::readText(path)
+}
+
+func fileio::writeText(path: string, content: string) -> bool {
+  return fileio::writeText(path, content)
+}
+
+func fileio::appendText(path: string, content: string) -> bool {
+  return fileio::appendText(path, content)
+}
+
+func fileio::exists(path: string) -> bool {
+  return fileio::exists(path)
+}
+
+func fileio::isFile(path: string) -> bool {
+  return fileio::isFile(path)
+}
+
+func fileio::isDir(path: string) -> bool {
+  return fileio::isDir(path)
+}
+
+func fileio::mkdir(path: string) -> bool {
+  return fileio::mkdir(path)
+}
+
+func fileio::removeFile(path: string) -> bool {
+  return fileio::removeFile(path)
+}
+
+func fileio::removeDir(path: string) -> bool {
+  return fileio::removeDir(path)
+}
+
+func fileio::rename(fromPath: string, toPath: string) -> bool {
+  return fileio::rename(fromPath, toPath)
+}
+
+func fileio::copyFile(fromPath: string, toPath: string) -> bool {
+  return fileio::copyFile(fromPath, toPath)
+}
+
+func fileio::listDir(path: string) -> any {
+  return fileio::listDir(path)
+}
+
+func fileio::sizeBytes(path: string) -> int {
+  return fileio::sizeBytes(path)
+}

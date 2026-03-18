@@ -656,6 +656,233 @@ impl RustGenerator {
                             let (height_expr, _) = self.generate_expression(&args[4])?;
                             Ok((format!("linea_runtime::gui::button_window({}, {}, {}, {} as u32, {} as u32)", title_expr, message_expr, button_expr, width_expr, height_expr), "bool".to_string()))
                         }
+                        "hash::sha256" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (input_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::hash::sha256({})", input_expr), "String".to_string()))
+                        }
+                        "hash::sha512" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (input_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::hash::sha512({})", input_expr), "String".to_string()))
+                        }
+                        "hash::md5" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (input_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::hash::md5({})", input_expr), "String".to_string()))
+                        }
+                        "hash::withSalt" => {
+                            if args.len() != 3 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (algo_expr, _) = self.generate_expression(&args[0])?;
+                            let (input_expr, _) = self.generate_expression(&args[1])?;
+                            let (salt_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::hash::with_salt({}, {}, {})", algo_expr, input_expr, salt_expr), "String".to_string()))
+                        }
+                        "hash::secureEquals" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::hash::secure_equals({}, {})", a_expr, b_expr), "bool".to_string()))
+                        }
+                        "security::randomBytes" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (len_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::security::random_bytes({})", len_expr), "String".to_string()))
+                        }
+                        "security::randomToken" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (len_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::security::random_token({})", len_expr), "String".to_string()))
+                        }
+                        "security::constantTimeEquals" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::security::constant_time_equals({}, {})", a_expr, b_expr), "bool".to_string()))
+                        }
+                        "security::passwordHash" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (secret_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::security::password_hash({})", secret_expr), "String".to_string()))
+                        }
+                        "security::passwordVerify" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (secret_expr, _) = self.generate_expression(&args[0])?;
+                            let (stored_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::security::password_verify({}, {})", secret_expr, stored_expr), "bool".to_string()))
+                        }
+                        "security::isStrongPassword" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (secret_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::security::is_strong_password({})", secret_expr), "bool".to_string()))
+                        }
+                        "security::passwordScore" => {
+                            if args.len() != 1 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (secret_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::security::password_score({})", secret_expr), "i64".to_string()))
+                        }
+                        "db::open" | "sql::open" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::db::open({})", path_expr), "String".to_string()))
+                        }
+                        "db::close" | "sql::close" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (handle_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::db::close({})", handle_expr), "bool".to_string()))
+                        }
+                        "db::initSecure" | "sql::initSecure" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (handle_expr, _) = self.generate_expression(&args[0])?;
+                            let (password_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::db::init_secure({}, {})", handle_expr, password_expr), "bool".to_string()))
+                        }
+                        "db::unlock" | "sql::unlock" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (handle_expr, _) = self.generate_expression(&args[0])?;
+                            let (password_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::db::unlock({}, {})", handle_expr, password_expr), "bool".to_string()))
+                        }
+                        "db::execute" | "sql::execute" => {
+                            if args.len() < 2 || args.len() > 3 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (handle_expr, _) = self.generate_expression(&args[0])?;
+                            let (query_expr, _) = self.generate_expression(&args[1])?;
+                            if args.len() == 3 {
+                                let (params_expr, _) = self.generate_expression(&args[2])?;
+                                Ok((format!("linea_runtime::db::execute({}, {}, &{})", handle_expr, query_expr, params_expr), "i64".to_string()))
+                            } else {
+                                Ok((format!("linea_runtime::db::execute({}, {}, &vec![])", handle_expr, query_expr), "i64".to_string()))
+                            }
+                        }
+                        "db::query" | "sql::query" => {
+                            if args.len() < 2 || args.len() > 3 { return Ok(("vec![]".to_string(), "Vec<Vec<String>>".to_string())); }
+                            let (handle_expr, _) = self.generate_expression(&args[0])?;
+                            let (query_expr, _) = self.generate_expression(&args[1])?;
+                            if args.len() == 3 {
+                                let (params_expr, _) = self.generate_expression(&args[2])?;
+                                Ok((format!("linea_runtime::db::query({}, {}, &{})", handle_expr, query_expr, params_expr), "Vec<Vec<String>>".to_string()))
+                            } else {
+                                Ok((format!("linea_runtime::db::query({}, {}, &vec![])", handle_expr, query_expr), "Vec<Vec<String>>".to_string()))
+                            }
+                        }
+                        "fileio::readText" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::read_text({})", path_expr), "String".to_string()))
+                        }
+                        "fileio::writeText" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            let (content_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::fileio::write_text({}, {})", path_expr, content_expr), "bool".to_string()))
+                        }
+                        "fileio::appendText" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            let (content_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::fileio::append_text({}, {})", path_expr, content_expr), "bool".to_string()))
+                        }
+                        "fileio::exists" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::exists({})", path_expr), "bool".to_string()))
+                        }
+                        "fileio::isFile" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::is_file({})", path_expr), "bool".to_string()))
+                        }
+                        "fileio::isDir" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::is_dir({})", path_expr), "bool".to_string()))
+                        }
+                        "fileio::mkdir" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::mkdir({})", path_expr), "bool".to_string()))
+                        }
+                        "fileio::removeFile" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::remove_file({})", path_expr), "bool".to_string()))
+                        }
+                        "fileio::removeDir" => {
+                            if args.len() != 1 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::remove_dir({})", path_expr), "bool".to_string()))
+                        }
+                        "fileio::rename" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (from_expr, _) = self.generate_expression(&args[0])?;
+                            let (to_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::fileio::rename({}, {})", from_expr, to_expr), "bool".to_string()))
+                        }
+                        "fileio::copyFile" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (from_expr, _) = self.generate_expression(&args[0])?;
+                            let (to_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::fileio::copy_file({}, {})", from_expr, to_expr), "bool".to_string()))
+                        }
+                        "fileio::listDir" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::list_dir({})", path_expr), "Vec<String>".to_string()))
+                        }
+                        "fileio::sizeBytes" => {
+                            if args.len() != 1 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::fileio::size_bytes({})", path_expr), "i64".to_string()))
+                        }
+                        "lowlevel::bitAnd" => {
+                            if args.len() != 2 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::lowlevel::bit_and({}, {})", a_expr, b_expr), "i64".to_string()))
+                        }
+                        "lowlevel::bitOr" => {
+                            if args.len() != 2 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::lowlevel::bit_or({}, {})", a_expr, b_expr), "i64".to_string()))
+                        }
+                        "lowlevel::bitXor" => {
+                            if args.len() != 2 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::lowlevel::bit_xor({}, {})", a_expr, b_expr), "i64".to_string()))
+                        }
+                        "lowlevel::bitNot" => {
+                            if args.len() != 1 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::lowlevel::bit_not({})", a_expr), "i64".to_string()))
+                        }
+                        "lowlevel::shl" => {
+                            if args.len() != 2 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::lowlevel::shl({}, {})", a_expr, b_expr), "i64".to_string()))
+                        }
+                        "lowlevel::shr" => {
+                            if args.len() != 2 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (a_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::lowlevel::shr({}, {})", a_expr, b_expr), "i64".to_string()))
+                        }
+                        "lowlevel::toBytesLE" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<i64>".to_string())); }
+                            let (v_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::lowlevel::to_bytes_le({})", v_expr), "Vec<i64>".to_string()))
+                        }
+                        "lowlevel::fromBytesLE" => {
+                            if args.len() != 1 { return Ok(("0".to_string(), "i64".to_string())); }
+                            let (v_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::lowlevel::from_bytes_le(&{})", v_expr), "i64".to_string()))
+                        }
+                        "lowlevel::pointerSize" => {
+                            if !args.is_empty() { return Ok(("0".to_string(), "i64".to_string())); }
+                            Ok(("linea_runtime::lowlevel::pointer_size()".to_string(), "i64".to_string()))
+                        }
                         // ... Add other intrinsics here ... 
                         // For brevity, skipping exhaustive list, but keeping important ones.
                         // Ideally we should copy all from original file.

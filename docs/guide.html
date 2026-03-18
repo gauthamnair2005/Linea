@@ -400,6 +400,33 @@ display ok</pre>
         </div>
 
         <div class="section">
+            <h2>3.3 Security + Systems Expansion (v4.8.0)</h2>
+
+            <h3>Hashing & Security</h3>
+            <pre>import hash
+import security
+
+display hash::sha256("linea")
+display security::randomToken(24)
+var stored = security::passwordHash("Linea#2026Secure")
+display security::passwordVerify("Linea#2026Secure", stored)</pre>
+
+            <h3>DB + File I/O + Low-Level</h3>
+            <pre>import db
+import fileio
+import lowlevel
+
+var h = db::open("demo.db")
+db::execute(h, "CREATE TABLE IF NOT EXISTS logs(id INTEGER PRIMARY KEY, msg TEXT)", [])
+display db::query(h, "SELECT id, msg FROM logs", [])
+db::close(h)
+
+fileio::writeText("demo.txt", "hello")
+display fileio::sizeBytes("demo.txt")
+display lowlevel::toBytesLE(1337)</pre>
+        </div>
+
+        <div class="section">
             <h2>4. Control Flow</h2>
             
             <h3>If/Else</h3>

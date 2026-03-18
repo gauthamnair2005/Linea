@@ -1,0 +1,25 @@
+# Linea Database Library (SQLite-backed native module)
+
+func db::open(path: string) -> string {
+  return db::open(path)
+}
+
+func db::close(handle: string) -> bool {
+  return db::close(handle)
+}
+
+func db::execute(handle: string, query: string, params: any) -> int {
+  return db::execute(handle, query, params)
+}
+
+func db::query(handle: string, query: string, params: any) -> any {
+  return db::query(handle, query, params)
+}
+
+func db::initSecure(handle: string, password: string) -> bool {
+  return db::initSecure(handle, password)
+}
+
+func db::unlock(handle: string, password: string) -> bool {
+  return db::unlock(handle, password)
+}

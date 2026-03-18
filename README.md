@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.7.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.8.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -151,7 +151,12 @@ Linea provides a rich standard library for modern development:
 | **`gui`** | Native desktop GUI toolkit powered by Rust Iced |
 | **`http`** | HTTP client for REST API integration |
 | **`sql`** | SQLite access with parameterized queries and secure lock/unlock |
+| **`db`** | Database alias module (SQLite) with secure lock/unlock primitives |
 | **`password`** | Masked CLI/GUI password entry plus hashing/verification helpers |
+| **`hash`** | SHA-256, SHA-512, MD5, salted hashing, and constant-time compare |
+| **`security`** | Tokens/random bytes, password strength scoring, hash/verify helpers |
+| **`fileio`** | Explicit file and directory operations for text/binary workflows |
+| **`lowlevel`** | Bitwise operators and integer-byte conversion utilities |
 | **`system`** | System operations: threads, files, env vars, process exec, time |
 | **`math`** | Mathematical functions and constants |
 | **`strings`** | String manipulation utilities |
@@ -183,6 +188,18 @@ See runnable example: `examples/system_ops_demo.ln`.
 See runnable examples:
 * `examples/lambda_macro_demo.ln`
 * `examples/ml_model_formats_demo.ln`
+
+### Security + Systems Library Expansion (v4.8.0)
+
+Linea now includes dedicated modules for hashing/security, explicit file I/O, low-level bit/byte helpers, and a database alias layer.
+
+* Hashing: `hash::sha256`, `hash::sha512`, `hash::md5`, `hash::withSalt`, `hash::secureEquals`
+* Security: `security::randomToken`, `security::randomBytes`, `security::passwordHash`, `security::passwordVerify`
+* Database alias: `db::*` mirrors secure SQLite APIs from `sql::*`
+* File I/O: `fileio::readText`, `writeText`, `appendText`, `listDir`, `sizeBytes`
+* Low-level: `lowlevel::bitAnd`, `bitOr`, `bitXor`, `shl`, `shr`, `toBytesLE`, `fromBytesLE`
+
+Runnable example: `examples/db_fileio_lowlevel_demo.ln` and `examples/hash_security_demo.ln`
 
 ### Native GUI Toolkit (v4.7.0)
 

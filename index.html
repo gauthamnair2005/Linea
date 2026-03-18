@@ -425,7 +425,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.7.0</span>
+                <span class="version-badge">v4.8.0</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -560,12 +560,15 @@ fn main() {
                     <li>✓ <strong>excel</strong> - Excel automation</li>
                     <li>✓ <strong>http</strong> - REST API client</li>
                     <li>✓ <strong>graphics</strong> - Data visualization</li>
+                    <li>✓ <strong>db</strong> - Secure SQLite alias</li>
                 </ul>
             </div>
             <div>
                 <h3 style="color: var(--accent); margin-bottom: 1rem;">Utility Modules</h3>
                 <ul style="list-style: none; color: #bdc3c7;">
                     <li>✓ <strong>markdown</strong> - Markdown parsing</li>
+                    <li>✓ <strong>hash/security</strong> - Hashing + token/password helpers</li>
+                    <li>✓ <strong>fileio/lowlevel</strong> - Explicit files + bit/byte primitives</li>
                     <li>✓ <strong>math</strong> - Mathematical functions</li>
                     <li>✓ <strong>strings</strong> - String manipulation</li>
                     <li>✓ <strong>utils</strong> - General utilities</li>
@@ -575,7 +578,7 @@ fn main() {
     </section>
 
     <section>
-        <h2>🌟 v4.7.0 Highlights</h2>
+        <h2>🌟 v4.8.0 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -597,8 +600,8 @@ fn main() {
         </div>
 
         <div class="showcase">
-            <h3>🔬 ARL-Tangram + Native GUI Toolkit</h3>
-            <p>Linea v4.7.0 adds a first-class `gui` module powered by Rust `iced`, alongside existing lambda/macro and ML capabilities.</p>
+            <h3>🔬 Expanded Systems + Security Stack</h3>
+            <p>Linea v4.8.0 adds dedicated `hash`, `security`, `db`, `fileio`, and `lowlevel` modules for secure backend and systems workflows.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">
@@ -613,7 +616,11 @@ fn main() {
                 <li><strong>Lambdas</strong> - Inline closures: <code>|a, b| =&gt; a + b</code></li>
                 <li><strong>Macros</strong> - Rust-like declarations and invocations: <code>macro_rules! square(x) =&gt; x * x; square!(3)</code></li>
                 <li><strong>Model formats</strong> - <code>ml::loadGGUF</code>, <code>ml::loadONNX</code>, <code>ml::loadPTH</code>, <code>ml::loadMLX</code></li>
-                <li><strong>GUI toolkit</strong> - <code>gui::window</code> and <code>gui::buttonWindow</code> powered by Rust <code>iced</code></li>
+                <li><strong>Hashing</strong> - <code>hash::sha256</code>, <code>hash::sha512</code>, <code>hash::md5</code>, <code>hash::withSalt</code></li>
+                <li><strong>Security helpers</strong> - <code>security::randomToken</code>, <code>security::passwordHash</code>, <code>security::passwordVerify</code></li>
+                <li><strong>DB alias</strong> - <code>db::*</code> mirrors secure SQLite APIs from <code>sql::*</code></li>
+                <li><strong>File I/O primitives</strong> - <code>fileio::readText</code>, <code>writeText</code>, <code>listDir</code>, <code>sizeBytes</code></li>
+                <li><strong>Low-level ops</strong> - <code>lowlevel::bitAnd</code>, <code>bitOr</code>, <code>toBytesLE</code>, <code>fromBytesLE</code></li>
             </ul>
         </div>
     </section>

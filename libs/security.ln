@@ -1,0 +1,29 @@
+# Linea Security Utility Library
+
+func security::randomBytes(length: int) -> string {
+  return security::randomBytes(length)
+}
+
+func security::randomToken(length: int) -> string {
+  return security::randomToken(length)
+}
+
+func security::constantTimeEquals(a: string, b: string) -> bool {
+  return security::constantTimeEquals(a, b)
+}
+
+func security::passwordHash(secret: string) -> string {
+  return security::passwordHash(secret)
+}
+
+func security::passwordVerify(secret: string, stored: string) -> bool {
+  return security::passwordVerify(secret, stored)
+}
+
+func security::isStrongPassword(secret: string) -> bool {
+  return security::isStrongPassword(secret)
+}
+
+func security::passwordScore(secret: string) -> int {
+  return security::passwordScore(secret)
+}

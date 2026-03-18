@@ -137,6 +137,9 @@ serde_json = "1.0"
 comrak = "0.18"
 calamine = "0.24"
 rust_xlsxwriter = "0.68"
+rusqlite = {{ version = "0.32", features = ["bundled"] }}
+sha2 = "0.10"
+md5 = "0.7"
 plotters = {{ version = "0.3.7", default-features = false, features = ["bitmap_backend", "bitmap_encoder", "line_series", "point_series", "histogram", "ab_glyph"] }}
 wgpu = "0.20"
 pollster = "0.3"

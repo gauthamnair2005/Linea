@@ -1,0 +1,21 @@
+# Linea Hashing Library
+
+func hash::sha256(input: string) -> string {
+  return hash::sha256(input)
+}
+
+func hash::sha512(input: string) -> string {
+  return hash::sha512(input)
+}
+
+func hash::md5(input: string) -> string {
+  return hash::md5(input)
+}
+
+func hash::withSalt(algorithm: string, input: string, salt: string) -> string {
+  return hash::withSalt(algorithm, input, salt)
+}
+
+func hash::secureEquals(a: string, b: string) -> bool {
+  return hash::secureEquals(a, b)
+}

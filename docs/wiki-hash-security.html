@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Hash & Security Libraries - Linea Wiki</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary:#00d4ff; --accent:#8338ec; --text-light:#e0e0e0; --text-muted:#a0a0a0; --border:#1a2f5f; --code-bg:#0f1525; }
+        body { font-family:'Monaco','Courier New',monospace; color:var(--text-light); line-height:1.6; }
+        .container { max-width: 980px; margin: 0 auto; padding: 2rem; }
+        header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); }
+        .breadcrumb { color: var(--text-muted); margin-bottom: 0.8rem; }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        h1 { color: var(--primary); margin-bottom: 0.4rem; }
+        h2 { margin-top: 1.6rem; color: var(--accent); border-left: 3px solid var(--primary); padding-left: 0.7rem; }
+        pre { background: var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:1rem; overflow-x:auto; margin: 0.9rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / Hash & Security</div>
+            <h1>`hash` and `security` Modules</h1>
+            <p>Native hashing, token generation, constant-time comparison, and password safety utilities.</p>
+        </header>
+
+        <h2>Hash API</h2>
+        <pre>import hash
+
+display hash::sha256("linea")
+display hash::sha512("linea")
+display hash::md5("linea")
+display hash::withSalt("sha256", "linea", "fixed-salt")
+display hash::secureEquals("abc", "abc")</pre>
+
+        <h2>Security API</h2>
+        <pre>import security
+
+var token = security::randomToken(24)
+var entropy = security::randomBytes(16)
+display token
+display entropy
+
+var pw = "Linea#2026Secure"
+var score = security::passwordScore(pw)
+var strong = security::isStrongPassword(pw)
+var stored = security::passwordHash(pw)
+var ok = security::passwordVerify(pw, stored)
+display score
+display strong
+display ok</pre>
+    </div>
+</body>
+</html>

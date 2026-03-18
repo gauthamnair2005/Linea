@@ -62,6 +62,21 @@ pub mod linea_runtime {
         }
     }
 
+    fn hex_encode(bytes: &[u8]) -> String {
+        bytes.iter().map(|b| format!("{:02x}", b)).collect()
+    }
+
+    fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {
+        if a.len() != b.len() {
+            return false;
+        }
+        let mut diff = 0u8;
+        for i in 0..a.len() {
+            diff |= a[i] ^ b[i];
+        }
+        diff == 0
+    }
+
         pub fn element_wise(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>, op: &str) -> Vec<Vec<f64>> {
              let rows = a.len();
              if rows == 0 { return vec![]; }
@@ -1408,6 +1423,446 @@ pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
             let mut bytes = b"GGUF".to_vec();
             bytes.extend_from_slice(format!("{:?}", payload).as_bytes());
             fs::write(path, bytes).is_ok()
+        }
+    }
+
+    pub mod hash {
+        use sha2::{Digest, Sha256, Sha512};
+
+        pub fn sha256(input: String) -> String {
+            let mut hasher = Sha256::new();
+            hasher.update(input.as_bytes());
+            super::hex_encode(&hasher.finalize())
+        }
+
+        pub fn sha512(input: String) -> String {
+            let mut hasher = Sha512::new();
+            hasher.update(input.as_bytes());
+            super::hex_encode(&hasher.finalize())
+        }
+
+        pub fn md5(input: String) -> String {
+            format!("{:x}", md5::compute(input.as_bytes()))
+        }
+
+        pub fn with_salt(algo: String, input: String, salt: String) -> String {
+            let composite = format!("{}:{}", salt, input);
+            match algo.to_lowercase().as_str() {
+                "sha512" => sha512(composite),
+                "md5" => md5(composite),
+                _ => sha256(composite),
+            }
+        }
+
+        pub fn secure_equals(a: String, b: String) -> bool {
+            super::constant_time_eq(a.as_bytes(), b.as_bytes())
+        }
+    }
+
+    pub mod security {
+        use rand::Rng;
+        use rand::RngCore;
+
+        pub fn random_bytes(len: i64) -> String {
+            if len <= 0 {
+                return String::new();
+            }
+            let mut buf = vec![0u8; len as usize];
+            rand::thread_rng().fill_bytes(&mut buf);
+            super::hex_encode(&buf)
+        }
+
+        pub fn random_token(len: i64) -> String {
+            if len <= 0 {
+                return String::new();
+            }
+            let mut rng = rand::thread_rng();
+            let alphabet = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+            (0..len as usize)
+                .map(|_| {
+                    let idx = rng.gen_range(0..alphabet.len());
+                    alphabet[idx] as char
+                })
+                .collect()
+        }
+
+        pub fn constant_time_equals(a: String, b: String) -> bool {
+            super::constant_time_eq(a.as_bytes(), b.as_bytes())
+        }
+
+        pub fn password_hash(secret: String) -> String {
+            let salt = random_bytes(16);
+            let digest = crate::linea_runtime::hash::with_salt("sha256".to_string(), secret, salt.clone());
+            format!("sha256${}${}", salt, digest)
+        }
+
+        pub fn password_verify(secret: String, stored: String) -> bool {
+            let parts: Vec<&str> = stored.split('$').collect();
+            if parts.len() != 3 {
+                return false;
+            }
+            let algo = parts[0].to_string();
+            let salt = parts[1].to_string();
+            let expected = parts[2].to_string();
+            let candidate = crate::linea_runtime::hash::with_salt(algo, secret, salt);
+            super::constant_time_eq(candidate.as_bytes(), expected.as_bytes())
+        }
+
+        pub fn password_score(secret: String) -> i64 {
+            let mut score = 0;
+            if secret.len() >= 8 { score += 1; }
+            if secret.len() >= 12 { score += 1; }
+            if secret.chars().any(|c| c.is_ascii_lowercase()) { score += 1; }
+            if secret.chars().any(|c| c.is_ascii_uppercase()) { score += 1; }
+            if secret.chars().any(|c| c.is_ascii_digit()) { score += 1; }
+            if secret.chars().any(|c| !c.is_ascii_alphanumeric()) { score += 1; }
+            score
+        }
+
+        pub fn is_strong_password(secret: String) -> bool {
+            password_score(secret) >= 5
+        }
+    }
+
+    pub mod sql {
+        use rusqlite::{params_from_iter, Connection, OptionalExtension};
+        use std::collections::{HashMap, HashSet};
+        use std::sync::atomic::{AtomicU64, Ordering};
+        use std::sync::{Mutex, OnceLock};
+
+        static HANDLE_COUNTER: AtomicU64 = AtomicU64::new(0);
+        static CONNECTIONS: OnceLock<Mutex<HashMap<String, String>>> = OnceLock::new();
+        static SECURE_HASHES: OnceLock<Mutex<HashMap<String, String>>> = OnceLock::new();
+        static UNLOCKED: OnceLock<Mutex<HashSet<String>>> = OnceLock::new();
+
+        fn conns() -> &'static Mutex<HashMap<String, String>> {
+            CONNECTIONS.get_or_init(|| Mutex::new(HashMap::new()))
+        }
+
+        fn secure_hashes() -> &'static Mutex<HashMap<String, String>> {
+            SECURE_HASHES.get_or_init(|| Mutex::new(HashMap::new()))
+        }
+
+        fn unlocked() -> &'static Mutex<HashSet<String>> {
+            UNLOCKED.get_or_init(|| Mutex::new(HashSet::new()))
+        }
+
+        fn get_path(handle: &str) -> Option<String> {
+            let map = conns().lock().ok()?;
+            map.get(handle).cloned()
+        }
+
+        fn ensure_unlocked(handle: &str) -> bool {
+            let secure = secure_hashes()
+                .lock()
+                .ok()
+                .map(|m| m.contains_key(handle))
+                .unwrap_or(false);
+            if !secure {
+                return true;
+            }
+            unlocked()
+                .lock()
+                .ok()
+                .map(|s| s.contains(handle))
+                .unwrap_or(false)
+        }
+
+        pub fn open(path: String) -> String {
+            if Connection::open(&path).is_err() {
+                return String::new();
+            }
+            let id = HANDLE_COUNTER.fetch_add(1, Ordering::Relaxed) + 1;
+            let handle = format!("sql_conn_{}", id);
+            if let Ok(mut m) = conns().lock() {
+                m.insert(handle.clone(), path);
+            }
+            if let Ok(mut u) = unlocked().lock() {
+                u.insert(handle.clone());
+            }
+            handle
+        }
+
+        pub fn close(handle: String) -> bool {
+            let removed = conns().lock().ok().and_then(|mut m| m.remove(&handle)).is_some();
+            if let Ok(mut s) = secure_hashes().lock() {
+                s.remove(&handle);
+            }
+            if let Ok(mut u) = unlocked().lock() {
+                u.remove(&handle);
+            }
+            removed
+        }
+
+        pub fn init_secure(handle: String, password: String) -> bool {
+            let path = match get_path(&handle) {
+                Some(p) => p,
+                None => return false,
+            };
+            let conn = match Connection::open(path) {
+                Ok(c) => c,
+                Err(_) => return false,
+            };
+            if conn
+                .execute(
+                    "CREATE TABLE IF NOT EXISTS _linea_auth (id INTEGER PRIMARY KEY CHECK(id=1), hash TEXT NOT NULL)",
+                    [],
+                )
+                .is_err()
+            {
+                return false;
+            }
+            let stored = crate::linea_runtime::security::password_hash(password);
+            if conn
+                .execute(
+                    "INSERT INTO _linea_auth (id, hash) VALUES (1, ?1) ON CONFLICT(id) DO UPDATE SET hash=excluded.hash",
+                    [stored.as_str()],
+                )
+                .is_err()
+            {
+                return false;
+            }
+            if let Ok(mut s) = secure_hashes().lock() {
+                s.insert(handle.clone(), stored);
+            }
+            if let Ok(mut u) = unlocked().lock() {
+                u.remove(&handle);
+            }
+            true
+        }
+
+        pub fn unlock(handle: String, password: String) -> bool {
+            let path = match get_path(&handle) {
+                Some(p) => p,
+                None => return false,
+            };
+            let conn = match Connection::open(path) {
+                Ok(c) => c,
+                Err(_) => return false,
+            };
+            let stored: Option<String> = conn
+                .query_row("SELECT hash FROM _linea_auth WHERE id=1", [], |row| row.get(0))
+                .optional()
+                .ok()
+                .flatten();
+            let ok = stored
+                .map(|h| crate::linea_runtime::security::password_verify(password, h))
+                .unwrap_or(false);
+            if ok {
+                if let Ok(mut u) = unlocked().lock() {
+                    u.insert(handle);
+                }
+            }
+            ok
+        }
+
+        pub fn execute(handle: String, query: String, params: &Vec<String>) -> i64 {
+            if !ensure_unlocked(&handle) {
+                return -1;
+            }
+            let path = match get_path(&handle) {
+                Some(p) => p,
+                None => return -1,
+            };
+            let conn = match Connection::open(path) {
+                Ok(c) => c,
+                Err(_) => return -1,
+            };
+            let sql_params = params.iter().map(|v| rusqlite::types::Value::Text(v.clone())).collect::<Vec<_>>();
+            conn.execute(&query, params_from_iter(sql_params.iter()))
+                .map(|n| n as i64)
+                .unwrap_or(-1)
+        }
+
+        pub fn query(handle: String, query: String, params: &Vec<String>) -> Vec<Vec<String>> {
+            if !ensure_unlocked(&handle) {
+                return vec![];
+            }
+            let path = match get_path(&handle) {
+                Some(p) => p,
+                None => return vec![],
+            };
+            let conn = match Connection::open(path) {
+                Ok(c) => c,
+                Err(_) => return vec![],
+            };
+            let sql_params = params.iter().map(|v| rusqlite::types::Value::Text(v.clone())).collect::<Vec<_>>();
+            let mut stmt = match conn.prepare(&query) {
+                Ok(s) => s,
+                Err(_) => return vec![],
+            };
+
+            let mut rows_out = vec![
+                stmt.column_names()
+                    .iter()
+                    .map(|n| n.to_string())
+                    .collect::<Vec<String>>(),
+            ];
+            let col_count = stmt.column_count();
+            let mapped = match stmt.query_map(params_from_iter(sql_params.iter()), |row| {
+                let mut out = Vec::with_capacity(col_count);
+                for i in 0..col_count {
+                    let cell = row.get_ref(i)?;
+                    let text = match cell {
+                        rusqlite::types::ValueRef::Null => String::new(),
+                        rusqlite::types::ValueRef::Integer(n) => n.to_string(),
+                        rusqlite::types::ValueRef::Real(f) => f.to_string(),
+                        rusqlite::types::ValueRef::Text(t) => String::from_utf8_lossy(t).to_string(),
+                        rusqlite::types::ValueRef::Blob(b) => super::hex_encode(b),
+                    };
+                    out.push(text);
+                }
+                Ok(out)
+            }) {
+                Ok(m) => m,
+                Err(_) => return vec![],
+            };
+
+            for row in mapped {
+                if let Ok(values) = row {
+                    rows_out.push(values);
+                }
+            }
+            rows_out
+        }
+    }
+
+    pub mod db {
+        pub fn open(path: String) -> String {
+            crate::linea_runtime::sql::open(path)
+        }
+
+        pub fn close(handle: String) -> bool {
+            crate::linea_runtime::sql::close(handle)
+        }
+
+        pub fn init_secure(handle: String, password: String) -> bool {
+            crate::linea_runtime::sql::init_secure(handle, password)
+        }
+
+        pub fn unlock(handle: String, password: String) -> bool {
+            crate::linea_runtime::sql::unlock(handle, password)
+        }
+
+        pub fn execute(handle: String, query: String, params: &Vec<String>) -> i64 {
+            crate::linea_runtime::sql::execute(handle, query, params)
+        }
+
+        pub fn query(handle: String, query: String, params: &Vec<String>) -> Vec<Vec<String>> {
+            crate::linea_runtime::sql::query(handle, query, params)
+        }
+    }
+
+    pub mod fileio {
+        use std::fs;
+        use std::io::Write;
+        use std::path::Path;
+
+        pub fn read_text(path: String) -> String {
+            fs::read_to_string(path).unwrap_or_default()
+        }
+
+        pub fn write_text(path: String, content: String) -> bool {
+            fs::write(path, content).is_ok()
+        }
+
+        pub fn append_text(path: String, content: String) -> bool {
+            let mut file = match fs::OpenOptions::new().create(true).append(true).open(path) {
+                Ok(f) => f,
+                Err(_) => return false,
+            };
+            file.write_all(content.as_bytes()).is_ok()
+        }
+
+        pub fn exists(path: String) -> bool {
+            Path::new(&path).exists()
+        }
+
+        pub fn is_file(path: String) -> bool {
+            Path::new(&path).is_file()
+        }
+
+        pub fn is_dir(path: String) -> bool {
+            Path::new(&path).is_dir()
+        }
+
+        pub fn mkdir(path: String) -> bool {
+            fs::create_dir_all(path).is_ok()
+        }
+
+        pub fn remove_file(path: String) -> bool {
+            if !Path::new(&path).exists() {
+                return false;
+            }
+            fs::remove_file(path).is_ok()
+        }
+
+        pub fn remove_dir(path: String) -> bool {
+            if !Path::new(&path).exists() {
+                return false;
+            }
+            fs::remove_dir_all(path).is_ok()
+        }
+
+        pub fn rename(from_path: String, to_path: String) -> bool {
+            fs::rename(from_path, to_path).is_ok()
+        }
+
+        pub fn copy_file(from_path: String, to_path: String) -> bool {
+            fs::copy(from_path, to_path).is_ok()
+        }
+
+        pub fn list_dir(path: String) -> Vec<String> {
+            let mut out = Vec::new();
+            let iter = match fs::read_dir(path) {
+                Ok(i) => i,
+                Err(_) => return out,
+            };
+            for item in iter.flatten() {
+                if let Some(name) = item.file_name().to_str() {
+                    out.push(name.to_string());
+                }
+            }
+            out
+        }
+
+        pub fn size_bytes(path: String) -> i64 {
+            fs::metadata(path).map(|m| m.len() as i64).unwrap_or(-1)
+        }
+    }
+
+    pub mod lowlevel {
+        pub fn bit_and(a: i64, b: i64) -> i64 { a & b }
+        pub fn bit_or(a: i64, b: i64) -> i64 { a | b }
+        pub fn bit_xor(a: i64, b: i64) -> i64 { a ^ b }
+        pub fn bit_not(a: i64) -> i64 { !a }
+
+        pub fn shl(a: i64, bits: i64) -> i64 {
+            if bits < 0 { return a; }
+            a << (bits as u32)
+        }
+
+        pub fn shr(a: i64, bits: i64) -> i64 {
+            if bits < 0 { return a; }
+            a >> (bits as u32)
+        }
+
+        pub fn to_bytes_le(v: i64) -> Vec<i64> {
+            v.to_le_bytes().iter().map(|b| *b as i64).collect()
+        }
+
+        pub fn from_bytes_le(bytes: &Vec<i64>) -> i64 {
+            let mut buf = [0u8; 8];
+            let limit = bytes.len().min(8);
+            for i in 0..limit {
+                let clamped = bytes[i].clamp(0, 255) as u8;
+                buf[i] = clamped;
+            }
+            i64::from_le_bytes(buf)
+        }
+
+        pub fn pointer_size() -> i64 {
+            std::mem::size_of::<usize>() as i64
         }
     }
 

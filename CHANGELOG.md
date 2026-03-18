@@ -1,5 +1,30 @@
 # Linea Changelog
 
+## [4.8.0] - 2026-03-18
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added native compiled-runtime support for new standard modules:
+  - `hash` (`sha256`, `sha512`, `md5`, `withSalt`, `secureEquals`)
+  - `security` (`randomBytes`, `randomToken`, `constantTimeEquals`, `passwordHash`, `passwordVerify`, strength scoring)
+  - `db` (SQLite alias module with secure init/unlock and query/execute APIs)
+  - `fileio` (explicit file/directory operations and metadata helpers)
+  - `lowlevel` (bitwise operations, shifts, byte packing/unpacking, pointer size)
+- Added generated-build runtime dependencies for these modules: `rusqlite` (bundled), `sha2`, `md5`.
+- Added codegen intrinsic mappings for `hash::*`, `security::*`, `db::*`, `fileio::*`, `lowlevel::*`, and `sql::*` aliases in compiled mode.
+- Added new stdlib wrappers:
+  - `libs/hash.ln`
+  - `libs/security.ln`
+  - `libs/db.ln`
+  - `libs/fileio.ln`
+  - `libs/lowlevel.ln`
+- Added runnable examples:
+  - `examples/hash_security_demo.ln`
+  - `examples/db_fileio_lowlevel_demo.ln`
+- Updated website/wiki/markdown docs and version references to `4.8.0`.
+
 ## [4.7.0] - 2026-03-18
 
 ### SemVer Type

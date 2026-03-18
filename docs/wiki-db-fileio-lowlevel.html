@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>DB, File I/O, and Low-Level Libraries - Linea Wiki</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary:#00d4ff; --accent:#8338ec; --text-light:#e0e0e0; --text-muted:#a0a0a0; --border:#1a2f5f; --code-bg:#0f1525; }
+        body { font-family:'Monaco','Courier New',monospace; color:var(--text-light); line-height:1.6; }
+        .container { max-width: 980px; margin: 0 auto; padding: 2rem; }
+        header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); }
+        .breadcrumb { color: var(--text-muted); margin-bottom: 0.8rem; }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        h1 { color: var(--primary); margin-bottom: 0.4rem; }
+        h2 { margin-top: 1.6rem; color: var(--accent); border-left: 3px solid var(--primary); padding-left: 0.7rem; }
+        pre { background: var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:1rem; overflow-x:auto; margin: 0.9rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / DB + File I/O + Low-Level</div>
+            <h1>`db`, `fileio`, and `lowlevel`</h1>
+            <p>Database access, explicit filesystem APIs, and bit/byte primitives for systems workflows.</p>
+        </header>
+
+        <h2>Database API (`db` alias over SQLite)</h2>
+        <pre>import db
+
+var h = db::open("app.db")
+db::execute(h, "CREATE TABLE IF NOT EXISTS logs(id INTEGER PRIMARY KEY, msg TEXT)", [])
+db::execute(h, "INSERT INTO logs(msg) VALUES ('hello')", [])
+var rows = db::query(h, "SELECT id, msg FROM logs", [])
+display rows
+db::close(h)</pre>
+
+        <h2>File I/O API</h2>
+        <pre>import fileio
+
+fileio::mkdir("tmp")
+fileio::writeText("tmp/a.txt", "alpha\n")
+fileio::appendText("tmp/a.txt", "beta\n")
+display fileio::readText("tmp/a.txt")
+display fileio::listDir("tmp")
+display fileio::sizeBytes("tmp/a.txt")</pre>
+
+        <h2>Low-Level API</h2>
+        <pre>import lowlevel
+
+display lowlevel::bitOr(4, 1)
+display lowlevel::bitAnd(5, 1)
+display lowlevel::shl(1, 8)
+var bytes = lowlevel::toBytesLE(1337)
+display bytes
+display lowlevel::fromBytesLE(bytes)
+display lowlevel::pointerSize()</pre>
+    </div>
+</body>
+</html>
