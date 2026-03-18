@@ -1,0 +1,17 @@
+# Linea Video Library
+
+func video::info(path: string) -> string {
+  return video::info(path)
+}
+
+func video::durationMs(path: string) -> int {
+  return video::durationMs(path)
+}
+
+func video::probe(path: string) -> any {
+  return video::probe(path)
+}
+
+func video::extractAudio(videoPath: string, outAudioPath: string) -> bool {
+  return video::extractAudio(videoPath, outAudioPath)
+}

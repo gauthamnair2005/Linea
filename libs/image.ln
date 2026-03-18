@@ -1,0 +1,21 @@
+# Linea Image Library
+
+func image::width(path: string) -> int {
+  return image::width(path)
+}
+
+func image::height(path: string) -> int {
+  return image::height(path)
+}
+
+func image::dimensions(path: string) -> any {
+  return image::dimensions(path)
+}
+
+func image::convertToGray(inputPath: string, outputPath: string) -> bool {
+  return image::convertToGray(inputPath, outputPath)
+}
+
+func image::resizeNearest(inputPath: string, outputPath: string, newWidth: int, newHeight: int) -> bool {
+  return image::resizeNearest(inputPath, outputPath, newWidth, newHeight)
+}

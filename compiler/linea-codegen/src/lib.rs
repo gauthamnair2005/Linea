@@ -1348,6 +1348,116 @@ impl RustGenerator {
                             if !args.is_empty() { return Ok(("vec![]".to_string(), "Vec<i64>".to_string())); }
                             Ok(("linea_runtime::memory::stats()".to_string(), "Vec<i64>".to_string()))
                         }
+                        "video::info" => {
+                            if args.len() != 1 { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::video::info({})", path_expr), "String".to_string()))
+                        }
+                        "video::durationMs" => {
+                            if args.len() != 1 { return Ok(("-1".to_string(), "i64".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::video::duration_ms({})", path_expr), "i64".to_string()))
+                        }
+                        "video::probe" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::video::probe({})", path_expr), "Vec<String>".to_string()))
+                        }
+                        "video::extractAudio" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (v_expr, _) = self.generate_expression(&args[0])?;
+                            let (a_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::video::extract_audio({}, {})", v_expr, a_expr), "bool".to_string()))
+                        }
+                        "audio::durationMs" => {
+                            if args.len() != 1 { return Ok(("-1".to_string(), "i64".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::audio::duration_ms({})", path_expr), "i64".to_string()))
+                        }
+                        "audio::sampleRate" => {
+                            if args.len() != 1 { return Ok(("-1".to_string(), "i64".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::audio::sample_rate({})", path_expr), "i64".to_string()))
+                        }
+                        "audio::waveform" => {
+                            if args.len() != 2 { return Ok(("vec![]".to_string(), "Vec<i64>".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            let (b_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::audio::waveform({}, {})", path_expr, b_expr), "Vec<i64>".to_string()))
+                        }
+                        "audio::generateTone" => {
+                            if args.len() != 4 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            let (f_expr, _) = self.generate_expression(&args[1])?;
+                            let (s_expr, _) = self.generate_expression(&args[2])?;
+                            let (sr_expr, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::audio::generate_tone({}, {}, {}, {})", path_expr, f_expr, s_expr, sr_expr), "bool".to_string()))
+                        }
+                        "image::width" => {
+                            if args.len() != 1 { return Ok(("-1".to_string(), "i64".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::image::width({})", path_expr), "i64".to_string()))
+                        }
+                        "image::height" => {
+                            if args.len() != 1 { return Ok(("-1".to_string(), "i64".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::image::height({})", path_expr), "i64".to_string()))
+                        }
+                        "image::dimensions" => {
+                            if args.len() != 1 { return Ok(("vec![-1,-1]".to_string(), "Vec<i64>".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::image::dimensions({})", path_expr), "Vec<i64>".to_string()))
+                        }
+                        "image::convertToGray" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (in_expr, _) = self.generate_expression(&args[0])?;
+                            let (out_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::image::convert_to_gray({}, {})", in_expr, out_expr), "bool".to_string()))
+                        }
+                        "image::resizeNearest" => {
+                            if args.len() != 4 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (in_expr, _) = self.generate_expression(&args[0])?;
+                            let (out_expr, _) = self.generate_expression(&args[1])?;
+                            let (w_expr, _) = self.generate_expression(&args[2])?;
+                            let (h_expr, _) = self.generate_expression(&args[3])?;
+                            Ok((format!("linea_runtime::image::resize_nearest({}, {}, {}, {})", in_expr, out_expr, w_expr, h_expr), "bool".to_string()))
+                        }
+                        "opencv::blurBox" => {
+                            if args.len() != 3 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (in_expr, _) = self.generate_expression(&args[0])?;
+                            let (out_expr, _) = self.generate_expression(&args[1])?;
+                            let (r_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::opencv::blur_box({}, {}, {})", in_expr, out_expr, r_expr), "bool".to_string()))
+                        }
+                        "opencv::cannyMock" => {
+                            if args.len() != 3 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (in_expr, _) = self.generate_expression(&args[0])?;
+                            let (out_expr, _) = self.generate_expression(&args[1])?;
+                            let (t_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::opencv::canny_mock({}, {}, {})", in_expr, out_expr, t_expr), "bool".to_string()))
+                        }
+                        "opencv::detectFacesMock" => {
+                            if args.len() != 1 { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            let (path_expr, _) = self.generate_expression(&args[0])?;
+                            Ok((format!("linea_runtime::opencv::detect_faces_mock({})", path_expr), "Vec<String>".to_string()))
+                        }
+                        "camera::listDevices" => {
+                            if !args.is_empty() { return Ok(("vec![]".to_string(), "Vec<String>".to_string())); }
+                            Ok(("linea_runtime::camera::list_devices()".to_string(), "Vec<String>".to_string()))
+                        }
+                        "camera::snapshot" => {
+                            if args.len() != 2 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (i_expr, _) = self.generate_expression(&args[0])?;
+                            let (out_expr, _) = self.generate_expression(&args[1])?;
+                            Ok((format!("linea_runtime::camera::snapshot({}, {})", i_expr, out_expr), "bool".to_string()))
+                        }
+                        "camera::recordMock" => {
+                            if args.len() != 3 { return Ok(("false".to_string(), "bool".to_string())); }
+                            let (i_expr, _) = self.generate_expression(&args[0])?;
+                            let (out_expr, _) = self.generate_expression(&args[1])?;
+                            let (s_expr, _) = self.generate_expression(&args[2])?;
+                            Ok((format!("linea_runtime::camera::record_mock({}, {}, {})", i_expr, out_expr, s_expr), "bool".to_string()))
+                        }
                         // ... Add other intrinsics here ... 
                         // For brevity, skipping exhaustive list, but keeping important ones.
                         // Ideally we should copy all from original file.

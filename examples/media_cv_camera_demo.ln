@@ -1,0 +1,30 @@
+import video
+import audio
+import image
+import opencv
+import camera
+import fileio
+
+display video::info("examples/sample.mp4")
+display video::durationMs("examples/sample.mp4")
+display video::probe("examples/sample.mp4")
+
+audio::generateTone("examples/tone.wav", 440, 2, 44100)
+display audio::durationMs("examples/tone.wav")
+display audio::sampleRate("examples/tone.wav")
+display audio::waveform("examples/tone.wav", 16)
+
+camera::snapshot(0, "examples/snap.ppm")
+display image::width("examples/snap.ppm")
+display image::height("examples/snap.ppm")
+image::convertToGray("examples/snap.ppm", "examples/snap_gray.ppm")
+image::resizeNearest("examples/snap_gray.ppm", "examples/snap_gray_small.ppm", 128, 96)
+display image::dimensions("examples/snap_gray_small.ppm")
+
+opencv::cannyMock("examples/snap.ppm", "examples/snap_edges.ppm", 80)
+opencv::blurBox("examples/snap.ppm", "examples/snap_blur.ppm", 3)
+display opencv::detectFacesMock("examples/snap.ppm")
+
+display camera::listDevices()
+camera::recordMock(0, "examples/mock_recording.txt", 3)
+display fileio::readText("examples/mock_recording.txt")

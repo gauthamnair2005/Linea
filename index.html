@@ -19,7 +19,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.11.0</span>
+                <span class="version-badge">v4.12.0</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -169,6 +169,8 @@ fn main() {
                     <li>✓ <strong>fileio/lowlevel</strong> - Explicit files + bit/byte primitives</li>
                     <li>✓ <strong>webserver/framework</strong> - HTTP + Django-like tooling</li>
                     <li>✓ <strong>blockchain/gpu_tools/memory</strong> - PoW, GPU vendor tools, memory handles</li>
+                    <li>✓ <strong>video/audio/image</strong> - Media probing, tone generation, and image transforms</li>
+                    <li>✓ <strong>opencv/camera</strong> - OpenCV-like CV helpers and camera device/snapshot APIs</li>
                     <li>✓ <strong>math</strong> - Mathematical functions</li>
                     <li>✓ <strong>strings</strong> - String manipulation</li>
                     <li>✓ <strong>utils</strong> - General utilities</li>
@@ -178,7 +180,7 @@ fn main() {
     </section>
 
     <section>
-        <h2>v4.11.0 Highlights</h2>
+        <h2>v4.12.0 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -200,8 +202,8 @@ fn main() {
         </div>
 
         <div class="showcase">
-            <h3>OOPS + Platform Expansion</h3>
-            <p>Linea v4.11.0 adds easy class/object OOPS syntax alongside the recently expanded platform stack (web/framework, blockchain, GPU tools, memory).</p>
+            <h3>Media + CV + Camera Expansion</h3>
+            <p>Linea v4.12.0 adds first-class media and computer-vision modules: video, audio/music, image, OpenCV-like APIs, and camera access helpers.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">
@@ -230,6 +232,11 @@ fn main() {
                 <li><strong>GPU vendor tools</strong> - <code>gpu_tools::adapters</code>, <code>bestAdapter</code>, <code>hasIGPU</code></li>
                 <li><strong>Memory manager</strong> - <code>memory::alloc</code>, <code>writeU8</code>, <code>readU8</code>, <code>copy</code>, <code>stats</code></li>
                 <li><strong>OOPS syntax</strong> - <code>class</code>, <code>obj</code>, <code>Constructor(...)</code>, and explicit class-vs-datatype declaration rules</li>
+                <li><strong>Video library</strong> - <code>video::info</code>, <code>durationMs</code>, <code>probe</code>, <code>extractAudio</code></li>
+                <li><strong>Audio/music library</strong> - <code>audio::durationMs</code>, <code>sampleRate</code>, <code>waveform</code>, <code>generateTone</code></li>
+                <li><strong>Image library</strong> - <code>image::dimensions</code>, <code>convertToGray</code>, <code>resizeNearest</code></li>
+                <li><strong>OpenCV-like library</strong> - <code>opencv::cannyMock</code>, <code>blurBox</code>, <code>detectFacesMock</code></li>
+                <li><strong>Camera access</strong> - <code>camera::listDevices</code>, <code>snapshot</code>, <code>recordMock</code></li>
             </ul>
         </div>
     </section>

@@ -1,5 +1,26 @@
 # Linea Changelog
 
+## [4.12.0] - 2026-03-18
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added native runtime modules for media and computer vision workflows:
+  - `video` (`info`, `durationMs`, `probe`, `extractAudio`)
+  - `audio` (`durationMs`, `sampleRate`, `waveform`, `generateTone`)
+  - `image` (`width`, `height`, `dimensions`, `convertToGray`, `resizeNearest`)
+  - `opencv` (`cannyMock`, `blurBox`, `detectFacesMock`)
+  - `camera` (`listDevices`, `snapshot`, `recordMock`)
+- Added compiler intrinsic mappings so all new `module::function(...)` calls compile in native mode.
+- Added stdlib wrappers:
+  - `libs/video.ln`, `libs/audio.ln`, `libs/image.ln`, `libs/opencv.ln`, `libs/camera.ln`
+- Added runnable example:
+  - `examples/media_cv_camera_demo.ln`
+- Added and linked new wiki documentation page:
+  - `docs/wiki-media-cv-camera.html`
+- Updated website/docs/version references to `4.12.0`.
+
 ## [4.11.0] - 2026-03-18
 
 ### SemVer Type

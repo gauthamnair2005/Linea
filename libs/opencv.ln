@@ -1,0 +1,13 @@
+# Linea OpenCV-like Library
+
+func opencv::blurBox(inputPath: string, outputPath: string, radius: int) -> bool {
+  return opencv::blurBox(inputPath, outputPath, radius)
+}
+
+func opencv::cannyMock(inputPath: string, outputPath: string, threshold: int) -> bool {
+  return opencv::cannyMock(inputPath, outputPath, threshold)
+}
+
+func opencv::detectFacesMock(path: string) -> any {
+  return opencv::detectFacesMock(path)
+}

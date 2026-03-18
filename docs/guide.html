@@ -289,6 +289,39 @@ func superDescribe() -> string {
         </div>
 
         <div class="section">
+            <h2>3.7 Media + CV + Camera Libraries (v4.12.0)</h2>
+
+            <h3>Video + Audio</h3>
+            <pre>import video
+import audio
+
+display video::info("sample.mp4")
+display video::durationMs("sample.mp4")
+display video::probe("sample.mp4")
+video::extractAudio("sample.mp4", "sample.aac")
+
+audio::generateTone("tone.wav", 440, 2, 44100)
+display audio::durationMs("tone.wav")
+display audio::sampleRate("tone.wav")
+display audio::waveform("tone.wav", 16)</pre>
+
+            <h3>Image + OpenCV-like + Camera</h3>
+            <pre>import image
+import opencv
+import camera
+
+camera::snapshot(0, "snap.ppm")
+display image::dimensions("snap.ppm")
+image::convertToGray("snap.ppm", "snap_gray.ppm")
+image::resizeNearest("snap_gray.ppm", "snap_small.ppm", 128, 96)
+
+opencv::cannyMock("snap.ppm", "edges.ppm", 80)
+opencv::blurBox("snap.ppm", "blur.ppm", 3)
+display opencv::detectFacesMock("snap.ppm")
+display camera::listDevices()</pre>
+        </div>
+
+        <div class="section">
             <h2>4. Control Flow</h2>
             
             <h3>If/Else</h3>

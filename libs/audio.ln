@@ -1,0 +1,17 @@
+# Linea Audio/Music Library
+
+func audio::durationMs(path: string) -> int {
+  return audio::durationMs(path)
+}
+
+func audio::sampleRate(path: string) -> int {
+  return audio::sampleRate(path)
+}
+
+func audio::waveform(path: string, buckets: int) -> any {
+  return audio::waveform(path, buckets)
+}
+
+func audio::generateTone(path: string, freqHz: int, seconds: int, sampleRate: int) -> bool {
+  return audio::generateTone(path, freqHz, seconds, sampleRate)
+}

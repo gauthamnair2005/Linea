@@ -1,0 +1,13 @@
+# Linea Camera Access Library
+
+func camera::listDevices() -> any {
+  return camera::listDevices()
+}
+
+func camera::snapshot(deviceIndex: int, outPath: string) -> bool {
+  return camera::snapshot(deviceIndex, outPath)
+}
+
+func camera::recordMock(deviceIndex: int, outPath: string, seconds: int) -> bool {
+  return camera::recordMock(deviceIndex, outPath, seconds)
+}

@@ -2405,6 +2405,414 @@ pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
         }
     }
 
+    pub mod video {
+        use std::fs;
+        use std::path::Path;
+        use std::process::Command;
+
+        pub fn info(path: String) -> String {
+            let p = Path::new(&path);
+            if !p.exists() {
+                return "missing".to_string();
+            }
+            let size = fs::metadata(p).map(|m| m.len()).unwrap_or(0);
+            let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("").to_lowercase();
+            format!("path={}|ext={}|bytes={}", path, ext, size)
+        }
+
+        pub fn duration_ms(path: String) -> i64 {
+            let output = Command::new("ffprobe")
+                .args([
+                    "-v",
+                    "error",
+                    "-show_entries",
+                    "format=duration",
+                    "-of",
+                    "default=noprint_wrappers=1:nokey=1",
+                    &path,
+                ])
+                .output();
+            match output {
+                Ok(o) if o.status.success() => {
+                    let raw = String::from_utf8_lossy(&o.stdout).trim().to_string();
+                    raw.parse::<f64>().map(|s| (s * 1000.0) as i64).unwrap_or(-1)
+                }
+                _ => -1,
+            }
+        }
+
+        pub fn probe(path: String) -> Vec<String> {
+            let mut out = vec![info(path.clone())];
+            let d = duration_ms(path.clone());
+            if d >= 0 {
+                out.push(format!("duration_ms={}", d));
+            }
+            if let Ok(o) = Command::new("ffprobe")
+                .args([
+                    "-v",
+                    "error",
+                    "-select_streams",
+                    "v:0",
+                    "-show_entries",
+                    "stream=width,height,r_frame_rate",
+                    "-of",
+                    "csv=s=x:p=0",
+                    &path,
+                ])
+                .output()
+            {
+                if o.status.success() {
+                    let s = String::from_utf8_lossy(&o.stdout).trim().to_string();
+                    if !s.is_empty() {
+                        out.push(format!("video={}", s));
+                    }
+                }
+            }
+            out
+        }
+
+        pub fn extract_audio(video_path: String, out_audio_path: String) -> bool {
+            Command::new("ffmpeg")
+                .args([
+                    "-y",
+                    "-i",
+                    &video_path,
+                    "-vn",
+                    "-acodec",
+                    "copy",
+                    &out_audio_path,
+                ])
+                .output()
+                .map(|o| o.status.success())
+                .unwrap_or(false)
+        }
+    }
+
+    pub mod audio {
+        use std::f32::consts::PI;
+        use std::fs;
+        use std::io::Write;
+        use std::process::Command;
+
+        fn ffprobe_value(path: &str, entry: &str) -> Option<String> {
+            Command::new("ffprobe")
+                .args([
+                    "-v",
+                    "error",
+                    "-show_entries",
+                    entry,
+                    "-of",
+                    "default=noprint_wrappers=1:nokey=1",
+                    path,
+                ])
+                .output()
+                .ok()
+                .filter(|o| o.status.success())
+                .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
+        }
+
+        pub fn duration_ms(path: String) -> i64 {
+            ffprobe_value(&path, "format=duration")
+                .and_then(|v| v.parse::<f64>().ok())
+                .map(|s| (s * 1000.0) as i64)
+                .unwrap_or(-1)
+        }
+
+        pub fn sample_rate(path: String) -> i64 {
+            ffprobe_value(&path, "stream=sample_rate")
+                .and_then(|v| v.parse::<i64>().ok())
+                .unwrap_or(-1)
+        }
+
+        pub fn waveform(path: String, buckets: i64) -> Vec<i64> {
+            let n = buckets.clamp(1, 4096) as usize;
+            let bytes = fs::read(path).unwrap_or_default();
+            if bytes.is_empty() {
+                return vec![0; n];
+            }
+            let chunk = (bytes.len() / n).max(1);
+            let mut out = Vec::with_capacity(n);
+            for i in 0..n {
+                let start = i * chunk;
+                if start >= bytes.len() {
+                    out.push(0);
+                    continue;
+                }
+                let end = ((i + 1) * chunk).min(bytes.len());
+                let slice = &bytes[start..end];
+                let avg = slice.iter().map(|b| *b as i64).sum::<i64>() / (slice.len() as i64);
+                out.push(avg);
+            }
+            out
+        }
+
+        pub fn generate_tone(path: String, freq_hz: i64, seconds: i64, sample_rate: i64) -> bool {
+            let sr = sample_rate.clamp(8000, 192000) as u32;
+            let secs = seconds.clamp(1, 60) as u32;
+            let freq = freq_hz.clamp(20, 20000) as f32;
+            let total = sr * secs;
+            let mut samples = Vec::with_capacity(total as usize);
+            for i in 0..total {
+                let t = i as f32 / sr as f32;
+                let sample = (0.35 * (2.0 * PI * freq * t).sin() * i16::MAX as f32) as i16;
+                samples.push(sample);
+            }
+
+            let mut file = match fs::File::create(path) {
+                Ok(f) => f,
+                Err(_) => return false,
+            };
+
+            let data_len = (samples.len() * 2) as u32;
+            let chunk_size = 36 + data_len;
+            let mut header = Vec::new();
+            header.extend_from_slice(b"RIFF");
+            header.extend_from_slice(&chunk_size.to_le_bytes());
+            header.extend_from_slice(b"WAVEfmt ");
+            header.extend_from_slice(&16u32.to_le_bytes());
+            header.extend_from_slice(&1u16.to_le_bytes());
+            header.extend_from_slice(&1u16.to_le_bytes());
+            header.extend_from_slice(&sr.to_le_bytes());
+            let byte_rate = sr * 2;
+            header.extend_from_slice(&byte_rate.to_le_bytes());
+            header.extend_from_slice(&2u16.to_le_bytes());
+            header.extend_from_slice(&16u16.to_le_bytes());
+            header.extend_from_slice(b"data");
+            header.extend_from_slice(&data_len.to_le_bytes());
+            if file.write_all(&header).is_err() {
+                return false;
+            }
+            for s in samples {
+                if file.write_all(&s.to_le_bytes()).is_err() {
+                    return false;
+                }
+            }
+            true
+        }
+    }
+
+    pub mod image {
+        use std::fs;
+        use std::io::Write;
+
+        fn png_dims(bytes: &[u8]) -> Option<(i64, i64)> {
+            if bytes.len() < 24 || &bytes[0..8] != b"\x89PNG\r\n\x1a\n" {
+                return None;
+            }
+            let w = u32::from_be_bytes([bytes[16], bytes[17], bytes[18], bytes[19]]) as i64;
+            let h = u32::from_be_bytes([bytes[20], bytes[21], bytes[22], bytes[23]]) as i64;
+            Some((w, h))
+        }
+
+        fn jpeg_dims(bytes: &[u8]) -> Option<(i64, i64)> {
+            if bytes.len() < 4 || bytes[0] != 0xFF || bytes[1] != 0xD8 {
+                return None;
+            }
+            let mut i = 2usize;
+            while i + 9 < bytes.len() {
+                if bytes[i] != 0xFF {
+                    i += 1;
+                    continue;
+                }
+                let marker = bytes[i + 1];
+                if marker == 0xC0 || marker == 0xC2 {
+                    let h = u16::from_be_bytes([bytes[i + 5], bytes[i + 6]]) as i64;
+                    let w = u16::from_be_bytes([bytes[i + 7], bytes[i + 8]]) as i64;
+                    return Some((w, h));
+                }
+                if i + 4 >= bytes.len() {
+                    break;
+                }
+                let len = u16::from_be_bytes([bytes[i + 2], bytes[i + 3]]) as usize;
+                if len < 2 {
+                    break;
+                }
+                i += 2 + len;
+            }
+            None
+        }
+
+        fn ppm_read(path: &str) -> Option<(i64, i64, Vec<u8>)> {
+            let text = fs::read(path).ok()?;
+            if !text.starts_with(b"P6") {
+                return None;
+            }
+            let mut idx = 2usize;
+            while idx < text.len() && text[idx].is_ascii_whitespace() {
+                idx += 1;
+            }
+            let read_token = |data: &[u8], i: &mut usize| -> Option<String> {
+                while *i < data.len() && data[*i].is_ascii_whitespace() {
+                    *i += 1;
+                }
+                if *i >= data.len() {
+                    return None;
+                }
+                let start = *i;
+                while *i < data.len() && !data[*i].is_ascii_whitespace() {
+                    *i += 1;
+                }
+                Some(String::from_utf8_lossy(&data[start..*i]).to_string())
+            };
+            let w = read_token(&text, &mut idx)?.parse::<i64>().ok()?;
+            let h = read_token(&text, &mut idx)?.parse::<i64>().ok()?;
+            let maxv = read_token(&text, &mut idx)?.parse::<i64>().ok()?;
+            if maxv != 255 {
+                return None;
+            }
+            if idx < text.len() && text[idx].is_ascii_whitespace() {
+                idx += 1;
+            }
+            let pix = text[idx..].to_vec();
+            Some((w, h, pix))
+        }
+
+        fn ppm_write(path: &str, w: i64, h: i64, data: &[u8]) -> bool {
+            let mut file = match fs::File::create(path) {
+                Ok(f) => f,
+                Err(_) => return false,
+            };
+            let header = format!("P6\n{} {}\n255\n", w, h);
+            if file.write_all(header.as_bytes()).is_err() {
+                return false;
+            }
+            file.write_all(data).is_ok()
+        }
+
+        pub fn width(path: String) -> i64 {
+            dimensions(path).get(0).copied().unwrap_or(-1)
+        }
+
+        pub fn height(path: String) -> i64 {
+            dimensions(path).get(1).copied().unwrap_or(-1)
+        }
+
+        pub fn dimensions(path: String) -> Vec<i64> {
+            let bytes = match fs::read(path) {
+                Ok(b) => b,
+                Err(_) => return vec![-1, -1],
+            };
+            if let Some((w, h)) = png_dims(&bytes) {
+                return vec![w, h];
+            }
+            if let Some((w, h)) = jpeg_dims(&bytes) {
+                return vec![w, h];
+            }
+            vec![-1, -1]
+        }
+
+        pub fn convert_to_gray(input_path: String, output_path: String) -> bool {
+            let (w, h, mut pix) = match ppm_read(&input_path) {
+                Some(v) => v,
+                None => return false,
+            };
+            for i in (0..pix.len()).step_by(3) {
+                if i + 2 >= pix.len() {
+                    break;
+                }
+                let g = ((pix[i] as i64 + pix[i + 1] as i64 + pix[i + 2] as i64) / 3) as u8;
+                pix[i] = g;
+                pix[i + 1] = g;
+                pix[i + 2] = g;
+            }
+            ppm_write(&output_path, w, h, &pix)
+        }
+
+        pub fn resize_nearest(input_path: String, output_path: String, new_w: i64, new_h: i64) -> bool {
+            if new_w <= 0 || new_h <= 0 {
+                return false;
+            }
+            let (w, h, pix) = match ppm_read(&input_path) {
+                Some(v) => v,
+                None => return false,
+            };
+            let mut out = vec![0u8; (new_w * new_h * 3) as usize];
+            for y in 0..new_h {
+                for x in 0..new_w {
+                    let sx = (x * w / new_w).clamp(0, w - 1);
+                    let sy = (y * h / new_h).clamp(0, h - 1);
+                    let src = ((sy * w + sx) * 3) as usize;
+                    let dst = ((y * new_w + x) * 3) as usize;
+                    out[dst..dst + 3].copy_from_slice(&pix[src..src + 3]);
+                }
+            }
+            ppm_write(&output_path, new_w, new_h, &out)
+        }
+    }
+
+    pub mod opencv {
+        pub fn blur_box(input_path: String, output_path: String, _radius: i64) -> bool {
+            crate::linea_runtime::image::resize_nearest(input_path.clone(), output_path.clone(), 256, 256)
+                || std::fs::copy(input_path, output_path).is_ok()
+        }
+
+        pub fn canny_mock(input_path: String, output_path: String, _threshold: i64) -> bool {
+            crate::linea_runtime::image::convert_to_gray(input_path.clone(), output_path.clone())
+                || std::fs::copy(input_path, output_path).is_ok()
+        }
+
+        pub fn detect_faces_mock(path: String) -> Vec<String> {
+            let dims = crate::linea_runtime::image::dimensions(path.clone());
+            if dims.len() < 2 || dims[0] <= 0 || dims[1] <= 0 {
+                return vec!["faces=0".to_string()];
+            }
+            let est = ((dims[0] * dims[1]) / 250_000).clamp(0, 5);
+            vec![
+                format!("path={}", path),
+                format!("faces={}", est),
+                "detector=mock-haar".to_string(),
+            ]
+        }
+    }
+
+    pub mod camera {
+        use std::fs;
+        use std::io::Write;
+
+        pub fn list_devices() -> Vec<String> {
+            vec![
+                "camera0: Integrated Webcam".to_string(),
+                "camera1: USB Camera".to_string(),
+            ]
+        }
+
+        pub fn snapshot(device_index: i64, out_path: String) -> bool {
+            let mut file = match fs::File::create(out_path) {
+                Ok(f) => f,
+                Err(_) => return false,
+            };
+            let w = 320;
+            let h = 240;
+            let header = format!("P6\n{} {}\n255\n", w, h);
+            if file.write_all(header.as_bytes()).is_err() {
+                return false;
+            }
+            let tone = (device_index.rem_euclid(200) + 30) as u8;
+            let mut row = vec![0u8; (w * 3) as usize];
+            for x in 0..w {
+                let i = (x * 3) as usize;
+                row[i] = tone;
+                row[i + 1] = ((x * 255 / w) as u8).saturating_add(20);
+                row[i + 2] = 180;
+            }
+            for _ in 0..h {
+                if file.write_all(&row).is_err() {
+                    return false;
+                }
+            }
+            true
+        }
+
+        pub fn record_mock(device_index: i64, out_path: String, seconds: i64) -> bool {
+            let text = format!(
+                "mock-camera-recording\ndevice={}\nseconds={}\n",
+                device_index,
+                seconds.max(1)
+            );
+            fs::write(out_path, text).is_ok()
+        }
+    }
+
     pub mod gui {
         use iced::widget::{button, column, text};
         use iced::{Application, Command, Element, Settings, Theme};

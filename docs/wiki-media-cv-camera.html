@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Media + CV + Camera Libraries - Linea Wiki</title>
+</head>
+<body>
+    <a class="global-linea-logo" href="../index.html" aria-label="Linea Home"><img src="../linea-logo.svg" alt="Linea Logo"></a>
+    <div class="container">
+        <header>
+            <h1>Media + CV + Camera Libraries</h1>
+            <p class="subtitle">Video, audio/music, image, OpenCV-like, and camera access APIs in Linea.</p>
+            <div class="nav-breadcrumb">
+                <div class="breadcrumb">
+                    <a href="../index.html">← Main Site</a>
+                    <span>/</span>
+                    <a href="wiki-index.html">Wiki</a>
+                    <span>/</span>
+                    <span>Media + CV + Camera</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="section">
+            <h2>Import Modules</h2>
+            <pre>import video
+import audio
+import image
+import opencv
+import camera</pre>
+        </div>
+
+        <div class="section">
+            <h2>Video APIs</h2>
+            <pre>display video::info("movie.mp4")
+display video::durationMs("movie.mp4")
+display video::probe("movie.mp4")
+video::extractAudio("movie.mp4", "movie.aac")</pre>
+        </div>
+
+        <div class="section">
+            <h2>Audio/Music APIs</h2>
+            <pre>audio::generateTone("tone.wav", 440, 2, 44100)
+display audio::durationMs("tone.wav")
+display audio::sampleRate("tone.wav")
+display audio::waveform("tone.wav", 32)</pre>
+        </div>
+
+        <div class="section">
+            <h2>Image APIs</h2>
+            <pre>display image::width("photo.png")
+display image::height("photo.png")
+display image::dimensions("photo.png")
+image::convertToGray("snap.ppm", "snap_gray.ppm")
+image::resizeNearest("snap_gray.ppm", "snap_small.ppm", 128, 96)</pre>
+        </div>
+
+        <div class="section">
+            <h2>OpenCV-like APIs</h2>
+            <pre>opencv::cannyMock("snap.ppm", "edges.ppm", 80)
+opencv::blurBox("snap.ppm", "blur.ppm", 3)
+display opencv::detectFacesMock("snap.ppm")</pre>
+        </div>
+
+        <div class="section">
+            <h2>Camera APIs</h2>
+            <pre>display camera::listDevices()
+camera::snapshot(0, "snap.ppm")
+camera::recordMock(0, "recording.txt", 3)</pre>
+        </div>
+
+        <div class="section">
+            <h2>Runnable Example</h2>
+            <p>See <code>examples/media_cv_camera_demo.ln</code> for a complete end-to-end sample.</p>
+        </div>
+    </div>
+</body>
+</html>

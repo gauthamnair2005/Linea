@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.11.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.12.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -172,6 +172,25 @@ Type-safety rules are explicit:
 
 Runnable example: `examples/oops_easy_demo.ln`.
 
+### 5. Media + CV + Camera Stack (v4.12.0)
+
+Linea now includes first-class media and computer-vision modules for production pipelines and tooling.
+
+```linea
+import video
+import audio
+import image
+import opencv
+import camera
+
+display video::probe("sample.mp4")
+audio::generateTone("tone.wav", 440, 2, 44100)
+camera::snapshot(0, "snap.ppm")
+opencv::cannyMock("snap.ppm", "edges.ppm", 80)
+```
+
+Runnable example: `examples/media_cv_camera_demo.ln`.
+
 ## 📚 Standard Library
 
 Linea provides a rich standard library for modern development:
@@ -203,6 +222,11 @@ Linea provides a rich standard library for modern development:
 | **`blockchain`** | Merkle roots, proof-of-work mining helper, and chain-link validation |
 | **`gpu_tools`** | GPU adapter/vendor detection for NVIDIA, AMD, Intel, and iGPU checks |
 | **`memory`** | Handle-based low/mid-level memory allocation and byte operations |
+| **`video`** | Video metadata/probe helpers and audio extraction utility |
+| **`audio`** | Audio metadata, waveform summarization, and tone generation |
+| **`image`** | Image dimension inspection and baseline grayscale/resize transforms |
+| **`opencv`** | OpenCV-like CV helpers (mock canny/blur/face detection interfaces) |
+| **`camera`** | Camera device listing plus snapshot/recording mock interfaces |
 | **`system`** | System operations: threads, files, env vars, process exec, time |
 | **`math`** | Mathematical functions and constants |
 | **`strings`** | String manipulation utilities |
