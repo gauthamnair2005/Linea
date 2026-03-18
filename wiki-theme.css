@@ -20,6 +20,7 @@
     --radius-lg: 12px;
     --content-width: 1180px;
     --shadow: 0 1px 0 rgba(45, 38, 26, 0.06);
+    --font-body: "Styrene B", "Styrene A", "Styrene", "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -34,7 +35,7 @@ body {
 body {
     background: var(--bg) !important;
     color: var(--ink) !important;
-    font-family: "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif !important;
+    font-family: var(--font-body) !important;
     line-height: 1.64;
 }
 
