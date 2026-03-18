@@ -1,30 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Linea logo">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="core" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="ring" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    <linearGradient id="lineaMark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f6feb"/>
+      <stop offset="100%" stop-color="#0f4fb3"/>
     </linearGradient>
   </defs>
 
-  <rect x="6" y="6" width="116" height="116" rx="28" fill="url(#bg)"/>
-
-  <!-- Orbit ring -->
-  <circle cx="64" cy="64" r="40" fill="none" stroke="url(#ring)" stroke-width="8" opacity="0.95"/>
-
-  <!-- Stylized angular nucleus -->
-  <path d="M43 72 L60 38 L78 52 L66 90 Z" fill="url(#core)"/>
-  <path d="M74 34 L90 56 L78 92 L62 70 Z" fill="url(#ring)" opacity="0.92"/>
-
-  <!-- Center spark -->
-  <circle cx="66" cy="62" r="6" fill="#f8fafc" opacity="0.95"/>
+  <rect x="10" y="10" width="76" height="76" rx="18" fill="#ffffff" stroke="#c9d7ee" stroke-width="2"/>
+  <path d="M30 28V68H67" fill="none" stroke="url(#lineaMark)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="67" cy="68" r="4.5" fill="#1f6feb"/>
 </svg>
