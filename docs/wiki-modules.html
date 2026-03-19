@@ -27,11 +27,12 @@
 import sql
 import system
 
-fn main() {
+func main() -> any {
     var db = sql::open("app.db")
     var cwd = system::cwd()
     display cwd
     display db
+    return 0
 }</pre>
             </div>
 
@@ -44,8 +45,9 @@ fn main() {
             <p>After install:</p>
             <pre>import greeter
 
-fn main() {
+func main() -> any {
     greeter::hello("Developer")
+    return 0
 }</pre>
 
             <h2>Registry Metadata Format</h2>

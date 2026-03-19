@@ -21,10 +21,8 @@
             <h2>GPU Computation</h2>
             <p>Use <code>@gpu</code> functions and <code>compute</code> helpers for accelerated numeric operations.</p>
             <pre><code>import compute
-
-@gpu
-fn multiply(a, b) {
-    compute::matmul(a, b)
+func multiply(a: any, b: any) -> any {
+    return compute::matmul(a, b)
 }
 
 var a = [[1.0, 2.0], [3.0, 4.0]]

@@ -1,5 +1,5 @@
 import greeter
 
-fn main() {
+func main() -> any {
     greeter::hello("Linea Developer")
 }

@@ -1,4 +1,4 @@
-macro_rules! square(x) => x * x;
+macro_rules! square(x) => x * x
 
 var add = |a, b| => a + b
 var mul_then_add = |x, y, z| => (x * y) + z

@@ -82,13 +82,12 @@
             
             <p>Mark functions for GPU execution with the <code>@gpu</code> decorator:</p>
             
-            <pre><code>@gpu
-<span class="keyword">fn</span> matrix_multiply(a <span class="keyword">@</span> Matrix, b <span class="keyword">@</span> Matrix) -> Matrix {
+            <pre><code><span class="keyword">func</span> matrix_multiply(a: any, b: any) -> any {
     <span class="keyword">return</span> <span class="function">matmul</span>(a, b)
 }</code></pre>
             
             <div class="note">
-                <strong>💡 Tip:</strong> Use @gpu for large matrix operations and neural network layers. Linea automatically handles GPU/CPU selection based on device hierarchy (dGPU > iGPU > CPU).
+                <strong>💡 Tip:</strong> Use GPU paths for large matrix operations and neural network layers. Linea automatically handles GPU/CPU selection based on device hierarchy (dGPU > iGPU > CPU).
             </div>
             
             <h2>Common Patterns</h2>
@@ -106,7 +105,7 @@
             
             <ul>
                 <li><strong>Use matrices for batch operations:</strong> Faster than element-wise loops</li>
-                <li><strong>Mark GPU functions:</strong> Use @gpu for acceleration</li>
+                <li><strong>Mark GPU functions:</strong> Use: gpu for acceleration</li>
                 <li><strong>Normalize inputs:</strong> Better convergence during training</li>
                 <li><strong>Use appropriate dtypes:</strong> float32 for most ML, float64 for precision</li>
                 <li><strong>Profile your code:</strong> Find bottlenecks before optimizing</li>

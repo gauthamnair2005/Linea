@@ -79,22 +79,22 @@ arl_model.adapt_learning_rate(validation_accuracy)
 model.save_components("components.arl")
 
 // Load and reuse
-new_model := arl::load_components("components.arl")
+new_model = arl::load_components("components.arl")
 new_model.fine_tune(new_data, epochs: 10)</pre>
 
             <h3>3. Interpretability</h3>
             <pre>// Inspect what the model learned
-components_info := model.explain_components()
+components_info = model.explain_components()
 for comp in components_info {
     display "Component " + comp.id + ": " + comp.meaning
 }</pre>
 
             <h3>4. GPU Optimization</h3>
-            <pre>// Automatically uses GPU if available
-@gpu
-fn arl_forward_pass(x: Matrix) -> Matrix {
+            <pre>// Automatically uses accelerated compute when available
+func arl_forward_pass(x: any) -> any {
     // Multi-layer attention runs on GPU
     // Automatic batching and optimization
+    return x
 }</pre>
         </div>
 
@@ -104,14 +104,14 @@ fn arl_forward_pass(x: Matrix) -> Matrix {
             <pre>import arl
 import datasets
 
-fn main() {
+func main() -> any {
     // Load data
-    data := datasets::load_csv("data.csv")
-    X_train := data::features
-    y_train := data::labels
+    data = datasets::load_csv("data.csv")
+    X_train = data::features
+    y_train = data::labels
     
     // Create ARL-Tangram model
-    model := arl::ARLTangram(
+    model = arl::ARLTangram(
         input_dim: 50,
         num_components: 8,
         attention_heads: 4,
@@ -119,26 +119,26 @@ fn main() {
     )
     
     // Train with adaptive learning
-    optimizer := ml::Adam(learning_rate: 0.001)
+    optimizer = ml::Adam(0.001)
     for epoch from 0~50 {
-        loss := model.train_step(X_train, y_train, optimizer)
+        loss = model.train_step(X_train, y_train, optimizer)
         
         if epoch % 10 == 0 {
-            accuracy := model.evaluate(X_val, y_val)
+            accuracy = model.evaluate(X_val, y_val)
             model.adapt_learning_rate(accuracy)
-            display "Epoch " + epoch + ": loss=" + loss + 
-                  " acc=" + accuracy)
+            display "Epoch " + epoch + ": loss=" + loss + " acc=" + accuracy
         }
     }
     
     // Inference with interpretation
-    predictions := model.predict(X_test)
-    explanations := model.explain_reasoning(X_test)
+    predictions = model.predict(X_test)
+    explanations = model.explain_reasoning(X_test)
     
-    for i in 0..len(predictions) {
+    for i from 0~len(predictions) {
         display "Sample " + i + ": " + predictions[i]
         display "Explanation: " + explanations[i]
     }
+    return 0
 }</pre>
         </div>
 
@@ -205,11 +205,11 @@ fn main() {
 
             <h3>ARLTangram struct</h3>
             <pre>struct ARLTangram {
-    input_dim: i64,
-    num_components: i64,
-    attention_heads: i64,
-    hidden_dim: i64,
-    learning_rate: f64
+    input_dim: int,
+    num_components: int,
+    attention_heads: int,
+    hidden_dim: int,
+    learning_rate: float
 }</pre>
 
             <h3>Key Functions</h3>

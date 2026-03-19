@@ -1,75 +1,47 @@
-// examples/arl_reasoning_demo.ln
-// Demonstrates ARL-Tangram adaptive reasoning algorithm
-
 import arl
 import ml
 import datasets
 
-fn main() {
-    print("=== Linea ARL-Tangram Reasoning Demo ===")
-    print("")
-    
-    // Simulate input data
-    batch_size: i64 = 32
-    input_dim: i64 = 50
-    
-    // Create synthetic dataset
-    X_train: Matrix = ml::randn(batch_size, input_dim)
-    y_train: Matrix = ml::randn(batch_size, 10)
-    
-    // Initialize ARL-Tangram model
-    print("Creating ARL-Tangram model...")
-    model: arl::ARLTangram = arl::init(
-        input_dim: input_dim,
-        num_components: 8,
-        attention_heads: 4,
-        hidden_dim: 128
-    )
-    
-    print("Model initialized with:")
-    print("  - Input Dimension: " + input_dim)
-    print("  - Components: 8 (for compositional reasoning)")
-    print("  - Attention Heads: 4 (multi-perspective analysis)")
-    print("  - Hidden Dimension: 128")
-    print("")
-    
-    // Training loop
-    print("Starting training...")
-    optimizer: ml::Adam = ml::Adam(learning_rate: 0.001)
-    
-    for epoch in 0..20 {
-        // Forward and backward pass
-        loss: f64 = arl::train_step(model, X_train, y_train, optimizer)
-        
+func main() -> any {
+    display "=== Linea ARL-Tangram Reasoning Demo ==="
+    display ""
+
+    var batch_size @ int = 32
+    var input_dim @ int = 50
+
+    var x_train @ any = ml::randn(batch_size, input_dim)
+    var y_train @ any = ml::randn(batch_size, 10)
+
+    display "Creating ARL-Tangram model..."
+    var model @ any = arl::init(input_dim, 8, 4, 128)
+
+    display "Model initialized"
+    display ""
+
+    display "Starting training..."
+    var optimizer @ any = ml::Adam(0.001)
+
+    for epoch from 0~20 {
+        var loss @ float = arl::train_step(model, x_train, y_train, optimizer)
+
         if epoch % 5 == 0 {
-            // Evaluate
-            accuracy: f64 = arl::evaluate(model, X_train, y_train)
-            
-            // Adapt learning rate
+            var accuracy @ float = arl::evaluate(model, x_train, y_train)
             arl::adapt_learning_rate(model, accuracy)
-            
-            print("Epoch " + epoch + " | Loss: " + loss + " | Accuracy: " + accuracy)
+            display "Epoch " + epoch + " | Loss: " + loss + " | Accuracy: " + accuracy
         }
     }
-    
-    print("")
-    print("=== Testing Reasoning Interpretability ===")
-    
-    // Test sample
-    test_sample: Matrix = ml::randn(1, input_dim)
-    
-    // Get predictions with explanations
-    predictions: Matrix = arl::predict_with_explanation(model, test_sample)
-    explanations: Vector<string> = arl::explain_reasoning(model, test_sample)
-    
-    print("Test Prediction: " + predictions[0][0])
-    print("Reasoning Explanation: " + explanations[0])
-    print("")
-    
-    print("✓ ARL-Tangram Adaptive Reasoning Demo Complete")
-    print("This algorithm provides interpretable AI reasoning through:")
-    print("  • Adaptive patterns learned during training")
-    print("  • Tangram-based component decomposition")
-    print("  • Multi-head attention for focused reasoning")
-    print("  • Automatic learning rate adaptation")
+
+    display ""
+    display "=== Testing Reasoning Interpretability ==="
+
+    var test_sample @ any = ml::randn(1, input_dim)
+    var predictions @ any = arl::predict_with_explanation(model, test_sample)
+    var explanations @ any = arl::explain_reasoning(model, test_sample)
+
+    display "Test Prediction: " + predictions[0][0]
+    display "Reasoning Explanation: " + explanations[0]
+    display ""
+
+    display "ARL-Tangram Adaptive Reasoning Demo Complete"
+    return 0
 }

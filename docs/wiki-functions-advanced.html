@@ -21,17 +21,17 @@
             <h2>Advanced Function Patterns</h2>
             <p>Keep functions focused and composable. Return typed values and separate side effects.</p>
             <h3>Composed Functions</h3>
-            <pre><code>fn add(a @ int, b @ int) -> int {
+            <pre><code>func add(a: int, b: int) -> int {
     a + b
 }
 
-fn weighted_sum(x @ int, y @ int, w @ int) -> int {
+func weighted_sum(x: int, y: int, w: int) -> int {
     add(x * w, y)
 }
 
 display weighted_sum(3, 5, 2)</code></pre>
             <h3>Module-style Utility Function</h3>
-            <pre><code>fn clamp(v @ int, lo @ int, hi @ int) -> int {
+            <pre><code>func clamp(v: int, lo: int, hi: int) -> int {
     if v &lt; lo { lo }
     else if v &gt; hi { hi }
     else { v }

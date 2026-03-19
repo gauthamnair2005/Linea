@@ -83,9 +83,10 @@ cd Linea
             
             <h3>Your First Program</h3>
             <div class="code-block"><code>// hello.ln
-fn main() {
+func main() -> any {
     var x @ int = 42
     display x
+    return 0
 }</code></div>
             
             <h3>Compile & Run</h3>
@@ -140,7 +141,7 @@ system::removeDir("tmp")</code></div>
 import ml
 import datasets
 
-fn main() {
+func main() -> any {
     // Load dataset
     var data = datasets::load_csv("iris.csv")
     var X = data::features
@@ -156,11 +157,12 @@ fn main() {
     ])
      
     // Train
-    var optimizer = ml::Adam(learning_rate: 0.001)
+    var optimizer = ml::Adam(0.001)
     for epoch from 0~100 {
         var loss = model.train_step(X, y, optimizer)
         display "Epoch " + epoch + ": loss = " + loss
     }
+    return 0
 }</code></div>
         </div>
     </section>

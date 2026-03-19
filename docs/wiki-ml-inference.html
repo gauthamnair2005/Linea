@@ -21,10 +21,8 @@
             <h2>ML Inference</h2>
             <p>Inference runs a trained model without updating weights.</p>
             <pre><code>import ml
-
-@inference
-fn predict(model, x) {
-    model.forward(x)
+func predict(model: any, x: any) -> any {
+    return model.forward(x)
 }
 
 var sample = [[5.8, 2.7, 5.1, 1.9]]

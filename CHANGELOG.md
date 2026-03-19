@@ -1,5 +1,20 @@
 # Linea Changelog
 
+## [4.12.1] - 2026-03-19
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Normalized user-facing syntax across updated docs/examples/wiki snippets to current parser expectations:
+  - function declarations use `func` consistently in active docs/pages
+  - modern declaration style uses `@` type annotations in updated snippets
+  - removed mixed/legacy snippet forms that produced parser errors in showcased examples
+- Fixed malformed snippet regressions introduced during broad syntax cleanup (including ARL and wiki examples).
+- Updated ML optimizer usage in updated snippets/examples from named-argument form to parser-safe positional form (`ml::Adam(0.001)`).
+- Revalidated representative examples with compiler `gen-rust` smoke checks.
+- Updated website/docs/version references to `4.12.1`.
+
 ## [4.12.0] - 2026-03-18
 
 ### SemVer Type

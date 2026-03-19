@@ -20,9 +20,8 @@
         <main>
             <h2>Async Functions (Preview)</h2>
             <p>Async support is preview-stage. Keep examples explicit and isolate async experiments from production-critical paths.</p>
-            <pre><code>@async
-fn fetch_text(url @ str) -> str {
-    http::get(url)
+            <pre><code>func fetch_text(url: str) -> string {
+    return http::get(url)
 }
 
 // Preview usage pattern:

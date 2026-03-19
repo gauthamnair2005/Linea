@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.12.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.12.1-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -172,7 +172,7 @@ Type-safety rules are explicit:
 
 Runnable example: `examples/oops_easy_demo.ln`.
 
-### 5. Media + CV + Camera Stack (v4.12.0)
+### 5. Media + CV + Camera Stack (v4.12.1)
 
 Linea now includes first-class media and computer-vision modules for production pipelines and tooling.
 
@@ -247,7 +247,7 @@ See runnable example: `examples/system_ops_demo.ln`.
 
 * Lambda expressions: `var add = |a, b| => a + b`
 * Rust-style macro definitions and calls:
-  * `macro_rules! square(x) => x * x;`
+  * `macro_rules! square(x) => x * x`
   * `display square!(12)`
 * Expanded compute/ML tensor helpers:
   * `ml::clip`, `ml::normalizeL2`, `ml::dropout`, `ml::oneHot`

@@ -30,9 +30,10 @@ cd Linea
 ./install.sh</pre>
 
             <h3>Hello World</h3>
-            <pre>// hello.ln
-fn main() {
+<pre>// hello.ln
+func main() -> any {
     display "Hello, Linea!"
+    return 0
 }</pre>
 
             <h3>Compile and Run</h3>
@@ -45,7 +46,7 @@ fn main() {
             <h2>2. Variables and Types</h2>
             
             <h3>Variable Declaration (v4.0 Syntax)</h3>
-            <pre>// New @ type annotation syntax (v4.0+)
+            <pre>// New: type annotation syntax (v4.0+)
 var x @ int = 42
 var name @ str = "Linea"
 var value @ float = 3.14
@@ -68,12 +69,12 @@ var explicit @ int = 100    // Explicit</pre>
                 </tr>
                 <tr>
                     <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>int</code></td>
-                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>i64</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>int</code></td>
                     <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>var x @ int = 42</code></td>
                 </tr>
                 <tr>
                     <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>float</code></td>
-                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>f64</code></td>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>float</code></td>
                     <td style="padding: 0.5rem; border: 1px solid #ddd;"><code>var pi @ float = 3.14</code></td>
                 </tr>
                 <tr>
@@ -94,7 +95,7 @@ var explicit @ int = 100    // Explicit</pre>
             </table>
 
             <div class="highlight-box">
-                <strong>v4.0 Update:</strong> Linea now uses the @ operator for cleaner type annotations. Old syntax (var x: int) still supported for backward compatibility.
+                <strong>v4.0 Update:</strong> Linea now uses the @ operator for cleaner type annotations. Use @ syntax consistently in modern Linea code examples.
             </div>
         </div>
 
@@ -103,30 +104,31 @@ var explicit @ int = 100    // Explicit</pre>
             
             <h3>Basic Functions</h3>
             <pre>// Function with return value
-fn add(a: i64, b: i64) -> i64 {
-    result: i64 = a + b
+func add(a: int, b: int) -> int {
+    var result @ int = a + b
     result
 }
 
 // Function without return
-fn greet(name: string) {
+func greet(name: string) -> any {
     display "Hello, " + name + "!"
+    return 0
 }
 
 // Main entry point
-fn main() {
-    sum: i64 = add(10, 20)
+func main() -> any {
+    var sum @ int = add(10, 20)
     greet("Linea")
+    return sum
 }</pre>
 
             <h3>Generic Functions (Preview)</h3>
-            <pre>fn first<T>(arr: Vector<T>) -> T {
-    arr[0]
+<pre>func first(arr: [int]) -> int {
+    return arr[0]
 }
 
 // Usage
-first([1, 2, 3])     // 1
-first(["a", "b"])    // "a"</pre>
+first([1, 2, 3])     // 1</pre>
         </div>
 
         <div class="section">
@@ -137,7 +139,7 @@ first(["a", "b"])    // "a"</pre>
 display add(10, 32)</pre>
 
             <h3>Rust-Style Macros</h3>
-            <pre>macro_rules! square(x) => x * x;
+            <pre>macro_rules! square(x) => x * x
 display square!(12)</pre>
 
             <h3>Model Format APIs</h3>
@@ -289,7 +291,7 @@ func superDescribe() -> string {
         </div>
 
         <div class="section">
-            <h2>3.7 Media + CV + Camera Libraries (v4.12.0)</h2>
+            <h2>3.7 Media + CV + Camera Libraries (v4.12.1)</h2>
 
             <h3>Video + Audio</h3>
             <pre>import video
@@ -394,11 +396,11 @@ var result @ str = match value {
             
             <h3>Vectors (Dynamic Arrays)</h3>
             <pre>// Create vector
-v: Vector<i64> = [1, 2, 3, 4, 5]
+var v @ Vector<int> = [1, 2, 3, 4, 5]
 
 // Access elements
-first: i64 = v[0]
-last: i64 = v[len(v) - 1]
+var first @ int = v[0]
+var last @ int = v[len(v) - 1]
 
 // Modify
 v.push(6)
@@ -406,25 +408,25 @@ v[0] = 10</pre>
 
             <h3>Matrices (2D Arrays)</h3>
             <pre>// Create matrix
-m: Matrix = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]
+var m @ Matrix = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]
 
 // Access element
-val: f64 = m[0][1]  // 2.0
+var val @ float = m[0][1]  // 2.0
 
 // Slicing
-row: Vector<f64> = m[0, :]     // first row
-col: Vector<f64> = m[:, 1]     // second column
-region: Matrix = m[0:2, 1:3]   // submatrix</pre>
+var row @ Vector<float> = m[0, :]     // first row
+var col @ Vector<float> = m[:, 1]     // second column
+var region @ Matrix = m[0:2, 1:3]   // submatrix</pre>
 
             <h3>Tensors (N-Dimensional)</h3>
             <pre>// Create 3D tensor
-t: Tensor = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+var t @ Tensor = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
 
 // Access
-val: i64 = t[0][1][0]  // 3
+var val @ int = t[0][1][0]  // 3
 
 // Shape
-shape: Vector<i64> = t.shape()  // [2, 2, 2]</pre>
+var shape @ Vector<int> = t.shape()  // [2, 2, 2]</pre>
         </div>
 
         <div class="section">
@@ -519,29 +521,26 @@ system::removeDir("tmp_build")</pre>
             <h2>7. Advanced Features</h2>
             
             <h3>GPU Acceleration</h3>
-            <pre>// Mark function for GPU execution
-@gpu
-fn matrix_multiply(a: Matrix, b: Matrix) -> Matrix {
-    compute::matmul(a, b)
+<pre>// Mark function for accelerated execution
+func matrix_multiply(a: any, b: any) -> any {
+    return compute::matmul(a, b)
 }</pre>
 
             <h3>Inference Mode (No Gradients)</h3>
-            <pre>// GPU mode without gradient tracking
-@inference
-fn predict(model: ml::Model, input: Matrix) -> Matrix {
-    predictions := model.forward(input)
-    predictions
+<pre>// Inference mode
+func predict(model: any, input: any) -> any {
+    var predictions = model.forward(input)
+    return predictions
 }</pre>
 
             <h3>Async Functions (Preview)</h3>
-            <pre>@async
-fn fetch_data(url: string) -> string {
-    response := http::get(url)
-    response
+<pre>func fetch_data(url: string) -> string {
+    var response = http::get(url)
+    return response
 }
 
 // Usage
-// data := await fetch_data("https://...")</pre>
+// data = await fetch_data("https://...")</pre>
         </div>
 
         <div class="section">
@@ -550,14 +549,14 @@ fn fetch_data(url: string) -> string {
             <pre>import ml
 import datasets
 
-fn main() {
+func main() -> any {
     // Load data
-    data := datasets::load_csv("iris.csv")
-    X_train := data::features
-    y_train := data::labels
+    data = datasets::load_csv("iris.csv")
+    X_train = data::features
+    y_train = data::labels
     
     // Create model
-    model := ml::Sequential([
+    model = ml::Sequential([
         ml::Dense(4, 16),
         ml::ReLU(),
         ml::Dense(16, 8),
@@ -566,9 +565,9 @@ fn main() {
     ])
     
     // Training loop
-    optimizer := ml::Adam(learning_rate: 0.001)
+    optimizer = ml::Adam(0.001)
     for epoch from 0~100 {
-        loss := model.train_step(X_train, y_train, optimizer)
+        loss = model.train_step(X_train, y_train, optimizer)
         
         if epoch % 10 == 0 {
             display "Epoch " + epoch + ": loss = " + loss
@@ -576,7 +575,8 @@ fn main() {
     }
     
     // Inference
-    predictions := model.forward(X_test)
+    predictions = model.forward(X_test)
+    return predictions
 }</pre>
         </div>
 
