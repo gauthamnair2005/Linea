@@ -785,6 +785,22 @@ impl RustGenerator {
 
                 if let Some(name) = func_name {
                     match name.as_str() {
+                        "input" => {
+                            if args.len() > 1 {
+                                return Ok(("\"\".to_string()".to_string(), "String".to_string()));
+                            }
+                            if args.is_empty() {
+                                Ok(("linea_runtime::input::read_line(\"\".to_string())".to_string(), "String".to_string()))
+                            } else {
+                                let (prompt_expr, prompt_ty) = self.generate_expression(&args[0])?;
+                                let prompt_code = if prompt_ty == "String" {
+                                    prompt_expr
+                                } else {
+                                    format!("format!(\"{{}}\", {})", prompt_expr)
+                                };
+                                Ok((format!("linea_runtime::input::read_line({})", prompt_code), "String".to_string()))
+                            }
+                        }
                         "len" => {
                             if args.len() != 1 { return Ok(("0".to_string(), "i64".to_string())); }
                             let (expr_code, _) = self.generate_expression(&args[0])?;

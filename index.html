@@ -19,7 +19,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.12.3</span>
+                <span class="version-badge">v4.12.4</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -120,7 +120,11 @@ var out = system::exec("echo", ["Linea"])
 display out[1]
 system::removeDir("tmp")</div>
 
-            <h3>6. Train a Neural Network</h3>
+            <h3>6. Read User Input (Built-in)</h3>
+            <div class="code-block">var name @ str = input("Enter your name: ")
+display "Hello, " + name</div>
+
+            <h3>7. Train a Neural Network</h3>
             <div class="code-block">import ml
 import datasets
 
@@ -183,7 +187,7 @@ func main() -> any {
     </section>
 
     <section>
-        <h2>v4.12.3 Highlights</h2>
+        <h2>v4.12.4 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -206,7 +210,7 @@ func main() -> any {
 
         <div class="showcase">
             <h3>Media + CV + Camera Expansion</h3>
-            <p>Linea v4.12.3 adds first-class media and computer-vision modules: video, audio/music, image, OpenCV-like APIs, and camera access helpers.</p>
+            <p>Linea v4.12.4 adds first-class media and computer-vision modules: video, audio/music, image, OpenCV-like APIs, and camera access helpers.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">

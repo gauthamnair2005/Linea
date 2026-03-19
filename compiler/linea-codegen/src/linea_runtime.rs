@@ -2831,4 +2831,21 @@ pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
             false
         }
     }
+
+    pub mod input {
+        use std::io::{self, Write};
+
+        pub fn read_line(prompt: String) -> String {
+            if !prompt.is_empty() {
+                print!("{}", prompt);
+                let _ = io::stdout().flush();
+            }
+
+            let mut buf = String::new();
+            match io::stdin().read_line(&mut buf) {
+                Ok(_) => buf.trim_end_matches(&['\n', '\r'][..]).to_string(),
+                Err(_) => String::new(),
+            }
+        }
+    }
 }

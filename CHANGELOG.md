@@ -1,5 +1,18 @@
 # Linea Changelog
 
+## [4.12.4] - 2026-03-19
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Added native built-in user input support (no library import required):
+  - new `input()` and `input(prompt)` function support in compiler codegen and interpreter runtime
+  - generated native binaries now resolve input via integrated runtime (`linea_runtime::input::read_line`)
+- Added runnable example: `examples/native_input_demo.ln`
+- Updated docs/site/wiki snippets to show built-in input usage in `README.md`, `index.html`, `docs/index.html`, `docs/guide.html`, and `docs/wiki-functions-basics.html`.
+- Updated website/docs/version references to `4.12.4`.
+
 ## [4.12.3] - 2026-03-19
 
 ### SemVer Type

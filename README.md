@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.12.3-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.12.4-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -74,7 +74,8 @@ cargo build --release
 ### 1. Hello World
 Create `hello.ln`:
 ```linea
-display "Hello, Linea!"
+var name @ str = input("Enter your name: ")
+display "Hello, " + name + "!"
 ```
 
 Compile and run:
@@ -98,6 +99,17 @@ var model = ml::Linear(4, 3)
 
 # Training loop...
 ```
+
+### Native User Input (Built-in)
+
+Linea now supports native user input as a built-in function (no import needed):
+
+```linea
+var name @ str = input("Enter your name: ")
+display "Hi, " + name
+```
+
+See runnable example: `examples/native_input_demo.ln`.
 
 ### 3. New in v4.1: Range Loops & Pointers
 
@@ -172,7 +184,7 @@ Type-safety rules are explicit:
 
 Runnable example: `examples/oops_easy_demo.ln`.
 
-### 5. Media + CV + Camera Stack (v4.12.3)
+### 5. Media + CV + Camera Stack (v4.12.4)
 
 Linea now includes first-class media and computer-vision modules for production pipelines and tooling.
 

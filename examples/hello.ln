@@ -1,1 +1,2 @@
-display "Hello, Linea!"
+var name @ str = input("Enter your name: ")
+display "Hello, " + name + "!"

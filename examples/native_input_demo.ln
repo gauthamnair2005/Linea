@@ -1,0 +1,3 @@
+var name @ str = input("Enter your name: ")
+var city @ str = input("Enter your city: ")
+display "Hello, " + name + " from " + city + "!"

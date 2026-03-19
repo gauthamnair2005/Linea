@@ -1140,6 +1140,33 @@ impl Executor {
                     let val = self.eval_expression(&args[0])?;
                     Ok(Value::String(val.to_string()))
                 }
+                "input" => {
+                    if args.len() > 1 {
+                        return Err(Error::RuntimeError("input() expects 0 or 1 argument".to_string()));
+                    }
+
+                    let prompt = if args.is_empty() {
+                        String::new()
+                    } else {
+                        self.eval_expression(&args[0])?.to_string()
+                    };
+
+                    if !prompt.is_empty() {
+                        print!("{}", prompt);
+                        io::stdout().flush().map_err(|e| {
+                            Error::RuntimeError(format!("Failed to flush stdout: {}", e))
+                        })?;
+                    }
+
+                    let mut line = String::new();
+                    io::stdin()
+                        .read_line(&mut line)
+                        .map_err(|e| Error::RuntimeError(format!("input() failed: {}", e)))?;
+
+                    Ok(Value::String(
+                        line.trim_end_matches(&['\n', '\r'][..]).to_string(),
+                    ))
+                }
                 "system::threads" | "system::compileJobs" => {
                     if !args.is_empty() {
                         return Err(Error::RuntimeError(format!("{}() expects 0 arguments", name)));
