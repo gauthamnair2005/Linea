@@ -890,6 +890,14 @@ impl RustGenerator {
                             let (target_expr, _) = self.generate_expression(&args[1])?;
                             Ok((format!("linea_runtime::compute::cross_entropy(&{}, &{})", pred_expr, target_expr), "f64".to_string()))
                         }
+                        "compute::device" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::compute::device()".to_string(), "String".to_string()))
+                        }
+                        "compute::type" => {
+                            if !args.is_empty() { return Ok(("\"\".to_string()".to_string(), "String".to_string())); }
+                            Ok(("linea_runtime::compute::device_type()".to_string(), "String".to_string()))
+                        }
                         "ml::loadGGUF" => {
                             if args.len() != 1 { return Ok(("linea_runtime::Value::None".to_string(), "linea_runtime::Value".to_string())); }
                             let (path_expr, _) = self.generate_expression(&args[0])?;
@@ -1560,6 +1568,15 @@ impl RustGenerator {
                                 // Last resort: check if it's a compute intrinsic
                                 if name.starts_with("compute::") {
                                      let func = name.split("::").nth(1).unwrap();
+                                     if args.is_empty() {
+                                        if func == "device" {
+                                            return Ok(("linea_runtime::compute::device()".to_string(), "String".to_string()));
+                                        }
+                                        if func == "type" {
+                                            return Ok(("linea_runtime::compute::device_type()".to_string(), "String".to_string()));
+                                        }
+                                        return Ok(("vec![]".to_string(), "Vec<Vec<f64>>".to_string()));
+                                     }
                                      if args.len() == 1 {
                                         let (arg, a_ty) = self.generate_expression(&args[0])?;
                                         let arg_fmt = if a_ty == "f64" { format!("vec![vec![{}]]", arg) } else { arg };

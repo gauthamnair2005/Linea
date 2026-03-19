@@ -907,30 +907,7 @@ impl ComputeContext {
         COMPUTE_CONTEXT.get_or_init(|| {
             pollster::block_on(async {
                 let instance = wgpu::Instance::default();
-                
-                let mut adapter = instance.request_adapter(&wgpu::RequestAdapterOptions {
-                    power_preference: wgpu::PowerPreference::HighPerformance,
-                    compatible_surface: None,
-                    force_fallback_adapter: false,
-                }).await;
-
-                if adapter.is_none() {
-                     adapter = instance.request_adapter(&wgpu::RequestAdapterOptions {
-                        power_preference: wgpu::PowerPreference::LowPower,
-                        compatible_surface: None,
-                        force_fallback_adapter: false,
-                    }).await;
-                }
-
-                if adapter.is_none() {
-                    adapter = instance.request_adapter(&wgpu::RequestAdapterOptions {
-                        power_preference: wgpu::PowerPreference::None,
-                        compatible_surface: None,
-                        force_fallback_adapter: true,
-                    }).await;
-                }
-
-                let adapter = adapter?;
+                let adapter = select_best_adapter(&instance).await?;
 
                 let (device, queue) = adapter.request_device(
                     &wgpu::DeviceDescriptor {
@@ -953,6 +930,38 @@ impl ComputeContext {
             })
         }).as_ref()
     }
+}
+
+fn adapter_priority(device_type: wgpu::DeviceType) -> u8 {
+    match device_type {
+        wgpu::DeviceType::DiscreteGpu => 0,
+        wgpu::DeviceType::VirtualGpu => 1,
+        wgpu::DeviceType::IntegratedGpu => 2,
+        wgpu::DeviceType::Cpu => 3,
+        _ => 4,
+    }
+}
+
+async fn select_best_adapter(instance: &wgpu::Instance) -> Option<wgpu::Adapter> {
+    let mut best: Option<(u8, wgpu::Adapter)> = None;
+    for adapter in instance.enumerate_adapters(wgpu::Backends::all()) {
+        let priority = adapter_priority(adapter.get_info().device_type);
+        let replace = match &best {
+            Some((best_priority, _)) => priority < *best_priority,
+            None => true,
+        };
+        if replace {
+            best = Some((priority, adapter));
+        }
+    }
+    if let Some((_, adapter)) = best {
+        return Some(adapter);
+    }
+    instance.request_adapter(&wgpu::RequestAdapterOptions {
+        power_preference: wgpu::PowerPreference::HighPerformance,
+        compatible_surface: None,
+        force_fallback_adapter: false,
+    }).await
 }
 
 pub fn device() -> String {
@@ -1005,8 +1014,31 @@ pub fn matmul(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
         }
         result
     } else {
-        vec![]
+        matmul_cpu(a, b)
     }
+}
+
+fn matmul_cpu(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    if a.is_empty() || b.is_empty() {
+        return vec![];
+    }
+    let m = a.len();
+    let k = a[0].len();
+    if b.len() != k {
+        return vec![];
+    }
+    let n = b[0].len();
+    let mut out = vec![vec![0.0; n]; m];
+    for i in 0..m {
+        for j in 0..n {
+            let mut acc = 0.0;
+            for t in 0..k {
+                acc += a[i][t] * b[t][j];
+            }
+            out[i][j] = acc;
+        }
+    }
+    out
 }
 
 fn matmul_impl(a: &[f32], b: &[f32], M: u32, K: u32, N: u32) -> Option<Vec<f32>> {
@@ -1184,7 +1216,20 @@ pub fn element_wise(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>, op: &str) -> Vec<Vec<f
         }
         result
     } else {
-        vec![]
+        let mut out = vec![vec![0.0; cols]; rows];
+        for i in 0..rows {
+            for j in 0..cols {
+                out[i][j] = match op {
+                    "add" => a[i][j] + b[i][j],
+                    "sub" => a[i][j] - b[i][j],
+                    "mul" => a[i][j] * b[i][j],
+                    "div" => a[i][j] / b[i][j],
+                    "pow" => a[i][j].powf(b[i][j]),
+                    _ => return vec![],
+                };
+            }
+        }
+        out
     }
 }
 

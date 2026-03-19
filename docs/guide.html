@@ -328,7 +328,7 @@ display camera::listDevices()</pre>
         </div>
 
         <div class="section">
-            <h2>3.8 Control Flow Upgrades + DSA (v4.13.0)</h2>
+            <h2>3.8 Control Flow Upgrades + DSA</h2>
 
             <h3>Switch / Case / Default</h3>
             <pre>var day @ int = 3
@@ -356,6 +356,16 @@ display dsa::array_sum(nums)
 display dsa::array_max(nums)
 display dsa::linear_search(nums, 9)
 display dsa::bubble_sort(nums)</pre>
+        </div>
+
+        <div class="section">
+            <h2>3.9 Compute Priority for ML (v4.13.1)</h2>
+            <p>Compute-backed ML and tensor operations now use a strict adapter priority:</p>
+            <pre>GPU > iGPU > CPU</pre>
+            <p>This policy applies in both interpreted and compiled Linea execution paths, with automatic CPU fallback when GPU compute is unavailable.</p>
+            <pre>import compute
+display compute::device()
+display compute::type()</pre>
         </div>
 
         <div class="section">

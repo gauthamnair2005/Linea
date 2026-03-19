@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.13.0-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.13.1-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -33,6 +33,7 @@
 ### Advanced AI & Reasoning
 *   **ARL-Tangram Algorithm**: Adaptive Reasoning Layer with Tangram-based compositional learning for interpretable AI systems with multi-layer attention mechanisms.
 *   **Hardware Acceleration**: Built-in support for GPU-accelerated tensor operations using WGPU (Vulkan/Metal/DX12), enabling high-performance machine learning inference and training.
+*   **Execution Priority**: Compute-backed ML/tensor tasks now prioritize **GPU > iGPU > CPU** automatically, with deterministic CPU fallback.
 *   **Machine Learning Primitives**: Native implementation of neural network layers, activation functions, and optimizers (SGD, Adam) directly in the core library.
 
 ### Systems Performance
@@ -203,7 +204,7 @@ opencv::cannyMock("snap.ppm", "edges.ppm", 80)
 
 Runnable example: `examples/media_cv_camera_demo.ln`.
 
-### 6. New Control Flow + DSA (v4.13.0)
+### 6. New Control Flow + DSA
 
 Linea now supports switch-case branching, ternary operators, and one-line conditional expressions.
 

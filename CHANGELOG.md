@@ -1,5 +1,22 @@
 # Linea Changelog
 
+## [4.13.1] - 2026-03-19
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Updated compute backend adapter selection policy to strictly prefer:
+  - **Discrete GPU**
+  - then **Integrated GPU**
+  - then **CPU**
+- Applied the same priority policy in both interpreter compute runtime (`compiler/linea-executor/src/compute.rs`) and generated native runtime (`compiler/linea-codegen/src/linea_runtime.rs`).
+- Added reliable CPU fallback execution for GPU-eligible compute operations when a GPU path is unavailable at runtime:
+  - matrix multiplication (`matmul`)
+  - element-wise tensor operations (`add/sub/mul/div/pow`)
+  - broadcast element-wise operations
+- This ensures ML workloads and compute-backed tasks continue running correctly while still prioritizing GPU acceleration whenever available.
+
 ## [4.13.0] - 2026-03-19
 
 ### SemVer Type
