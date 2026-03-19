@@ -36,13 +36,8 @@ func main() -> any {
 }</pre>
             </div>
 
-            <h2>Third-Party Modules via Package Manager</h2>
-            <p>Install custom modules into `libs/` using the package manager in the main repository.</p>
-            <pre>python3 package-manager/linea_pkg.py greeter \
-  --registry ~/projects/linea-third-party-registry \
-  --libs-dir ./libs</pre>
-
-            <p>After install:</p>
+            <h2>Local Reusable Modules</h2>
+            <p>Keep custom modules inside your local `libs/` folder and import them directly.</p>
             <pre>import greeter
 
 func main() -> any {
@@ -50,22 +45,8 @@ func main() -> any {
     return 0
 }</pre>
 
-            <h2>Registry Metadata Format</h2>
-            <p>Each third-party module has metadata at `metadata/&lt;libname&gt;.xml` in the registry repository.</p>
-            <pre>&lt;package&gt;
-  &lt;name&gt;greeter&lt;/name&gt;
-  &lt;version&gt;1.0.0&lt;/version&gt;
-  &lt;developer&gt;Contributor Name&lt;/developer&gt;
-  &lt;description&gt;Greeter helper&lt;/description&gt;
-  &lt;entrypoint&gt;libs/greeter.ln&lt;/entrypoint&gt;
-  &lt;dependencies&gt;
-    &lt;dependency name="textfmt" version="&gt;=1.0.0" /&gt;
-  &lt;/dependencies&gt;
-&lt;/package&gt;</pre>
-            
             <div class="nav-buttons">
                 <a href="wiki-system-programming.html" class="nav-btn">System Programming Wiki →</a>
-                <a href="wiki-package-manager.html" class="nav-btn">Package Manager Wiki →</a>
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
             </div>
         </main>

@@ -63,8 +63,8 @@
                 <p>HTTP, CSV, Excel, Graphics, Markdown support. Networking, data processing, and visualization out of the box.</p>
             </div>
             <div class="feature-card">
-                <h3>Third-Party Package Manager</h3>
-                <p>Install external `.ln` modules from an XML registry with automatic dependency installation into your local `libs/` folder.</p>
+                <h3>Extensible Module System</h3>
+                <p>Keep reusable `.ln` modules in `libs/` and import them directly in projects with a simple, consistent module workflow.</p>
             </div>
             <div class="feature-card">
                 <h3>Systems Primitives</h3>
@@ -93,8 +93,9 @@ func main() -> any {
             <div class="code-block"><code>linea compile hello.ln
 ./hello</code></div>
 
-            <h3>Install Third-Party Library</h3>
-            <div class="code-block"><code>python3 package-manager/linea_pkg.py greeter --registry ~/projects/linea-third-party-registry --libs-dir ./libs</code></div>
+            <h3>Use a Local Module</h3>
+            <div class="code-block"><code>import greeter
+greeter::hello("Linea")</code></div>
 
             <h3>Use System Operations</h3>
             <div class="code-block"><code>import system

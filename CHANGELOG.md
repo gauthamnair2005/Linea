@@ -1,5 +1,20 @@
 # Linea Changelog
 
+## [4.12.3] - 2026-03-19
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Removed package-manager scaffolding until a future release:
+  - deleted `package-manager/linea_pkg.py`
+  - deleted `package-manager/package-template.xml`
+- Removed package-manager website/wiki/docs references:
+  - deleted `docs/wiki-package-manager.html`
+  - removed package-manager cards/links/snippets from `index.html`, `docs/index.html`, `docs/guide.html`, and `docs/wiki-index.html`
+  - updated module documentation to describe local reusable `libs/` modules (`docs/wiki-modules.html`)
+- Updated website/docs/version references to `4.12.3`.
+
 ## [4.12.2] - 2026-03-19
 
 ### SemVer Type

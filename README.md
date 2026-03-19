@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.12.2-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.12.3-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -172,7 +172,7 @@ Type-safety rules are explicit:
 
 Runnable example: `examples/oops_easy_demo.ln`.
 
-### 5. Media + CV + Camera Stack (v4.12.2)
+### 5. Media + CV + Camera Stack (v4.12.3)
 
 Linea now includes first-class media and computer-vision modules for production pipelines and tooling.
 
@@ -306,32 +306,12 @@ Linea now includes a first-class `gui` module backed by Rust `iced` for desktop 
 
 Runnable example: `examples/gui_iced_demo.ln`
 
-## 📦 Third-Party Package Manager
-
-Linea now includes a built-in third-party package installer scaffold in `package-manager/`.
-
-Install one or more custom libraries from an XML-driven registry:
-
-```bash
-python3 package-manager/linea_pkg.py greeter --registry ~/projects/linea-third-party-registry --libs-dir ./libs
-```
-
-The installer:
-
-* Reads package metadata from `metadata/<libname>.xml`
-* Resolves and installs transitive dependencies first
-* Copies `.ln` files into your local `libs/` directory
-* Writes `libs/.linea-packages.lock.json` for reproducibility
-
-Use `package-manager/package-template.xml` as the metadata format template for library submissions.
-
 ## 📂 Project Structure
  
 *   `compiler/`: Rust source code for the Linea compiler.
 *   `libs/`: Standard library source files (`.ln`).
 *   `examples/`: Example programs including ML demos.
 *   `docs/`: Documentation files.
-*   `package-manager/`: XML-driven third-party package installer.
 *   `linea`: Pre-compiled binary.
 
 ## 🤝 Contributing

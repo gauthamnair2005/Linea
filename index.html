@@ -19,7 +19,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.12.2</span>
+                <span class="version-badge">v4.12.3</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -72,8 +72,8 @@
                 <p>HTTP client, CSV/Excel processing, graphics visualization, markdown support, data preprocessing, and more. Everything you need out of the box.</p>
             </div>
             <div class="feature-card">
-                <h3>Package Management</h3>
-                <p>Install custom `.ln` modules from an XML metadata registry with automatic dependency resolution into `libs/`.</p>
+                <h3>Extensible Module System</h3>
+                <p>Keep reusable `.ln` modules in `libs/` and import them directly in projects with a simple, consistent module workflow.</p>
             </div>
             <div class="feature-card">
                 <h3>Systems Primitives</h3>
@@ -107,8 +107,9 @@ func main() -> any {
             <div class="code-block">linea compile hello.ln
 ./hello</div>
 
-            <h3>4. Install a Third-Party Module</h3>
-            <div class="code-block">python3 package-manager/linea_pkg.py greeter --registry ~/projects/linea-third-party-registry --libs-dir ./libs</div>
+            <h3>4. Use a Local Module</h3>
+            <div class="code-block">import greeter
+greeter::hello("Linea")</div>
 
             <h3>5. Use System Operations</h3>
             <div class="code-block">import system
@@ -182,7 +183,7 @@ func main() -> any {
     </section>
 
     <section>
-        <h2>v4.12.2 Highlights</h2>
+        <h2>v4.12.3 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -205,7 +206,7 @@ func main() -> any {
 
         <div class="showcase">
             <h3>Media + CV + Camera Expansion</h3>
-            <p>Linea v4.12.2 adds first-class media and computer-vision modules: video, audio/music, image, OpenCV-like APIs, and camera access helpers.</p>
+            <p>Linea v4.12.3 adds first-class media and computer-vision modules: video, audio/music, image, OpenCV-like APIs, and camera access helpers.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">
