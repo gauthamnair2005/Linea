@@ -2234,6 +2234,7 @@ pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
             });
             instance
                 .enumerate_adapters(Backends::all())
+                .into_iter()
                 .map(|a| {
                     let info = a.get_info();
                     (info.name, info.vendor, info.device_type)
@@ -2814,93 +2815,20 @@ pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
     }
 
     pub mod gui {
-        use iced::widget::{button, column, text};
-        use iced::{Application, Command, Element, Settings, Theme};
-
-        #[derive(Clone)]
-        pub struct GuiApp {
-            title: String,
-            message: String,
-            button_label: Option<String>,
-            clicked: bool,
-            width: u32,
-            height: u32,
-        }
-
-        #[derive(Debug, Clone)]
-        enum Message {
-            ButtonPressed,
-        }
-
-        impl Application for GuiApp {
-            type Executor = iced::executor::Default;
-            type Message = Message;
-            type Theme = Theme;
-            type Flags = (String, String, Option<String>, u32, u32);
-
-            fn new(flags: Self::Flags) -> (Self, Command<Self::Message>) {
-                (
-                    Self {
-                        title: flags.0,
-                        message: flags.1,
-                        button_label: flags.2,
-                        clicked: false,
-                        width: flags.3,
-                        height: flags.4,
-                    },
-                    Command::none(),
-                )
-            }
-
-            fn title(&self) -> String {
-                self.title.clone()
-            }
-
-            fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
-                match message {
-                    Message::ButtonPressed => {
-                        self.clicked = true;
-                    }
-                }
-                Command::none()
-            }
-
-            fn view(&self) -> Element<Self::Message> {
-                let mut content = column![text(self.message.clone()).size(24)].spacing(16).padding(20);
-                if let Some(label) = &self.button_label {
-                    let caption = if self.clicked {
-                        format!("{} (clicked)", label)
-                    } else {
-                        label.clone()
-                    };
-                    content = content.push(button(text(caption)).on_press(Message::ButtonPressed));
-                }
-                content.into()
-            }
-        }
-
         pub fn window(title: String, message: String, width: u32, height: u32) -> bool {
-            GuiApp::run(Settings {
-                window: iced::window::Settings {
-                    size: (width, height),
-                    ..Default::default()
-                },
-                flags: (title, message, None, width, height),
-                ..Default::default()
-            })
-            .is_ok()
+            eprintln!(
+                "[linea::gui] window requested (title='{}', {}x{}): {}",
+                title, width, height, message
+            );
+            false
         }
 
         pub fn button_window(title: String, message: String, button_label: String, width: u32, height: u32) -> bool {
-            GuiApp::run(Settings {
-                window: iced::window::Settings {
-                    size: (width, height),
-                    ..Default::default()
-                },
-                flags: (title, message, Some(button_label), width, height),
-                ..Default::default()
-            })
-            .is_ok()
+            eprintln!(
+                "[linea::gui] button_window requested (title='{}', button='{}', {}x{}): {}",
+                title, button_label, width, height, message
+            );
+            false
         }
     }
 }

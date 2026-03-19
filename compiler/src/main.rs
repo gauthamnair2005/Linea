@@ -116,12 +116,13 @@ fn compile_file(input: &PathBuf, output: Option<PathBuf>) {
                     let file_stem = input.file_stem().unwrap().to_str().unwrap();
                     let project_name = file_stem.replace(|c: char| !c.is_alphanumeric() && c != '_', "_");
 
-                    let build_dir = std::env::temp_dir().join(format!("linea_build_{}", project_name));
-                    
-                    if build_dir.exists() {
-                        let _ = fs::remove_dir_all(&build_dir);
-                    }
+                    let build_dir = std::env::temp_dir()
+                        .join("linea_build_cache")
+                        .join(&project_name);
+                    let target_cache_dir = std::env::temp_dir().join("linea_target_cache");
+
                     fs::create_dir_all(build_dir.join("src")).expect("Failed to create build dir");
+                    fs::create_dir_all(&target_cache_dir).expect("Failed to create shared target cache");
                     
                     // Write Cargo.toml with dependencies
                     let cargo_toml = format!(r#"[package]
@@ -145,7 +146,6 @@ wgpu = "0.20"
 pollster = "0.3"
 bytemuck = {{ version = "1.14", features = ["derive"] }}
 futures = "0.3"
-iced = "0.13"
 tiny_http = "0.12"
 "#, project_name);
 
@@ -157,6 +157,7 @@ tiny_http = "0.12"
                         ">> Building optimized binary (release mode) using {} parallel jobs...",
                         parallel_jobs
                     );
+                    println!(">> Using shared build cache: {}", target_cache_dir.display());
 
                     let mut cargo_cmd = Command::new("cargo");
                     cargo_cmd
@@ -164,6 +165,7 @@ tiny_http = "0.12"
                         .arg("--release")
                         .arg("--jobs")
                         .arg(parallel_jobs.to_string())
+                        .env("CARGO_TARGET_DIR", &target_cache_dir)
                         .current_dir(&build_dir);
 
                     match cargo_cmd.output() {
@@ -173,7 +175,7 @@ tiny_http = "0.12"
                                 
                                 // Move binary to output location
                                 let binary_name = if cfg!(windows) { format!("{}.exe", project_name) } else { project_name.to_string() };
-                                let built_binary = build_dir.join("target/release").join(&binary_name);
+                                let built_binary = target_cache_dir.join("release").join(&binary_name);
                                 
                                 let final_output_path = if output.is_some() {
                                     output.clone().unwrap()

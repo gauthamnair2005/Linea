@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.12.1-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.12.2-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -172,7 +172,7 @@ Type-safety rules are explicit:
 
 Runnable example: `examples/oops_easy_demo.ln`.
 
-### 5. Media + CV + Camera Stack (v4.12.1)
+### 5. Media + CV + Camera Stack (v4.12.2)
 
 Linea now includes first-class media and computer-vision modules for production pipelines and tooling.
 

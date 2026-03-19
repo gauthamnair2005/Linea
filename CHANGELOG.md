@@ -1,5 +1,17 @@
 # Linea Changelog
 
+## [4.12.2] - 2026-03-19
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Improved native compilation speed by introducing persistent build caching in `linea compile`:
+  - switched per-project build workspace from disposable `/tmp/linea_build_<name>` to reusable `/tmp/linea_build_cache/<name>`
+  - removed forced deletion of build directory on every compile
+  - configured a shared Cargo target cache at `/tmp/linea_target_cache` via `CARGO_TARGET_DIR`
+- This avoids repeatedly recompiling heavy dependencies across runs and significantly improves repeat compile times.
+
 ## [4.12.1] - 2026-03-19
 
 ### SemVer Type
