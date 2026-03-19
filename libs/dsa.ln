@@ -1,0 +1,64 @@
+# Linea DSA (Data Structures & Algorithms) Library
+
+func dsa::array_sum(arr: int[]) -> int {
+  var total @ int = 0
+  for i from 0~(len(arr) - 1) {
+    varUpd total = total + arr[i]
+  }
+  return total
+}
+
+func dsa::array_max(arr: int[]) -> int {
+  if len(arr) == 0 {
+    return 0
+  }
+  var best @ int = arr[0]
+  for i from 1~(len(arr) - 1) {
+    if arr[i] > best {
+      varUpd best = arr[i]
+    }
+  }
+  return best
+}
+
+func dsa::linear_search(arr: int[], target: int) -> int {
+  for i from 0~(len(arr) - 1) {
+    if arr[i] == target {
+      return i
+    }
+  }
+  return -1
+}
+
+func dsa::binary_search(sorted: int[], target: int) -> int {
+  var left @ int = 0
+  var right @ int = len(sorted) - 1
+  var mid @ int = 0
+  while left <= right {
+    varUpd mid = (left + right) / 2
+    if sorted[mid] == target {
+      return mid
+    } else if sorted[mid] < target {
+      varUpd left = mid + 1
+    } else {
+      varUpd right = mid - 1
+    }
+  }
+  return -1
+}
+
+func dsa::bubble_sort(arr: int[]) -> int[] {
+  var out @ [int] = arr
+  var n @ int = len(out)
+  var temp @ int = 0
+  for i from 0~(n - 1) {
+    for j from 0~(n - i - 2) {
+      if out[j] > out[j + 1] {
+        varUpd temp = out[j]
+        out[j] = out[j + 1]
+        out[j + 1] = temp
+      }
+    }
+  }
+  return out
+}

@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.12.4-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.13.0-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -184,7 +184,7 @@ Type-safety rules are explicit:
 
 Runnable example: `examples/oops_easy_demo.ln`.
 
-### 5. Media + CV + Camera Stack (v4.12.4)
+### 5. Media + CV + Camera Stack
 
 Linea now includes first-class media and computer-vision modules for production pipelines and tooling.
 
@@ -202,6 +202,29 @@ opencv::cannyMock("snap.ppm", "edges.ppm", 80)
 ```
 
 Runnable example: `examples/media_cv_camera_demo.ln`.
+
+### 6. New Control Flow + DSA (v4.13.0)
+
+Linea now supports switch-case branching, ternary operators, and one-line conditional expressions.
+
+```linea
+var x @ int = 7
+if x > 10 display "high" else display "ok"
+
+var label @ str = x > 5 ? "big" : "small"
+var parity @ str = if x % 2 == 0 { "even" } else { "odd" }
+
+switch x {
+  case 1:
+    display "one"
+  case 7:
+    display "seven"
+  default:
+    display "other"
+}
+```
+
+New `dsa` module includes algorithms like `array_sum`, `array_max`, `linear_search`, `binary_search`, and `bubble_sort`.
 
 ## 📚 Standard Library
 
@@ -239,6 +262,7 @@ Linea provides a rich standard library for modern development:
 | **`image`** | Image dimension inspection and baseline grayscale/resize transforms |
 | **`opencv`** | OpenCV-like CV helpers (mock canny/blur/face detection interfaces) |
 | **`camera`** | Camera device listing plus snapshot/recording mock interfaces |
+| **`dsa`** | Data-structure/algorithm helpers: searching, sorting, and array analytics |
 | **`system`** | System operations: threads, files, env vars, process exec, time |
 | **`math`** | Mathematical functions and constants |
 | **`strings`** | String manipulation utilities |

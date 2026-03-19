@@ -18,3 +18,4 @@
 - `blockchain`: chain utilities (`sha256`, `merkleRoot`, `mineBlock`, `validateLink`)
 - `gpu_tools`: adapter/vendor/iGPU helpers (`adapters`, `bestAdapter`, `vendorName`, `hasIGPU`)
 - `memory`: handle-based memory ops (`alloc`, `free`, `readU8`, `writeU8`, `copy`, `stats`)
+- `dsa`: algorithm helpers (`array_sum`, `array_max`, `linear_search`, `binary_search`, `bubble_sort`)

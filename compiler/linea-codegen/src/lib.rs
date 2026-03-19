@@ -18,6 +18,7 @@ struct RustGenerator {
     imported_modules: HashSet<String>,
     class_names: HashSet<String>,
     current_self_alias: Option<String>,
+    switch_temp_counter: usize,
 }
 
 impl RustGenerator {
@@ -31,6 +32,7 @@ impl RustGenerator {
             imported_modules: HashSet::new(),
             class_names: HashSet::new(),
             current_self_alias: None,
+            switch_temp_counter: 0,
         }
     }
 
@@ -300,6 +302,43 @@ impl RustGenerator {
                     self.indent_level -= 1;
                     self.emit_line("}");
                 } else {
+                    self.emit_line("}");
+                }
+                Ok(())
+            }
+            Statement::Switch { expr, cases, default } => {
+                let (switch_expr, _) = self.generate_expression(expr)?;
+                let temp_name = format!("__linea_switch_tmp_{}", self.switch_temp_counter);
+                self.switch_temp_counter += 1;
+                self.emit_line(&format!("let {} = {};", temp_name, switch_expr));
+
+                for (index, (case_expr, case_body)) in cases.iter().enumerate() {
+                    let (case_code, _) = self.generate_expression(case_expr)?;
+                    if index == 0 {
+                        self.emit_line(&format!("if {} == {} {{", temp_name, case_code));
+                    } else {
+                        self.emit_line(&format!("}} else if {} == {} {{", temp_name, case_code));
+                    }
+                    self.indent_level += 1;
+                    for stmt in case_body {
+                        self.generate_statement(stmt)?;
+                    }
+                    self.indent_level -= 1;
+                }
+
+                if let Some(default_body) = default {
+                    if cases.is_empty() {
+                        self.emit_line("{");
+                    } else {
+                        self.emit_line("} else {");
+                    }
+                    self.indent_level += 1;
+                    for stmt in default_body {
+                        self.generate_statement(stmt)?;
+                    }
+                    self.indent_level -= 1;
+                    self.emit_line("}");
+                } else if !cases.is_empty() {
                     self.emit_line("}");
                 }
                 Ok(())
@@ -1606,6 +1645,20 @@ impl RustGenerator {
                     Type::String => Ok((format!("(({}).to_string())", inner_expr), "String".to_string())),
                     _ => Ok((inner_expr, inner_ty)),
                 }
+            }
+            Expression::Ternary { condition, then_expr, else_expr } => {
+                let (cond_code, _) = self.generate_expression(condition)?;
+                let (then_code, then_ty) = self.generate_expression(then_expr)?;
+                let (else_code, else_ty) = self.generate_expression(else_expr)?;
+                let result_ty = if then_ty == else_ty { then_ty } else { "linea_runtime::Value".to_string() };
+                Ok((format!("(if {} {{ {} }} else {{ {} }})", cond_code, then_code, else_code), result_ty))
+            }
+            Expression::IfExpression { condition, then_expr, else_expr } => {
+                let (cond_code, _) = self.generate_expression(condition)?;
+                let (then_code, then_ty) = self.generate_expression(then_expr)?;
+                let (else_code, else_ty) = self.generate_expression(else_expr)?;
+                let result_ty = if then_ty == else_ty { then_ty } else { "linea_runtime::Value".to_string() };
+                Ok((format!("(if {} {{ {} }} else {{ {} }})", cond_code, then_code, else_code), result_ty))
             }
             _ => Ok(("0".to_string(), "i64".to_string())),
         }

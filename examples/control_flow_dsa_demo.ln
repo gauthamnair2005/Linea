@@ -1,0 +1,29 @@
+import dsa
+
+var x @ int = 7
+
+if x > 10 display "x > 10" else display "x <= 10"
+
+var label @ str = x > 5 ? "big" : "small"
+display label
+
+var parity @ str = if x % 2 == 0 { "even" } else { "odd" }
+display parity
+
+switch x {
+  case 1:
+    display "one"
+  case 7:
+    display "seven"
+  default:
+    display "other"
+}
+
+var nums = [5, 1, 9, 3, 7]
+display dsa::array_sum(nums)
+display dsa::array_max(nums)
+display dsa::linear_search(nums, 9)
+
+var sorted = dsa::bubble_sort(nums)
+display sorted
+display dsa::binary_search(sorted, 7)

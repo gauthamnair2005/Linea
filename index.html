@@ -19,7 +19,7 @@
             <a href="/" class="logo">
                 <img src="linea-logo.svg" alt="Linea Logo" class="logo-mark">
                 <span>Linea</span>
-                <span class="version-badge">v4.12.4</span>
+                <span class="version-badge">v4.13.0</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
@@ -179,6 +179,7 @@ func main() -> any {
                     <li>✓ <strong>video/audio/image</strong> - Media probing, tone generation, and image transforms</li>
                     <li>✓ <strong>opencv/camera</strong> - OpenCV-like CV helpers and camera device/snapshot APIs</li>
                     <li>✓ <strong>math</strong> - Mathematical functions</li>
+                    <li>✓ <strong>dsa</strong> - Core sorting/searching/array algorithms</li>
                     <li>✓ <strong>strings</strong> - String manipulation</li>
                     <li>✓ <strong>utils</strong> - General utilities</li>
                 </ul>
@@ -187,7 +188,7 @@ func main() -> any {
     </section>
 
     <section>
-        <h2>v4.12.4 Highlights</h2>
+        <h2>v4.13.0 Highlights</h2>
         
         <div class="stats">
             <div class="stat-box">
@@ -209,12 +210,17 @@ func main() -> any {
         </div>
 
         <div class="showcase">
-            <h3>Media + CV + Camera Expansion</h3>
-            <p>Linea v4.12.4 adds first-class media and computer-vision modules: video, audio/music, image, OpenCV-like APIs, and camera access helpers.</p>
+            <h3>Control Flow + DSA Expansion</h3>
+            <p>Linea v4.13.0 adds <code>switch/case/default</code>, ternary expressions, one-line conditionals, and a new <code>dsa</code> module for core algorithms.</p>
             
             <h3 style="margin-top: 2rem;">New Language Features</h3>
             <ul style="margin-left: 2rem; color: #bdc3c7;">
                 <li><strong>Range syntax</strong> - Use ~ operator: <code>for i from 1~10 step 2</code></li>
+                <li><strong>Switch-case</strong> - Structured branching: <code>switch x { case 1: ... default: ... }</code></li>
+                <li><strong>Ternary</strong> - Inline branch expressions: <code>var y = cond ? a : b</code></li>
+                <li><strong>One-line conditional expression</strong> - <code>var y = if cond { a } else { b }</code></li>
+                <li><strong>One-line if statement</strong> - <code>if cond display "ok" else display "no"</code></li>
+                <li><strong>DSA library</strong> - <code>dsa::array_sum</code>, <code>dsa::array_max</code>, <code>dsa::linear_search</code>, <code>dsa::binary_search</code>, <code>dsa::bubble_sort</code></li>
                 <li><strong>Pointer support</strong> - Simplified with <code>ptr</code> datatype: <code>var p @ ptr = x</code></li>
                 <li><strong>@gpu</strong> - Mark functions for GPU execution</li>
                 <li><strong>Pattern matching</strong> - match expressions with multiple patterns</li>

@@ -60,7 +60,7 @@
             </div>
             <div class="feature-card">
                 <h3>Rich Standard Library</h3>
-                <p>HTTP, CSV, Excel, Graphics, Markdown support. Networking, data processing, and visualization out of the box.</p>
+                <p>HTTP, CSV, Excel, Graphics, Markdown, and DSA support. Networking, algorithms, data processing, and visualization out of the box.</p>
             </div>
             <div class="feature-card">
                 <h3>Extensible Module System</h3>
@@ -109,6 +109,19 @@ system::removeDir("tmp")</code></div>
             <h3>Read User Input (Built-in)</h3>
             <div class="code-block"><code>var name @ str = input("Enter your name: ")
 display "Hello, " + name</code></div>
+
+            <h3>Switch + Ternary + One-Line Conditional</h3>
+            <div class="code-block"><code>var x @ int = 7
+var label @ str = x > 5 ? "big" : "small"
+var parity @ str = if x % 2 == 0 { "even" } else { "odd" }
+if x > 10 display "high" else display "ok"
+
+switch x {
+  case 7:
+    display "seven"
+  default:
+    display "other"
+}</code></div>
         </div>
     </section>
 

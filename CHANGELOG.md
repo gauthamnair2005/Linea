@@ -1,5 +1,24 @@
 # Linea Changelog
 
+## [4.13.0] - 2026-03-19
+
+### SemVer Type
+- `minor`
+
+### Changed
+- Added new language control-flow capabilities:
+  - `switch / case / default` statement support
+  - ternary operator expressions: `cond ? then_expr : else_expr`
+  - expression-form conditionals: `if cond { a } else { b }`
+  - one-line if/else statement form now documented and validated
+- Added new standard library module `dsa`:
+  - `dsa::array_sum`, `dsa::array_max`
+  - `dsa::linear_search`, `dsa::binary_search`
+  - `dsa::bubble_sort`
+- Added runnable example: `examples/control_flow_dsa_demo.ln`.
+- Updated docs/site/wiki pages and stdlib references for control flow and DSA.
+- Updated project version references to `4.13.0`.
+
 ## [4.12.4] - 2026-03-19
 
 ### SemVer Type

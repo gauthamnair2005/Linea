@@ -38,6 +38,30 @@ if enabled {
         display "Admin dashboard"
     }
 }</code></pre>
+
+            <h3>Ternary Expression</h3>
+            <pre><code>var score @ int = 82
+var status @ str = score >= 50 ? "pass" : "fail"
+display status</code></pre>
+
+            <h3>One-Line Conditional Expression</h3>
+            <pre><code>var n @ int = 7
+var parity @ str = if n % 2 == 0 { "even" } else { "odd" }
+display parity</code></pre>
+
+            <h3>One-Line If Statement</h3>
+            <pre><code>if score > 90 display "Top tier" else display "Keep going"</code></pre>
+
+            <h3>Switch / Case / Default</h3>
+            <pre><code>var day @ int = 3
+switch day {
+  case 1:
+    display "Monday"
+  case 3:
+    display "Wednesday"
+  default:
+    display "Other"
+}</code></pre>
             <div class="nav-buttons"><a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a></div>
         </main>
 </div>

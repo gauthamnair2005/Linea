@@ -32,6 +32,7 @@ impl Parser {
             TokenType::For => self.parse_for(),
             TokenType::While => self.parse_while(),
             TokenType::If => self.parse_if(),
+            TokenType::Switch => self.parse_switch(),
             TokenType::Function => self.parse_function_decl(),
             TokenType::Class => self.parse_class_decl(),
             TokenType::MacroRules => self.parse_macro_decl(),
@@ -192,6 +193,57 @@ impl Parser {
         Ok(Statement::If { condition, then_body, else_body })
     }
 
+    fn parse_switch(&mut self) -> Result<Statement> {
+        self.expect(&TokenType::Switch)?;
+        let expr = self.parse_expression()?;
+        self.expect(&TokenType::LeftBrace)?;
+
+        let mut cases: Vec<(Expression, Vec<Statement>)> = Vec::new();
+        let mut default: Option<Vec<Statement>> = None;
+
+        while self.current_token().token_type != TokenType::RightBrace && !self.is_at_end() {
+            match self.current_token().token_type.clone() {
+                TokenType::Case => {
+                    self.advance();
+                    let case_expr = self.parse_expression()?;
+                    self.expect(&TokenType::Colon)?;
+                    let case_body = self.parse_switch_case_body()?;
+                    cases.push((case_expr, case_body));
+                }
+                TokenType::Default => {
+                    self.advance();
+                    self.expect(&TokenType::Colon)?;
+                    default = Some(self.parse_switch_case_body()?);
+                }
+                _ => {
+                    return Err(Error::Syntax {
+                        line: self.current_token().line,
+                        column: self.current_token().column,
+                        message: "Expected `case` or `default` inside switch block".to_string(),
+                    });
+                }
+            }
+        }
+
+        self.expect(&TokenType::RightBrace)?;
+        Ok(Statement::Switch { expr, cases, default })
+    }
+
+    fn parse_switch_case_body(&mut self) -> Result<Vec<Statement>> {
+        if self.current_token().token_type == TokenType::LeftBrace {
+            return self.parse_block();
+        }
+
+        let mut body = Vec::new();
+        while !self.is_at_end() {
+            match self.current_token().token_type {
+                TokenType::Case | TokenType::Default | TokenType::RightBrace => break,
+                _ => body.push(self.parse_statement()?),
+            }
+        }
+        Ok(body)
+    }
+
     fn parse_function_decl(&mut self) -> Result<Statement> {
         self.expect(&TokenType::Function)?;
         let name = self.expect_identifier()?;
@@ -312,7 +364,24 @@ impl Parser {
     }
 
     fn parse_expression(&mut self) -> Result<Expression> {
-        self.parse_or()
+        self.parse_ternary()
+    }
+
+    fn parse_ternary(&mut self) -> Result<Expression> {
+        let mut condition = self.parse_or()?;
+
+        if self.consume_optional(&TokenType::Question) {
+            let then_expr = self.parse_expression()?;
+            self.expect(&TokenType::Colon)?;
+            let else_expr = self.parse_expression()?;
+            condition = Expression::Ternary {
+                condition: Box::new(condition),
+                then_expr: Box::new(then_expr),
+                else_expr: Box::new(else_expr),
+            };
+        }
+
+        Ok(condition)
     }
 
     fn parse_or(&mut self) -> Result<Expression> {
@@ -668,6 +737,22 @@ impl Parser {
                 let expr = self.parse_expression()?;
                 self.expect(&TokenType::RightParen)?;
                 Ok(expr)
+            }
+            TokenType::If => {
+                self.advance();
+                let condition = self.parse_expression()?;
+                self.expect(&TokenType::LeftBrace)?;
+                let then_expr = self.parse_expression()?;
+                self.expect(&TokenType::RightBrace)?;
+                self.expect(&TokenType::Else)?;
+                self.expect(&TokenType::LeftBrace)?;
+                let else_expr = self.parse_expression()?;
+                self.expect(&TokenType::RightBrace)?;
+                Ok(Expression::IfExpression {
+                    condition: Box::new(condition),
+                    then_expr: Box::new(then_expr),
+                    else_expr: Box::new(else_expr),
+                })
             }
             TokenType::Pipe => {
                 self.advance();

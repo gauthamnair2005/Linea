@@ -46,6 +46,11 @@ pub enum Statement {
         then_body: Vec<Statement>,
         else_body: Option<Vec<Statement>>,
     },
+    Switch {
+        expr: Expression,
+        cases: Vec<(Expression, Vec<Statement>)>,
+        default: Option<Vec<Statement>>,
+    },
     FunctionDecl {
         name: String,
         params: Vec<(String, Type)>,
@@ -119,6 +124,16 @@ pub enum Expression {
     TypeCast {
         expr: Box<Expression>,
         target_type: Type,
+    },
+    Ternary {
+        condition: Box<Expression>,
+        then_expr: Box<Expression>,
+        else_expr: Box<Expression>,
+    },
+    IfExpression {
+        condition: Box<Expression>,
+        then_expr: Box<Expression>,
+        else_expr: Box<Expression>,
     },
 }
 

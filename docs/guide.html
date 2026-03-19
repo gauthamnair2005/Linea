@@ -295,7 +295,7 @@ func superDescribe() -> string {
         </div>
 
         <div class="section">
-            <h2>3.7 Media + CV + Camera Libraries (v4.12.4)</h2>
+            <h2>3.7 Media + CV + Camera Libraries</h2>
 
             <h3>Video + Audio</h3>
             <pre>import video
@@ -325,6 +325,37 @@ opencv::cannyMock("snap.ppm", "edges.ppm", 80)
 opencv::blurBox("snap.ppm", "blur.ppm", 3)
 display opencv::detectFacesMock("snap.ppm")
 display camera::listDevices()</pre>
+        </div>
+
+        <div class="section">
+            <h2>3.8 Control Flow Upgrades + DSA (v4.13.0)</h2>
+
+            <h3>Switch / Case / Default</h3>
+            <pre>var day @ int = 3
+switch day {
+  case 1:
+    display "Mon"
+  case 3:
+    display "Wed"
+  default:
+    display "Other"
+}</pre>
+
+            <h3>Ternary + One-Line Conditionals</h3>
+            <pre>var score @ int = 82
+var grade @ str = score >= 50 ? "pass" : "fail"
+var parity @ str = if score % 2 == 0 { "even" } else { "odd" }
+
+if score > 90 display "Top tier" else display "Keep going"</pre>
+
+            <h3>DSA Library</h3>
+            <pre>import dsa
+
+var nums @ [int] = [5, 1, 9, 3, 7]
+display dsa::array_sum(nums)
+display dsa::array_max(nums)
+display dsa::linear_search(nums, 9)
+display dsa::bubble_sort(nums)</pre>
         </div>
 
         <div class="section">

@@ -242,6 +242,28 @@ impl Executor {
                 }
                 Ok(())
             }
+            Statement::Switch { expr, cases, default } => {
+                let switch_val = self.eval_expression(expr)?;
+                let mut matched = false;
+                for (case_expr, case_body) in cases {
+                    let case_val = self.eval_expression(case_expr)?;
+                    if self.eval_binary_op(&switch_val, BinaryOp::Equal, &case_val)?.to_bool() {
+                        for stmt in case_body {
+                            self.execute_statement(stmt)?;
+                        }
+                        matched = true;
+                        break;
+                    }
+                }
+                if !matched {
+                    if let Some(default_body) = default {
+                        for stmt in default_body {
+                            self.execute_statement(stmt)?;
+                        }
+                    }
+                }
+                Ok(())
+            }
             Statement::Expression(expr) => {
                 self.eval_expression(expr)?;
                 Ok(())
@@ -450,6 +472,22 @@ impl Executor {
                     Type::String => Ok(Value::String(val.to_string())),
                     Type::Bool => Ok(Value::Bool(val.to_bool())),
                     _ => Err(Error::TypeError("Cannot cast to this type".to_string())),
+                }
+            }
+            Expression::Ternary { condition, then_expr, else_expr } => {
+                let cond = self.eval_expression(condition)?;
+                if cond.to_bool() {
+                    self.eval_expression(then_expr)
+                } else {
+                    self.eval_expression(else_expr)
+                }
+            }
+            Expression::IfExpression { condition, then_expr, else_expr } => {
+                let cond = self.eval_expression(condition)?;
+                if cond.to_bool() {
+                    self.eval_expression(then_expr)
+                } else {
+                    self.eval_expression(else_expr)
                 }
             }
             _ => Err(Error::RuntimeError("Unsupported expression".to_string())),

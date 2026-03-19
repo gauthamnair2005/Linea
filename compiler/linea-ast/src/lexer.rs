@@ -126,6 +126,7 @@ impl Lexer {
                     Ok(Token::new(TokenType::Colon, line, column))
                 }
             }
+            '?' => { self.advance(); Ok(Token::new(TokenType::Question, line, column)) }
             '~' => { self.advance(); Ok(Token::new(TokenType::Tilde, line, column)) }
             '(' => { self.advance(); Ok(Token::new(TokenType::LeftParen, line, column)) }
             ')' => { self.advance(); Ok(Token::new(TokenType::RightParen, line, column)) }
@@ -168,6 +169,9 @@ impl Lexer {
                     "if" => TokenType::If,
                     "else" => TokenType::Else,
                     "while" => TokenType::While,
+                    "switch" => TokenType::Switch,
+                    "case" => TokenType::Case,
+                    "default" => TokenType::Default,
                     "break" => TokenType::Break,
                     "continue" => TokenType::Continue,
                     "class" => TokenType::Class,
