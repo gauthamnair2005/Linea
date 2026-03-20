@@ -2860,19 +2860,145 @@ pub fn dropout(a: &Vec<Vec<f64>>, p: f64) -> Vec<Vec<f64>> {
     }
 
     pub mod gui {
+        use std::process::Command;
+
+        fn has_display() -> bool {
+            std::env::var_os("DISPLAY").is_some() || std::env::var_os("WAYLAND_DISPLAY").is_some()
+        }
+
+        fn try_zenity_info(title: &str, message: &str, width: u32, height: u32) -> Option<bool> {
+            let status = Command::new("zenity")
+                .arg("--info")
+                .arg("--title")
+                .arg(title)
+                .arg("--text")
+                .arg(message)
+                .arg("--width")
+                .arg(width.to_string())
+                .arg("--height")
+                .arg(height.to_string())
+                .status()
+                .ok()?;
+            Some(status.success())
+        }
+
+        fn try_zenity_button(title: &str, message: &str, button_label: &str, width: u32, height: u32) -> Option<bool> {
+            let status = Command::new("zenity")
+                .arg("--question")
+                .arg("--title")
+                .arg(title)
+                .arg("--text")
+                .arg(message)
+                .arg("--ok-label")
+                .arg(button_label)
+                .arg("--cancel-label")
+                .arg("Close")
+                .arg("--width")
+                .arg(width.to_string())
+                .arg("--height")
+                .arg(height.to_string())
+                .status()
+                .ok()?;
+            Some(status.success())
+        }
+
+        fn try_kdialog_info(title: &str, message: &str) -> Option<bool> {
+            let status = Command::new("kdialog")
+                .arg("--title")
+                .arg(title)
+                .arg("--msgbox")
+                .arg(message)
+                .status()
+                .ok()?;
+            Some(status.success())
+        }
+
+        fn try_kdialog_button(title: &str, message: &str, button_label: &str) -> Option<bool> {
+            let status = Command::new("kdialog")
+                .arg("--title")
+                .arg(title)
+                .arg("--yes-label")
+                .arg(button_label)
+                .arg("--no-label")
+                .arg("Close")
+                .arg("--yesno")
+                .arg(message)
+                .status()
+                .ok()?;
+            Some(status.success())
+        }
+
+        fn try_xmessage_info(title: &str, message: &str) -> Option<bool> {
+            let status = Command::new("xmessage")
+                .arg("-center")
+                .arg("-title")
+                .arg(title)
+                .arg(message)
+                .status()
+                .ok()?;
+            Some(status.success())
+        }
+
+        fn try_xmessage_button(title: &str, message: &str, button_label: &str) -> Option<bool> {
+            let safe_label = {
+                let s = button_label
+                    .replace(',', " ")
+                    .replace(':', " ")
+                    .replace('\n', " ")
+                    .trim()
+                    .to_string();
+                if s.is_empty() { "OK".to_string() } else { s }
+            };
+            let buttons = format!("{safe_label}:0,Close:1");
+            let status = Command::new("xmessage")
+                .arg("-center")
+                .arg("-title")
+                .arg(title)
+                .arg("-buttons")
+                .arg(buttons)
+                .arg(message)
+                .status()
+                .ok()?;
+            Some(status.success())
+        }
+
         pub fn window(title: String, message: String, width: u32, height: u32) -> bool {
-            eprintln!(
-                "[linea::gui] window requested (title='{}', {}x{}): {}",
-                title, width, height, message
-            );
+            if !has_display() {
+                eprintln!("[linea::gui] no graphical display found (DISPLAY/WAYLAND_DISPLAY unset)");
+                return false;
+            }
+
+            if let Some(ok) = try_zenity_info(&title, &message, width, height) {
+                return ok;
+            }
+            if let Some(ok) = try_kdialog_info(&title, &message) {
+                return ok;
+            }
+            if let Some(ok) = try_xmessage_info(&title, &message) {
+                return ok;
+            }
+
+            eprintln!("[linea::gui] no GUI backend found (tried zenity, kdialog, xmessage)");
             false
         }
 
         pub fn button_window(title: String, message: String, button_label: String, width: u32, height: u32) -> bool {
-            eprintln!(
-                "[linea::gui] button_window requested (title='{}', button='{}', {}x{}): {}",
-                title, button_label, width, height, message
-            );
+            if !has_display() {
+                eprintln!("[linea::gui] no graphical display found (DISPLAY/WAYLAND_DISPLAY unset)");
+                return false;
+            }
+
+            if let Some(ok) = try_zenity_button(&title, &message, &button_label, width, height) {
+                return ok;
+            }
+            if let Some(ok) = try_kdialog_button(&title, &message, &button_label) {
+                return ok;
+            }
+            if let Some(ok) = try_xmessage_button(&title, &message, &button_label) {
+                return ok;
+            }
+
+            eprintln!("[linea::gui] no GUI backend found (tried zenity, kdialog, xmessage)");
             false
         }
     }

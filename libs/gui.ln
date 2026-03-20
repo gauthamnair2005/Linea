@@ -1,4 +1,4 @@
-# Linea GUI Toolkit (Iced-backed)
+# Linea GUI Toolkit (compiled runtime backend)
 
 func gui::window(title: string, message: string, width: int, height: int) -> bool {
   return gui::window(title, message, width, height)

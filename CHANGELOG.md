@@ -1,5 +1,17 @@
 # Linea Changelog
 
+## [4.14.2] - 2026-03-20
+
+### SemVer Type
+- `patch`
+
+### Fixed
+- Implemented real compiled-mode GUI runtime behavior for `gui::window` and `gui::buttonWindow`.
+- Replaced prior GUI stubs with native desktop dialog backend execution.
+- Added backend fallback order in compiled runtime: `zenity` -> `kdialog` -> `xmessage`.
+- Added explicit runtime diagnostics when no display is available (`DISPLAY`/`WAYLAND_DISPLAY`) or when no GUI backend is installed.
+- Preserved boolean return semantics (`true` on success/confirm, `false` otherwise) for GUI calls.
+
 ## [4.14.1] - 2026-03-20
 
 ### SemVer Type

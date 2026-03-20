@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.14.1-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.14.2-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -241,7 +241,7 @@ Linea provides a rich standard library for modern development:
 | **`excel`** | Excel file manipulation (read/write) |
 | **`markdown`** | Markdown parsing and HTML generation |
 | **`graphics`** | Data visualization and plotting |
-| **`gui`** | Native desktop GUI toolkit powered by Rust Iced |
+| **`gui`** | Native desktop GUI toolkit for compiled apps (dialog backends) |
 | **`http`** | HTTP client for REST API integration |
 | **`sql`** | SQLite access with parameterized queries and secure lock/unlock |
 | **`db`** | Database alias module (SQLite) with secure lock/unlock primitives |
@@ -334,9 +334,17 @@ Runnable examples:
 * `examples/web_framework_demo.ln`
 * `examples/blockchain_gpu_memory_demo.ln`
 
-### Native GUI Toolkit (v4.7.0)
+### Native GUI Toolkit (v4.14.2)
 
-Linea now includes a first-class `gui` module backed by Rust `iced` for desktop interfaces.
+Linea includes a first-class `gui` module for desktop interfaces in compiled mode.
+
+Compiled runtime backend order:
+
+* `zenity`
+* `kdialog`
+* `xmessage`
+
+If no graphical display (`DISPLAY`/`WAYLAND_DISPLAY`) or no backend is available, GUI calls return `false` and print an explicit runtime message.
 
 * `gui::window(title, message, width, height)`
 * `gui::buttonWindow(title, message, buttonLabel, width, height)`

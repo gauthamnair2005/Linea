@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../wiki-theme.css">
-    <title>Linea Wiki - GUI Toolkit (Iced)</title>
+    <title>Linea Wiki - GUI Toolkit (Compiled Runtime)</title>
 </head>
 <body>
     <main class="container">
-        <h1>GUI Toolkit with Rust Iced</h1>
-        <p>Linea v4.7.0 introduced a native GUI toolkit module built on Rust <code>iced</code>.</p>
+        <h1>GUI Toolkit (Compiled Runtime)</h1>
+        <p>Linea now provides compiled-mode GUI windows through native desktop dialog backends in the generated runtime.</p>
 
         <h2>APIs</h2>
         <pre><code>import gui
@@ -21,7 +21,7 @@ var ok2 = gui::buttonWindow("Title", "Press the button", "Click me", 640, 420)
 display ok2</code></pre>
 
         <h2>Notes</h2>
-        <p>GUI APIs are designed for compiled mode (`linea compile`). Interpreter mode reports a clear runtime error for GUI calls.</p>
+        <p>GUI APIs work in compiled mode (`linea compile`) and attempt backends in order: <code>zenity</code>, <code>kdialog</code>, <code>xmessage</code>. If no graphical display is available (no <code>DISPLAY</code>/<code>WAYLAND_DISPLAY</code>) or no backend is installed, the runtime reports an explicit error and returns <code>false</code>. Interpreter mode still reports GUI as unavailable.</p>
 
         <h2>Runnable Example</h2>
         <pre><code>examples/gui_iced_demo.ln</code></pre>
