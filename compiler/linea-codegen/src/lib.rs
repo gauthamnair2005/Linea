@@ -108,8 +108,9 @@ impl RustGenerator {
                 let mut params_str = String::new();
                 for (param_name, param_type) in params {
                     let p_ty = self.type_to_rust_type(param_type);
+                    let escaped_param = Self::escape_rust_keyword(param_name);
                     if !params_str.is_empty() { params_str.push_str(", "); }
-                    params_str.push_str(&format!("{}: {}", param_name, p_ty));
+                    params_str.push_str(&format!("{}: {}", escaped_param, p_ty));
                     // Also need to register param types for body generation
                     // But variable_types is flat map. Scope handling is tricky.
                     // For now, just insert.
@@ -181,8 +182,9 @@ impl RustGenerator {
                     (inferred_type, rust_expr)
                 };
                 
+                let escaped_name = Self::escape_rust_keyword(name);
                 self.variable_types.insert(name.clone(), type_name.clone());
-                self.emit_line(&format!("let mut {} : {} = {};", name, type_name, final_expr));
+                self.emit_line(&format!("let mut {} : {} = {};", escaped_name, type_name, final_expr));
                 Ok(())
             }
             Statement::ObjDeclaration { name, class_name, constructor } => {
@@ -226,6 +228,7 @@ impl RustGenerator {
             Statement::For { var, start, end, step, body } => {
                 let (start_expr, _) = self.generate_expression(start)?;
                 let (end_expr, _) = self.generate_expression(end)?;
+                let escaped_var = Self::escape_rust_keyword(var);
                 
                 // Handle optional step
                 let range_expr = if let Some(step_expr) = step {
@@ -239,22 +242,22 @@ impl RustGenerator {
                 
                 // If there's a step, use while loop; otherwise use for loop
                 if step.is_some() {
-                    self.emit_line(&format!("let mut {} = {};", var, start_expr));
+                    self.emit_line(&format!("let mut {} = {};", escaped_var, start_expr));
                     self.variable_types.insert(var.clone(), "i64".to_string());
                     
                     let (step_val, _) = self.generate_expression(step.as_ref().unwrap())?;
-                    self.emit_line(&format!("while {} <= {} {{", var, end_expr));
+                    self.emit_line(&format!("while {} <= {} {{", escaped_var, end_expr));
                     self.indent_level += 1;
                     
                     for stmt in body {
                         self.generate_statement(stmt)?;
                     }
                     
-                    self.emit_line(&format!("{} = {} + {};", var, var, step_val));
+                    self.emit_line(&format!("{} = {} + {};", escaped_var, escaped_var, step_val));
                     self.indent_level -= 1;
                     self.emit_line("}");
                 } else {
-                    self.emit_line(&format!("for {} in {}..={} {}", var, start_expr, end_expr, "{"));
+                    self.emit_line(&format!("for {} in {}..={} {}", escaped_var, start_expr, end_expr, "{"));
                     self.variable_types.insert(var.clone(), "i64".to_string());
                     self.indent_level += 1;
 
@@ -344,6 +347,19 @@ impl RustGenerator {
                 Ok(())
             }
             Statement::Expression(expr) => {
+                // Special handling for TypeCast as a statement: typeCast var = type
+                // This should mutate the variable to the new type by shadowing it
+                if let Expression::TypeCast { expr: inner_expr, target_type } = expr {
+                    if let Expression::Identifier(var_name) = &**inner_expr {
+                        let (rust_expr, new_type) = self.generate_expression(expr)?;
+                        let escaped_var = Self::escape_rust_keyword(var_name);
+                        // Shadow the variable with new type
+                        self.emit_line(&format!("let mut {} : {} = {};", escaped_var, new_type, rust_expr));
+                        // Update the variable's type in our tracking
+                        self.variable_types.insert(var_name.clone(), new_type);
+                        return Ok(());
+                    }
+                }
                 let (rust_expr, _) = self.generate_expression(expr)?;
                 self.emit_line(&format!("{};", rust_expr));
                 Ok(())
@@ -1657,8 +1673,22 @@ impl RustGenerator {
              Expression::TypeCast { expr, target_type } => {
                 let (inner_expr, inner_ty) = self.generate_expression(expr)?;
                 match target_type {
-                    Type::Int => Ok((format!("({} as i64)", inner_expr), "i64".to_string())),
-                    Type::Float => Ok((format!("({} as f64)", inner_expr), "f64".to_string())),
+                    Type::Int => {
+                        // Handle String to int conversion specially
+                        if inner_ty == "String" {
+                            Ok((format!("({}.parse::<i64>().unwrap_or(0))", inner_expr), "i64".to_string()))
+                        } else {
+                            Ok((format!("({} as i64)", inner_expr), "i64".to_string()))
+                        }
+                    }
+                    Type::Float => {
+                        // Handle String to float conversion specially
+                        if inner_ty == "String" {
+                            Ok((format!("({}.parse::<f64>().unwrap_or(0.0))", inner_expr), "f64".to_string()))
+                        } else {
+                            Ok((format!("({} as f64)", inner_expr), "f64".to_string()))
+                        }
+                    }
                     Type::String => Ok((format!("(({}).to_string())", inner_expr), "String".to_string())),
                     _ => Ok((inner_expr, inner_ty)),
                 }
@@ -1697,7 +1727,7 @@ impl RustGenerator {
             }
             return "self".to_string();
         }
-        name.to_string()
+        Self::escape_rust_keyword(name)
     }
 
     fn type_to_rust_type(&self, ty: &Type) -> String {
@@ -1747,6 +1777,22 @@ impl RustGenerator {
                 type_str.to_string()
             }
             _ => type_str.to_string(), // Keep as-is for custom types
+        }
+    }
+
+    fn escape_rust_keyword(name: &str) -> String {
+        // Escape Rust keywords by prefixing with r#
+        match name {
+            "as" | "break" | "const" | "continue" | "crate" | "else" | "enum" | "extern"
+            | "false" | "fn" | "for" | "if" | "impl" | "in" | "let" | "loop" | "match"
+            | "mod" | "move" | "mut" | "pub" | "ref" | "return" | "self" | "Self"
+            | "static" | "struct" | "super" | "trait" | "true" | "type" | "unsafe"
+            | "use" | "where" | "while" | "async" | "await" | "dyn" | "abstract"
+            | "become" | "box" | "do" | "final" | "macro" | "override" | "priv"
+            | "typeof" | "unsized" | "virtual" | "yield" | "try" => {
+                format!("r#{}", name)
+            }
+            _ => name.to_string()
         }
     }
 

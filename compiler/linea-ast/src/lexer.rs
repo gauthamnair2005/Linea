@@ -179,8 +179,8 @@ impl Lexer {
                     "this" => TokenType::This,
                     "super" => TokenType::Super,
                     "typeCast" => TokenType::TypeCast,
-                    "True" => TokenType::True,
-                    "False" => TokenType::False,
+                    "True" | "true" => TokenType::True,
+                    "False" | "false" => TokenType::False,
                     "Yes" => TokenType::Yes,
                     "No" => TokenType::No,
                     "not" => TokenType::Not,
@@ -277,6 +277,13 @@ impl Lexer {
                     self.column = 1;
                 }
                 '#' => {
+                    // Skip single-line comment (# style)
+                    while !self.is_at_end() && self.current_char() != '\n' {
+                        self.advance();
+                    }
+                }
+                '/' if self.peek() == '/' => {
+                    // Skip single-line comment (// style)
                     while !self.is_at_end() && self.current_char() != '\n' {
                         self.advance();
                     }
@@ -291,6 +298,14 @@ impl Lexer {
             '\0'
         } else {
             self.input[self.position]
+        }
+    }
+
+    fn peek(&self) -> char {
+        if self.position + 1 >= self.input.len() {
+            '\0'
+        } else {
+            self.input[self.position + 1]
         }
     }
 

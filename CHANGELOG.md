@@ -1,5 +1,23 @@
 # Linea Changelog
 
+## [4.14.0] - 2026-03-20
+
+### SemVer Type
+- `minor`
+
+### Added
+- Added support for C-style `//` single-line comments in addition to existing `#` comments
+- Automatic Rust keyword escaping in code generation using `r#` prefix
+  - Variables, parameters, and identifiers that conflict with Rust keywords are now automatically escaped
+  - Examples: `type`, `match`, `async`, `await`, etc. are now valid Linea identifiers
+
+### Fixed
+- Fixed case-insensitive boolean literals: both `true`/`false` and `True`/`False` are now recognized
+- Fixed `typeCast` statement to properly shadow variables with new types
+  - `typeCast var = int` now correctly converts and reassigns the variable
+  - Added smart String-to-number conversion using `.parse()` instead of `as` cast
+  - Type tracking updated to reflect variable type changes after cast
+
 ## [4.13.1] - 2026-03-19
 
 ### SemVer Type
