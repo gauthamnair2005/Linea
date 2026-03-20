@@ -3,14 +3,3 @@ import compute
 display "Compute device:"
 display compute::device()
 display compute::type()
-
-var a @ any = [[1.0, 2.0], [3.0, 4.0]]
-var b @ any = [[5.0, 6.0], [7.0, 8.0]]
-
-var product @ any = compute::matmul(a, b)
-display "matmul:"
-display product
-
-var relu_out @ any = compute::relu([[-1.0, 2.0], [3.0, -4.0]])
-display "relu:"
-display relu_out

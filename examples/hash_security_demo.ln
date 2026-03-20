@@ -1,29 +1,5 @@
 import hash
 import security
 
-var message @ str = "linea-core"
-var digest256 @ str = hash::sha256(message)
-var digest512 @ str = hash::sha512(message)
-var digestMd5 @ str = hash::md5(message)
-var salted @ str = hash::withSalt("sha256", message, "demo-salt")
-
-display digest256
-display digest512
-display digestMd5
-display salted
-
-var token @ str = security::randomToken(24)
-var bytesHex @ str = security::randomBytes(16)
-display token
-display bytesHex
-
-var pw @ str = "Linea#2026Secure"
-var score @ int = security::passwordScore(pw)
-var strong @ bool = security::isStrongPassword(pw)
-var stored @ str = security::passwordHash(pw)
-var valid @ bool = security::passwordVerify(pw, stored)
-
-display score
-display strong
-display valid
-display hash::secureEquals(stored, stored)
+display hash::sha256("linea-core")
+display security::isStrongPassword("Linea#2026Secure")

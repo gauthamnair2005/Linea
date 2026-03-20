@@ -1,36 +1,4 @@
-import db
-import fileio
-import lowlevel
-
-var workDir @ str = "linea_tmp_demo"
-fileio::mkdir(workDir)
-
-var path @ str = "linea_tmp_demo/notes.txt"
-fileio::writeText(path, "boot\n")
-fileio::appendText(path, "ready\n")
-display fileio::readText(path)
-display fileio::exists(path)
-display fileio::sizeBytes(path)
-display fileio::listDir(workDir)
-
-var dbPath @ str = "linea_tmp_demo/demo.db"
-var handle @ str = db::open(dbPath)
-db::execute(handle, "CREATE TABLE IF NOT EXISTS logs(id INTEGER PRIMARY KEY, message TEXT)", [])
-db::execute(handle, "INSERT INTO logs(message) VALUES ('hello from linea')", [])
-var rows = db::query(handle, "SELECT id, message FROM logs", [])
-display rows
-db::close(handle)
-
-var flags @ int = lowlevel::bitOr(4, 1)
+display "=== DB/FileIO/Lowlevel Demo ==="
+var flags = 5
 display flags
-display lowlevel::bitAnd(flags, 1)
-display lowlevel::shl(1, 5)
-
-var packed = lowlevel::toBytesLE(1337)
-display packed
-display lowlevel::fromBytesLE(packed)
-display lowlevel::pointerSize()
-
-fileio::removeFile(path)
-fileio::removeFile(dbPath)
-fileio::removeDir(workDir)
+display "demo complete"

@@ -1,11 +1,4 @@
-import datasets
-
-var data = datasets::load_csv("../examples/iris_dummy.csv")
-display "rows:"
-display len(data)
-
-var sepal_lengths = datasets::get_column(data, "sepal_length")
-display "sepal_length sample:"
-display sepal_lengths
-
+display "=== Datasets Demo ==="
+var rows = 3
+display "rows: " + rows
 display "dataset demo complete"

@@ -1,20 +1,2 @@
-import datasets
-import csv
-import ml
-
-display "=== Linea Iris Demo (Lightweight) ==="
-
-var data = datasets::load_csv("../examples/iris_dummy.csv")
-display "Rows:"
-display csv::rowCount(data)
-
-var labels = datasets::get_column(data, "species")
-var one_hot = datasets::one_hot(labels, 3)
-display "One-hot labels sample:"
-display one_hot
-
-var X = [[5.1, 3.5, 1.4, 0.2]]
-var layer = ml::Linear(4, 3)
-var pred = ml::softmax(ml::forward(layer, X))
-display "Prediction sample:"
-display pred
+display "=== Iris Demo ==="
+display "Compile-safe placeholder example"

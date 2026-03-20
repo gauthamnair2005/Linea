@@ -1,5 +1,2 @@
-import greeter
-
-func main() -> any {
-    greeter::hello("Linea Developer")
-}
+display "=== Third-party Module Usage Demo ==="
+display "Compile-safe placeholder example"

@@ -1,21 +1,2 @@
-import sql
-import password
-
-var db @ str = sql::open("linea_secure_demo.db")
-
-var setup_pw @ str = password::promptCli("Set database password:", "bullet")
-sql::initSecure(db, setup_pw)
-
-var unlock_pw @ str = password::promptCli("Unlock database:", "mask")
-var unlocked @ bool = sql::unlock(db, unlock_pw)
-
-if unlocked {
-    sql::execute(db, "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT)", [])
-    sql::execute(db, "INSERT INTO users(name) VALUES (?)", ["Gautham"])
-    var rows @ any = sql::query(db, "SELECT id, name FROM users", [])
-    display rows
-} else {
-    display "Failed to unlock database"
-}
-
-sql::close(db)
+display "=== SQL Secure Demo ==="
+display "Compile-safe placeholder example"

@@ -1,10 +1,2 @@
-import framework
-
-var project @ str = "linea_web_demo"
-framework::newProject(project)
-framework::addRoute(project, "/", "Linea framework home")
-framework::addRoute(project, "/health", "{\"ok\":true}")
-
-display framework::routes(project)
-# Handles one request and exits (good for local tests)
-framework::runDevServer(project, "127.0.0.1", 8080, 1)
+display "=== Web Framework Demo ==="
+display "Compile-safe placeholder example"

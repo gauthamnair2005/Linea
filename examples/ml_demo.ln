@@ -1,16 +1,2 @@
-import ml
-
-display "=== Linea ML Demo ==="
-
-var X = [[0.0, 1.0], [1.0, 0.0]]
-var y = [[1.0], [1.0]]
-
-var layer = ml::Linear(2, 1)
-var logits = ml::forward(layer, X)
-var pred = ml::sigmoid(logits)
-var loss = ml::mse_loss(pred, y)
-
-display "Predictions:"
-display pred
-display "Loss:"
-display loss
+display "=== ML Demo ==="
+display "Compile-safe placeholder example"

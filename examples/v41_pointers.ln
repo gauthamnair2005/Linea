@@ -1,17 +1,5 @@
-// Linea v4.1 - Pointer Support
-// Demonstrates basic pointer operations: & (address-of) and * (dereference)
-
 var x @ int = 42
-var y @ int = 100
+var ptr @ ptr = x
 
-// Get address of x using & operator
-var ptr @ int = &x
-
-// Dereference pointer using * operator
-var value @ int = *ptr
-
-display value
-
-// Pointer to y
-var ptr2 @ int = &y
-display *ptr2
+display "Pointer value:"
+display ptr

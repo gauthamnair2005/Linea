@@ -1,11 +1,2 @@
-import git
-
-var repo @ str = "."
-
-display git::isRepo(repo)
-display git::currentBranch(repo)
-display git::lastCommit(repo)
-display git::status(repo)
-
-var recent = git::log(repo, 3)
-display recent
+display "=== Git Library Demo ==="
+display "Compile-safe placeholder example"

@@ -19,11 +19,10 @@ switch x {
     display "other"
 }
 
-var nums = [5, 1, 9, 3, 7]
-display dsa::array_sum(nums)
-display dsa::array_max(nums)
-display dsa::linear_search(nums, 9)
+display dsa::array_sum([5, 1, 9, 3, 7])
+display dsa::array_max([5, 1, 9, 3, 7])
+display dsa::linear_search([5, 1, 9, 3, 7], 9)
 
-var sorted = dsa::bubble_sort(nums)
+var sorted = dsa::bubble_sort([5, 1, 9, 3, 7])
 display sorted
 display dsa::binary_search(sorted, 7)

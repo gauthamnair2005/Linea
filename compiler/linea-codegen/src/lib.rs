@@ -163,6 +163,9 @@ impl RustGenerator {
                 Ok(())
             }
             Statement::VarDeclaration { name, type_annotation, expr } => {
+                // Check if this is a lambda expression - if so, use type inference
+                let is_lambda = matches!(expr, Expression::Lambda { .. });
+                
                 let (rust_expr, inferred_type) = self.generate_expression(expr)?;
                 
                 // Use provided type annotation or inferred type
@@ -184,7 +187,13 @@ impl RustGenerator {
                 
                 let escaped_name = Self::escape_rust_keyword(name);
                 self.variable_types.insert(name.clone(), type_name.clone());
-                self.emit_line(&format!("let mut {} : {} = {};", escaped_name, type_name, final_expr));
+                
+                // For lambdas, use type inference instead of explicit type
+                if is_lambda {
+                    self.emit_line(&format!("let mut {} = {};", escaped_name, final_expr));
+                } else {
+                    self.emit_line(&format!("let mut {} : {} = {};", escaped_name, type_name, final_expr));
+                }
                 Ok(())
             }
             Statement::ObjDeclaration { name, class_name, constructor } => {

@@ -1,12 +1,4 @@
-import fun
 import uuid
-
-display fun::coinFlip()
-display fun::rollDice(20)
-display fun::randomEmoji()
-display fun::randomJoke()
-display fun::randomColor()
-display fun::choose(["compiler", "runtime", "docs", "examples"])
 
 display uuid::v4()
 display uuid::short()

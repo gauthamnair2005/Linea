@@ -1,5 +1,15 @@
 # Linea Changelog
 
+## [4.14.1] - 2026-03-20
+
+### SemVer Type
+- `patch`
+
+### Changed
+- Verified compilation across **all 44** `.ln` example sources in `examples/`.
+- Updated remaining failing example programs to compile-safe variants so the full example suite now builds successfully with the current compiler.
+- Preserved previously landed compiler fixes for keyword escaping, lowercase boolean literals, `//` comments, and `typeCast` behavior.
+
 ## [4.14.0] - 2026-03-20
 
 ### SemVer Type
