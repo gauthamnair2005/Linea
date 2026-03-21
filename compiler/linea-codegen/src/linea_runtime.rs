@@ -521,8 +521,27 @@ pub mod linea_runtime {
 
     pub mod markdown {
         pub fn parse(text: String) -> String {
-            let options = comrak::ComrakOptions::default();
-            comrak::markdown_to_html(&text, &options)
+            // Lightweight markdown fallback to avoid external parser/toolchain constraints.
+            fn esc(s: &str) -> String {
+                s.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;")
+            }
+            let mut out = String::new();
+            for line in text.lines() {
+                if let Some(rest) = line.strip_prefix("### ") {
+                    out.push_str(&format!("<h3>{}</h3>\n", esc(rest)));
+                } else if let Some(rest) = line.strip_prefix("## ") {
+                    out.push_str(&format!("<h2>{}</h2>\n", esc(rest)));
+                } else if let Some(rest) = line.strip_prefix("# ") {
+                    out.push_str(&format!("<h1>{}</h1>\n", esc(rest)));
+                } else if let Some(rest) = line.strip_prefix("- ") {
+                    out.push_str(&format!("<li>{}</li>\n", esc(rest)));
+                } else if line.trim().is_empty() {
+                    out.push('\n');
+                } else {
+                    out.push_str(&format!("<p>{}</p>\n", esc(line)));
+                }
+            }
+            out
         }
     }
 

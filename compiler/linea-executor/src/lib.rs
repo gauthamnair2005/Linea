@@ -2077,8 +2077,26 @@ impl Executor {
                         Value::String(s) => s,
                         _ => return Err(Error::TypeError("Markdown text must be string".to_string())),
                     };
-                    let options = comrak::ComrakOptions::default();
-                    let html = comrak::markdown_to_html(&md_text, &options);
+                    let mut html = String::new();
+                    for line in md_text.lines() {
+                        let escaped = line
+                            .replace('&', "&amp;")
+                            .replace('<', "&lt;")
+                            .replace('>', "&gt;");
+                        if let Some(rest) = escaped.strip_prefix("### ") {
+                            html.push_str(&format!("<h3>{}</h3>\n", rest));
+                        } else if let Some(rest) = escaped.strip_prefix("## ") {
+                            html.push_str(&format!("<h2>{}</h2>\n", rest));
+                        } else if let Some(rest) = escaped.strip_prefix("# ") {
+                            html.push_str(&format!("<h1>{}</h1>\n", rest));
+                        } else if let Some(rest) = escaped.strip_prefix("- ") {
+                            html.push_str(&format!("<li>{}</li>\n", rest));
+                        } else if escaped.trim().is_empty() {
+                            html.push('\n');
+                        } else {
+                            html.push_str(&format!("<p>{}</p>\n", escaped));
+                        }
+                    }
                     Ok(Value::String(html))
                 }
                 // Excel Functions

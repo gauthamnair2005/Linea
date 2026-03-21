@@ -6,10 +6,3 @@ authors = ["Gautham Nair"]
 
 [dependencies]
 linea-core = { path = "../linea-core" }
-
-[dev-dependencies]
-criterion = "0.5"
-
-[[bench]]
-name = "parser_bench"
-harness = false

@@ -7,7 +7,6 @@
 
 ### Added
 - Added baseline compiler CI workflow (`.github/workflows/compiler-ci.yml`) to run `cargo check` and `cargo test` for the compiler workspace.
-- Added benchmark workflow (`.github/workflows/compiler-bench.yml`) and parser benchmark scaffold (`compiler/linea-ast/benches/parser_bench.rs`).
 - Added parser diagnostics tests and import validation tests:
   - `compiler/linea-ast/tests/parser_diagnostics.rs`
   - `compiler/linea-codegen/tests/import_validation.rs`
@@ -28,6 +27,11 @@
   - **bold green** success messages
   - **bold red** failure/error messages
 - Updated docs and site references for `v4.14.3` in `README.md`, `index.html`, and `docs/wiki-index.html`.
+- Backward-compatibility hardening for non-cutting-edge stable Rust/Cargo:
+  - lockfile kept in compatible format (`Cargo.lock` v3)
+  - removed CLI `clap` dependency and switched to built-in argument parsing
+  - replaced external markdown parser usage with internal lightweight markdown-to-HTML fallback
+  - pinned key transitive-sensitive dependencies for older toolchains (`indexmap 2.2.6`, `rusqlite 0.31.0`, `reqwest 0.11.27`, `url 2.4.1`, `crossterm 0.27`)
 
 ## [4.14.2] - 2026-03-20
 

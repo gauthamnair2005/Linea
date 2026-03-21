@@ -2,6 +2,9 @@
 members = [".", "linea-core", "linea-ast", "linea-codegen", "linea-executor"]
 resolver = "2"
 
+[workspace.dependencies]
+indexmap = "=2.2.6"
+
 [package]
 name = "linea-compiler"
 version = "4.14.3"
@@ -13,19 +16,15 @@ linea-core = { path = "./linea-core" }
 linea-ast = { path = "./linea-ast" }
 linea-codegen = { path = "./linea-codegen" }
 linea-executor = { path = "./linea-executor" }
-clap = { version = "4", features = ["derive"] }
 anyhow = "1"
 thiserror = "1"
 
 # CSV Processing
 csv = "1.3"
 
-# HTTP & Networking (using rustls to avoid OpenSSL dependency)
-reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
-tokio = { version = "1", features = ["full"] }
-
-# Markdown
-comrak = "0.18"
+# HTTP & Networking (pinned for broader stable toolchain compatibility)
+reqwest = { version = "0.11.27", features = ["json", "rustls-tls"], default-features = false }
+url = "=2.4.1"
 
 # Excel
 calamine = "0.24"

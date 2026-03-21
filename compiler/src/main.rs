@@ -1,4 +1,3 @@
-use clap::{Parser, Subcommand};
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -25,59 +24,104 @@ fn detected_parallel_jobs() -> usize {
         .unwrap_or(1)
 }
 
-#[derive(Parser)]
-#[command(name = "linea")]
-#[command(about = "Linea Compiler | High-Performance AI & Data Language", long_about = None)]
-#[command(version = env!("CARGO_PKG_VERSION"))]
-#[command(author = "Gautham Nair")]
-struct Cli {
-    #[command(subcommand)]
-    command: Commands,
+enum Commands {
+    Compile {
+        input: PathBuf,
+        output: Option<PathBuf>,
+    },
+    Run {
+        input: PathBuf,
+    },
+    Parse {
+        input: PathBuf,
+    },
+    GenRust {
+        input: PathBuf,
+        output: Option<PathBuf>,
+    },
 }
 
-#[derive(Subcommand)]
-enum Commands {
-    /// Compile Linea source to optimized native executable
-    Compile {
-        /// Input source file (.ln)
-        #[arg(value_name = "FILE")]
-        input: PathBuf,
+fn print_usage() {
+    println!("Linea Compiler v{}", env!("CARGO_PKG_VERSION"));
+    println!("Usage:");
+    println!("  linea compile <file.ln> [-o <output>]");
+    println!("  linea run <file.ln>");
+    println!("  linea parse <file.ln>");
+    println!("  linea gen-rust <file.ln> [-o <output.rs>]");
+    println!("  linea --version");
+}
 
-        /// Output executable path
-        #[arg(short, long, value_name = "FILE")]
-        output: Option<PathBuf>,
-    },
+fn parse_cli() -> Result<Commands, String> {
+    let mut args = std::env::args().skip(1);
+    let Some(cmd) = args.next() else {
+        print_usage();
+        return Err("missing command".to_string());
+    };
 
-    /// Run Linea source directly (Interpreter Mode)
-    Run {
-        /// Input source file (.ln)
-        #[arg(value_name = "FILE")]
-        input: PathBuf,
-    },
+    if cmd == "-h" || cmd == "--help" {
+        print_usage();
+        return Err("help".to_string());
+    }
+    if cmd == "-V" || cmd == "--version" {
+        println!("{}", env!("CARGO_PKG_VERSION"));
+        return Err("help".to_string());
+    }
 
-    /// Debug: Inspect Abstract Syntax Tree (AST)
-    Parse {
-        /// Input source file (.ln)
-        #[arg(value_name = "FILE")]
-        input: PathBuf,
-    },
+    let parse_output_flag = |tail: Vec<String>| -> Result<Option<PathBuf>, String> {
+        if tail.is_empty() {
+            return Ok(None);
+        }
+        if tail.len() == 2 && (tail[0] == "-o" || tail[0] == "--output") {
+            return Ok(Some(PathBuf::from(&tail[1])));
+        }
+        Err("invalid output flag usage. expected: -o <path>".to_string())
+    };
 
-    /// Debug: Generate intermediate Rust code
-    GenRust {
-        /// Input source file (.ln)
-        #[arg(value_name = "FILE")]
-        input: PathBuf,
-
-        /// Output Rust file (.rs)
-        #[arg(short, long, value_name = "FILE")]
-        output: Option<PathBuf>,
-    },
+    match cmd.as_str() {
+        "compile" => {
+            let Some(input) = args.next() else {
+                return Err("compile requires an input .ln file".to_string());
+            };
+            let tail: Vec<String> = args.collect();
+            let output = parse_output_flag(tail)?;
+            Ok(Commands::Compile { input: PathBuf::from(input), output })
+        }
+        "run" => {
+            let Some(input) = args.next() else {
+                return Err("run requires an input .ln file".to_string());
+            };
+            Ok(Commands::Run { input: PathBuf::from(input) })
+        }
+        "parse" => {
+            let Some(input) = args.next() else {
+                return Err("parse requires an input .ln file".to_string());
+            };
+            Ok(Commands::Parse { input: PathBuf::from(input) })
+        }
+        "gen-rust" => {
+            let Some(input) = args.next() else {
+                return Err("gen-rust requires an input .ln file".to_string());
+            };
+            let tail: Vec<String> = args.collect();
+            let output = parse_output_flag(tail)?;
+            Ok(Commands::GenRust { input: PathBuf::from(input), output })
+        }
+        _ => Err(format!("unknown command '{}'", cmd)),
+    }
 }
 
 fn main() {
-    let cli = Cli::parse();
+    let command = match parse_cli() {
+        Ok(cmd) => cmd,
+        Err(e) if e == "help" => return,
+        Err(e) => {
+            eprintln!("{} {}", error_msg("✗ FAILURE:"), e);
+            print_usage();
+            std::process::exit(1);
+        }
+    };
 
-    match cli.command {
+    match command {
         Commands::Compile { input, output } => {
             compile_file(&input, output);
         }
@@ -148,10 +192,9 @@ csv = "1.3"
 rand = "0.8"
 reqwest = {{ version = "0.12", features = ["blocking", "json", "rustls-tls"], default-features = false }}
 serde_json = "1.0"
-comrak = "0.18"
 calamine = "0.24"
 rust_xlsxwriter = "0.68"
-rusqlite = {{ version = "0.32", features = ["bundled"] }}
+rusqlite = {{ version = "0.31.0", features = ["bundled"] }}
 sha2 = "0.10"
 md5 = "0.7"
 plotters = {{ version = "0.3.7", default-features = false, features = ["bitmap_backend", "bitmap_encoder", "line_series", "point_series", "histogram", "ab_glyph"] }}
