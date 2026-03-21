@@ -190,7 +190,9 @@ edition = "2021"
 [dependencies]
 csv = "1.3"
 rand = "0.8"
-reqwest = {{ version = "0.12", features = ["blocking", "json", "rustls-tls"], default-features = false }}
+reqwest = {{ version = "0.11.27", features = ["blocking", "json", "rustls-tls"], default-features = false }}
+url = "=2.4.1"
+indexmap = "=2.2.6"
 serde_json = "1.0"
 calamine = "0.24"
 rust_xlsxwriter = "0.68"
@@ -207,6 +209,9 @@ tiny_http = "0.12"
 
                     fs::write(build_dir.join("Cargo.toml"), cargo_toml).expect("Failed to write Cargo.toml");
                     fs::write(build_dir.join("src/main.rs"), rust_code).expect("Failed to write main.rs");
+                    // Prevent stale lockfiles from pinning older/incompatible transitive versions
+                    // when the generated dependency template changes across Linea releases.
+                    let _ = fs::remove_file(build_dir.join("Cargo.lock"));
 
                     let parallel_jobs = detected_parallel_jobs();
                     println!(
