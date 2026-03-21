@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/Platform-Linux-lightgrey.svg" alt="Platform" />
   </a>
   <a href="https://github.com/gauthamnair2005/Linea/releases">
-    <img src="https://img.shields.io/badge/Version-4.14.2-green.svg" alt="Version" />
+    <img src="https://img.shields.io/badge/Version-4.14.3-green.svg" alt="Version" />
   </a>
 </p>
 
@@ -334,7 +334,7 @@ Runnable examples:
 * `examples/web_framework_demo.ln`
 * `examples/blockchain_gpu_memory_demo.ln`
 
-### Native GUI Toolkit (v4.14.2)
+### Native GUI Toolkit (v4.14.3)
 
 Linea includes a first-class `gui` module for desktop interfaces in compiled mode.
 
@@ -350,6 +350,13 @@ If no graphical display (`DISPLAY`/`WAYLAND_DISPLAY`) or no backend is available
 * `gui::buttonWindow(title, message, buttonLabel, width, height)`
 
 Runnable example: `examples/gui_iced_demo.ln`
+
+### Language Reliability Upgrades (v4.14.3)
+
+* Better parser diagnostics with expected-vs-found token labels and practical hints.
+* Import validation now fails early for missing modules and unknown selective-import symbols.
+* New example: `examples/import_validation_demo.ln`
+* New language specification: `docs/LANGUAGE_SPEC.md`
 
 ## 📂 Project Structure
  

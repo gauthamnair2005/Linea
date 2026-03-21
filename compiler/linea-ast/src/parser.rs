@@ -61,6 +61,13 @@ impl Parser {
     fn parse_import(&mut self) -> Result<Statement> {
         self.expect(&TokenType::Import)?;
         let module = self.expect_identifier()?;
+        if module.contains("::") {
+            return Err(Error::Syntax {
+                line: self.current_token().line,
+                column: self.current_token().column,
+                message: "Import module name must be a single identifier. Hint: use `import ml { sigmoid }`, not `import ml::sigmoid`.".to_string(),
+            });
+        }
         
         let items = if self.current_token().token_type == TokenType::LeftBrace {
             self.advance();
@@ -857,10 +864,13 @@ impl Parser {
             self.advance();
             Ok(())
         } else {
+            let expected_label = Self::token_label(expected);
+            let found_label = Self::token_label(&self.current_token().token_type);
+            let hint = Self::expectation_hint(expected, &self.current_token().token_type);
             Err(Error::Syntax {
                 line: self.current_token().line,
                 column: self.current_token().column,
-                message: format!("Expected {:?}, found {:?}", expected, self.current_token().token_type),
+                message: format!("Expected {}, found {}.{}", expected_label, found_label, hint),
             })
         }
     }
@@ -892,8 +902,47 @@ impl Parser {
             _ => Err(Error::Syntax {
                 line: self.current_token().line,
                 column: self.current_token().column,
-                message: "Expected identifier".to_string(),
+                message: "Expected identifier. Hint: names must start with a letter or `_`.".to_string(),
             })
+        }
+    }
+
+    fn token_label(token: &TokenType) -> String {
+        match token {
+            TokenType::Identifier(_) => "identifier".to_string(),
+            TokenType::String(_) => "string".to_string(),
+            TokenType::Integer(_) => "integer".to_string(),
+            TokenType::Float(_) => "float".to_string(),
+            TokenType::LeftParen => "`(`".to_string(),
+            TokenType::RightParen => "`)`".to_string(),
+            TokenType::LeftBrace => "`{`".to_string(),
+            TokenType::RightBrace => "`}`".to_string(),
+            TokenType::LeftBracket => "`[`".to_string(),
+            TokenType::RightBracket => "`]`".to_string(),
+            TokenType::Semicolon => "`;`".to_string(),
+            TokenType::At => "`@`".to_string(),
+            TokenType::Equal => "`=`".to_string(),
+            TokenType::DoubleColon => "`::`".to_string(),
+            TokenType::Eof => "end of file".to_string(),
+            _ => format!("{:?}", token),
+        }
+    }
+
+    fn expectation_hint(expected: &TokenType, found: &TokenType) -> String {
+        match (expected, found) {
+            (TokenType::LeftBrace, TokenType::Identifier(_)) => {
+                " Hint: block statements require `{ ... }`.".to_string()
+            }
+            (TokenType::At, TokenType::Identifier(_)) => {
+                " Hint: typed declarations use `var name @ type = value`.".to_string()
+            }
+            (TokenType::Equal, TokenType::Identifier(_)) => {
+                " Hint: declarations and assignments require `=`.".to_string()
+            }
+            (TokenType::RightBrace, TokenType::Eof) => {
+                " Hint: you may have an unclosed `{` block.".to_string()
+            }
+            _ => "".to_string(),
         }
     }
 

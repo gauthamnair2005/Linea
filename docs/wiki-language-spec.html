@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../wiki-theme.css">
+    <title>Language Specification - Linea Wiki</title>
+</head>
+<body>
+    <a class="global-linea-logo" href="../index.html" aria-label="Linea Home"><img src="../linea-logo.svg" alt="Linea Logo"></a>
+    <div class="container">
+        <header>
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a> / <a href="wiki-index.html">Wiki</a> / Language Specification
+            </div>
+            <h1>Language Specification</h1>
+            <p class="subtitle">Formalized core syntax, typing, module rules, and diagnostics</p>
+        </header>
+
+        <main>
+            <h2>Overview</h2>
+            <p>Linea now maintains an explicit language specification for stable syntax and tooling behavior.</p>
+            <pre>docs/LANGUAGE_SPEC.md</pre>
+
+            <h2>Highlights</h2>
+            <ul>
+                <li>Canonical declaration syntax with <code>@</code> types</li>
+                <li>Module import rules and symbol validation behavior</li>
+                <li>Error and diagnostics guidance with line/column reporting</li>
+                <li>Control-flow and expression grammar coverage</li>
+                <li>CLI output conventions for success/failure</li>
+            </ul>
+
+            <h2>Import Validation Example</h2>
+            <pre>import math { abs, max }
+display math::abs(-5)</pre>
+            <p>If a symbol is not exported by the module, compilation fails early with a list of available exports.</p>
+
+            <div class="nav-buttons">
+                <a href="wiki-modules.html" class="nav-btn">Modules Wiki →</a>
+                <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

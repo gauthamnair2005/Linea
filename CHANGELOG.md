@@ -1,5 +1,34 @@
 # Linea Changelog
 
+## [4.14.3] - 2026-03-21
+
+### SemVer Type
+- `patch`
+
+### Added
+- Added baseline compiler CI workflow (`.github/workflows/compiler-ci.yml`) to run `cargo check` and `cargo test` for the compiler workspace.
+- Added benchmark workflow (`.github/workflows/compiler-bench.yml`) and parser benchmark scaffold (`compiler/linea-ast/benches/parser_bench.rs`).
+- Added parser diagnostics tests and import validation tests:
+  - `compiler/linea-ast/tests/parser_diagnostics.rs`
+  - `compiler/linea-codegen/tests/import_validation.rs`
+- Added formal language specification document: `docs/LANGUAGE_SPEC.md`.
+- Added wiki page for language specification: `docs/wiki-language-spec.html`.
+- Added import validation runnable example: `examples/import_validation_demo.ln`.
+
+### Changed
+- Improved parser diagnostics in `compiler/linea-ast/src/parser.rs`:
+  - clearer expected-vs-found token labels
+  - targeted hints for common syntax mistakes
+  - explicit guidance for invalid scoped `import` module names
+- Hardened import validation in `compiler/linea-codegen/src/lib.rs`:
+  - missing module imports now fail early with actionable errors
+  - selective imports (`import mod { item }`) validate exported symbols and report available names
+  - expanded module lookup paths for compiler invocation contexts
+- Updated CLI status output in `compiler/src/main.rs` to show:
+  - **bold green** success messages
+  - **bold red** failure/error messages
+- Updated docs and site references for `v4.14.3` in `README.md`, `index.html`, and `docs/wiki-index.html`.
+
 ## [4.14.2] - 2026-03-20
 
 ### SemVer Type

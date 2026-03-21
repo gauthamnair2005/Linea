@@ -1,0 +1,8 @@
+import math { abs, max }
+
+func main() -> any {
+    var x @ int = -42
+    display math::abs(x)
+    display math::max(10, 20)
+    return 0
+}

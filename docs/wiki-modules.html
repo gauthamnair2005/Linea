@@ -45,6 +45,17 @@ func main() -> any {
     return 0
 }</pre>
 
+            <h2>Selective Imports and Validation</h2>
+            <p>Use selective imports to import specific exported symbols, and the compiler validates symbol names early.</p>
+            <pre>import math { abs, max }
+
+func main() -> any {
+    display math::abs(-5)
+    display math::max(7, 9)
+    return 0
+}</pre>
+            <p>If you import a symbol that is not exported by the module, compilation fails with a clear error and available symbol preview.</p>
+
             <div class="nav-buttons">
                 <a href="wiki-system-programming.html" class="nav-btn">System Programming Wiki →</a>
                 <a href="wiki-index.html" class="nav-btn primary">← Back to Wiki</a>

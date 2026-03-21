@@ -6,6 +6,19 @@ use linea_ast::parse;
 use linea_executor::Executor;
 use linea_codegen::generate_rust_code;
 
+const ANSI_BOLD: &str = "\x1b[1m";
+const ANSI_GREEN: &str = "\x1b[32m";
+const ANSI_RED: &str = "\x1b[31m";
+const ANSI_RESET: &str = "\x1b[0m";
+
+fn success_msg(message: &str) -> String {
+    format!("{ANSI_BOLD}{ANSI_GREEN}{message}{ANSI_RESET}")
+}
+
+fn error_msg(message: &str) -> String {
+    format!("{ANSI_BOLD}{ANSI_RED}{message}{ANSI_RESET}")
+}
+
 fn detected_parallel_jobs() -> usize {
     std::thread::available_parallelism()
         .map(|n| n.get())
@@ -95,7 +108,7 @@ fn compile_file(input: &PathBuf, output: Option<PathBuf>) {
     let source = match fs::read_to_string(input) {
         Ok(content) => content,
         Err(e) => {
-            eprintln!("Error reading file: {}", e);
+            eprintln!("{} {}", error_msg("✗ FAILURE:"), e);
             std::process::exit(1);
         }
     };
@@ -189,32 +202,32 @@ tiny_http = "0.12"
                                 match fs::copy(&built_binary, &final_output_path) {
                                     Ok(_) => {
                                         println!("--------------------------------------------------");
-                                        println!("✓ SUCCESS: Build complete.");
+                                        println!("{}", success_msg("✓ SUCCESS: Build complete."));
                                         println!("  Artifact: {}", final_output_path.display());
                                     },
-                                    Err(e) => eprintln!("✗ Error copying binary: {}", e),
+                                    Err(e) => eprintln!("{} Error copying binary: {}", error_msg("✗ FAILURE:"), e),
                                 }
                             } else {
                                 eprintln!("--------------------------------------------------");
-                                eprintln!("✗ FAILURE: Compilation failed.");
+                                eprintln!("{}", error_msg("✗ FAILURE: Compilation failed."));
                                 eprintln!("Details:\n{}", String::from_utf8_lossy(&cargo_output.stderr));
                                 std::process::exit(1);
                             }
                         }
                         Err(e) => {
-                            eprintln!("✗ Failed to run cargo: {}", e);
+                            eprintln!("{} Failed to run cargo: {}", error_msg("✗ FAILURE:"), e);
                             std::process::exit(1);
                         }
                     }
                 }
                 Err(e) => {
-                    eprintln!("✗ Code generation failed: {}", e);
+                    eprintln!("{} Code generation failed: {}", error_msg("✗ FAILURE:"), e);
                     std::process::exit(1);
                 }
             }
         }
         Err(e) => {
-            eprintln!("✗ Parse error: {}", e);
+            eprintln!("{} Parse error: {}", error_msg("✗ FAILURE:"), e);
             std::process::exit(1);
         }
     }
@@ -226,7 +239,7 @@ fn run_file(input: &PathBuf) {
     let source = match fs::read_to_string(input) {
         Ok(content) => content,
         Err(e) => {
-            eprintln!("Error reading file: {}", e);
+            eprintln!("{} {}", error_msg("✗ FAILURE:"), e);
             std::process::exit(1);
         }
     };
@@ -237,18 +250,18 @@ fn run_file(input: &PathBuf) {
             match executor.execute(&program) {
                 Ok(_) => {
                     println!("--------------------------------------------------");
-                    println!("✓ Execution finished successfully.");
+                    println!("{}", success_msg("✓ SUCCESS: Execution finished successfully."));
                 }
                 Err(e) => {
                     eprintln!("--------------------------------------------------");
-                    eprintln!("✗ Runtime Exception: {}", e);
+                    eprintln!("{} Runtime Exception: {}", error_msg("✗ FAILURE:"), e);
                     std::process::exit(1);
                 }
             }
         }
         Err(e) => {
             eprintln!("--------------------------------------------------");
-            eprintln!("✗ Syntax Error: {}", e);
+            eprintln!("{} Syntax Error: {}", error_msg("✗ FAILURE:"), e);
             std::process::exit(1);
         }
     }
@@ -260,7 +273,7 @@ fn parse_file(input: &PathBuf) {
     let source = match fs::read_to_string(input) {
         Ok(content) => content,
         Err(e) => {
-            eprintln!("Error reading file: {}", e);
+            eprintln!("{} {}", error_msg("✗ FAILURE:"), e);
             std::process::exit(1);
         }
     };
@@ -270,7 +283,7 @@ fn parse_file(input: &PathBuf) {
             println!("{:#?}", program);
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("{} {}", error_msg("✗ FAILURE:"), e);
             std::process::exit(1);
         }
     }
@@ -282,7 +295,7 @@ fn gen_rust_file(input: &PathBuf, output: Option<PathBuf>) {
     let source = match fs::read_to_string(input) {
         Ok(content) => content,
         Err(e) => {
-            eprintln!("Error reading file: {}", e);
+            eprintln!("{} {}", error_msg("✗ FAILURE:"), e);
             std::process::exit(1);
         }
     };
@@ -299,22 +312,22 @@ fn gen_rust_file(input: &PathBuf, output: Option<PathBuf>) {
 
                     match fs::write(&output_path, rust_code) {
                         Ok(_) => {
-                            println!("✓ Generated Rust source: {}", output_path.display());
+                            println!("{} Generated Rust source: {}", success_msg("✓ SUCCESS:"), output_path.display());
                         },
                         Err(e) => {
-                            eprintln!("✗ Error writing file: {}", e);
+                            eprintln!("{} Error writing file: {}", error_msg("✗ FAILURE:"), e);
                             std::process::exit(1);
                         }
                     }
                 }
                 Err(e) => {
-                    eprintln!("✗ Code generation failed: {}", e);
+                    eprintln!("{} Code generation failed: {}", error_msg("✗ FAILURE:"), e);
                     std::process::exit(1);
                 }
             }
         }
         Err(e) => {
-            eprintln!("✗ Parse error: {}", e);
+            eprintln!("{} Parse error: {}", error_msg("✗ FAILURE:"), e);
             std::process::exit(1);
         }
     }

@@ -17,3 +17,15 @@ pub fn parse(source: &str) -> Result<Program> {
     let mut parser = Parser::new(tokens);
     parser.parse()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::parse;
+
+    #[test]
+    fn parses_basic_program() {
+        let src = "var x @ int = 1\ndisplay x";
+        let program = parse(src).expect("parser should succeed");
+        assert!(!program.statements.is_empty());
+    }
+}

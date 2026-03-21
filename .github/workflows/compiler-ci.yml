@@ -1,0 +1,37 @@
+name: Compiler CI
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "compiler/**"
+      - ".github/workflows/compiler-ci.yml"
+  pull_request:
+    paths:
+      - "compiler/**"
+      - ".github/workflows/compiler-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: compiler
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: compiler
+
+      - name: Cargo check
+        run: cargo check --workspace --all-targets
+
+      - name: Cargo test
+        run: cargo test --workspace --all-targets

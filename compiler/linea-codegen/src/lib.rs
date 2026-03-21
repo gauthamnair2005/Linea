@@ -15,6 +15,7 @@ struct RustGenerator {
     indent_level: usize,
     variable_types: HashMap<String, String>,
     function_signatures: HashMap<String, String>, // func_name -> return_type
+    module_exports: HashMap<String, HashSet<String>>,
     imported_modules: HashSet<String>,
     class_names: HashSet<String>,
     current_self_alias: Option<String>,
@@ -29,6 +30,7 @@ impl RustGenerator {
             indent_level: 0,
             variable_types: HashMap::new(),
             function_signatures: HashMap::new(),
+            module_exports: HashMap::new(),
             imported_modules: HashSet::new(),
             class_names: HashSet::new(),
             current_self_alias: None,
@@ -77,6 +79,7 @@ impl RustGenerator {
     fn generate_statement(&mut self, statement: &Statement) -> Result<()> {
         match statement {
             Statement::Import { module, items } => {
+                self.validate_import_items(module, items)?;
                 if !self.imported_modules.contains(module) {
                     self.compile_module(module)?;
                     self.imported_modules.insert(module.clone());
@@ -569,25 +572,15 @@ impl RustGenerator {
     }
 
     fn compile_module(&mut self, module_name: &str) -> Result<()> {
-        // 1. Locate file
-        let paths = vec![
-            format!("{}.ln", module_name),
-            format!("libs/{}.ln", module_name),
-            format!("../libs/{}.ln", module_name),
-        ];
-        
-        let mut source = None;
-        for path in &paths {
-            if let Ok(content) = fs::read_to_string(path) {
-                source = Some(content);
-                break;
-            }
-        }
-        
-        let source = match source {
-            Some(s) => s,
-            None => return Ok(()), // Ignore if not found (might be intrinsic)
-        };
+        let module_path = self.find_module_path(module_name).ok_or_else(|| {
+            linea_core::Error::TypeError(format!(
+                "Import error: module '{}' was not found. Looked for '{}.ln' and 'libs/{}.ln'.",
+                module_name, module_name, module_name
+            ))
+        })?;
+        let source = fs::read_to_string(&module_path).map_err(|e| {
+            linea_core::Error::IoError(format!("Import error: failed to read module '{}': {}", module_name, e))
+        })?;
         
         // 2. Parse
         let program = linea_ast::parse(&source)?;
@@ -664,6 +657,78 @@ impl RustGenerator {
             }
         }
         
+        Ok(())
+    }
+
+    fn find_module_path(&self, module_name: &str) -> Option<String> {
+        let paths = [
+            format!("{}.ln", module_name),
+            format!("libs/{}.ln", module_name),
+            format!("../libs/{}.ln", module_name),
+            format!("../../libs/{}.ln", module_name),
+        ];
+        for path in paths {
+            if Path::new(&path).exists() {
+                return Some(path);
+            }
+        }
+        None
+    }
+
+    fn exported_symbols(&mut self, module_name: &str) -> Result<HashSet<String>> {
+        if let Some(cached) = self.module_exports.get(module_name) {
+            return Ok(cached.clone());
+        }
+
+        let module_path = self.find_module_path(module_name).ok_or_else(|| {
+            linea_core::Error::TypeError(format!(
+                "Import error: module '{}' was not found. Hint: place '{}' in libs/ as '{}.ln'.",
+                module_name, module_name, module_name
+            ))
+        })?;
+
+        let source = fs::read_to_string(&module_path).map_err(|e| {
+            linea_core::Error::IoError(format!("Import error: failed to read module '{}': {}", module_name, e))
+        })?;
+        let program = linea_ast::parse(&source)?;
+
+        let mut exports = HashSet::new();
+        for stmt in program.statements {
+            if let Statement::FunctionDecl { name, .. } = stmt {
+                let prefix = format!("{}::", module_name);
+                let clean_name = if name.starts_with(&prefix) {
+                    name[prefix.len()..].to_string()
+                } else {
+                    name
+                };
+                exports.insert(clean_name);
+            }
+        }
+
+        self.module_exports.insert(module_name.to_string(), exports.clone());
+        Ok(exports)
+    }
+
+    fn validate_import_items(&mut self, module: &str, items: &[String]) -> Result<()> {
+        if items.iter().any(|item| item == "*") {
+            return Ok(());
+        }
+
+        let exports = self.exported_symbols(module)?;
+        for item in items {
+            if !exports.contains(item) {
+                let mut available: Vec<String> = exports.iter().cloned().collect();
+                available.sort();
+                let preview = available.into_iter().take(8).collect::<Vec<_>>().join(", ");
+                return Err(linea_core::Error::TypeError(format!(
+                    "Import error: '{}' is not exported by module '{}'. Available symbols: {}",
+                    item,
+                    module,
+                    if preview.is_empty() { "<none>".to_string() } else { preview }
+                )));
+            }
+        }
+
         Ok(())
     }
 
